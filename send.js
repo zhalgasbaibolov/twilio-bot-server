@@ -6,7 +6,7 @@ client.messages
     .create({
         body: 'скажи мне "тест успешно прошел"',
         from: 'whatsapp:+14155238886',
-        to: 'whatsapp:+77084956880'
+        to: 'whatsapp:+77078629827'
     })
     .then(message => console.log(message.sid))
     .catch(err => console.log(err))
