@@ -15,6 +15,11 @@ module.exports = (callback, arr) => {
             client.close();
         });
     });
+}
 
-
+module.exports.getConnect = () => {
+    return new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
 }
