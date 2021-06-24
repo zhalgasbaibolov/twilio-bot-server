@@ -35,6 +35,7 @@ router.all('/', function(req, res, next) {
         runMongoCommand(insertDocuments, [req.body])
         res.send("OK");
     } catch (err) {
+        console.log(err)
         res.send({
             err: err
         })
