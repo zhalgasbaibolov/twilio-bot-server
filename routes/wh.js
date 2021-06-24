@@ -28,7 +28,7 @@ router.all('/', function(req, res, next) {
             sendMsg(fromNumber, name, `Order status: delivering`)
         else if (msg == '2.2')
             sendMsg(fromNumber, name, `Order deleting: are you sure you want to delete your order ?[delete/no]`)
-        else if ('delete')
+        else if (msg == 'delete')
             sendMsg(fromNumber, name, `Order deleted. Type 'main' to redirect to Main menu`)
         else if (msg == 'no')
             sendMsg(fromNumber, name, `Order deleting canceled.Type 'main' to redirect to Main menu`)

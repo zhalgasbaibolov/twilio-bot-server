@@ -4,9 +4,9 @@ const client = require('twilio')(accountSid, authToken);
 
 client.messages
     .create({
-        body: 'скажи мне "тест успешно прошел"',
+        body: 'go test me',
         from: 'whatsapp:+14155238886',
-        to: 'whatsapp:+77078629827'
+        to: 'whatsapp:+77761250628'
     })
     .then(message => console.log(message.sid))
     .catch(err => console.log(err))
