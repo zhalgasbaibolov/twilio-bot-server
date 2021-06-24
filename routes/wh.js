@@ -8,6 +8,9 @@ router.all('/', function(req, res, next) {
     try {
         const name = req.body.ProfileName;
         let msg = req.body.Body;
+        if (!msg) {
+            return res.send("OK")
+        }
         msg = msg.toLowerCase()
         if (msg == 'main')
             sendMsg(fromNumber, name, `Main menu\n1) Product menu \n2) Orders menu`)
