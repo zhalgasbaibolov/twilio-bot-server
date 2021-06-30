@@ -4,9 +4,10 @@ const client = require('twilio')(accountSid, authToken);
 
 client.messages
     .create({
-        body: 'go test me',
+        mediaUrl: ['https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDH16dhANTYJuWZDp1IIbUL6OHyW_tizbW1A&usqp=CAU'],
+        body: 'test 3',
         from: 'whatsapp:+14155238886',
-        to: 'whatsapp:+77761250628'
+        to: 'whatsapp:+77013909616'
     })
     .then(message => console.log(message.sid))
     .catch(err => console.log(err))
