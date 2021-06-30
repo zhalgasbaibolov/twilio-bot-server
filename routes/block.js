@@ -1,4 +1,8 @@
-const MongoClient = require('mongodb').MongoClient;
+const {
+    ObjectId,
+    MongoClient
+} = require('mongodb')
+
 const uri = "mongodb+srv://nurlan:qwe123QWE___@cluster0.ikiuf.mongodb.net/twiliodb?retryWrites=true&w=majority";
 var express = require('express');
 var router = express.Router();
@@ -10,7 +14,6 @@ router.get('/', (req, res) => {
     });
     client.connect(connecionError => {
         if (connecionError) {
-            console.log(connecionError)
             return res.status(500).send(connecionError)
         }
         const db = client.db("test");
@@ -29,25 +32,21 @@ router.get('/', (req, res) => {
 
             function getChildren(n, arr) {
                 n.children = arr.filter(item => item.parentId === n._id)
-                console.log('children found =', n.children)
                 for (const node of n.children)
                     getChildren(node, arr);
 
             }
-            console.log(root);
             res.send(root);
         });
     });
 });
 router.post('/', function(req, res, next) {
-    console.log(req.body)
     const client = new MongoClient(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
     client.connect(connecionError => {
         if (connecionError) {
-            console.log(connecionError)
             return res.status(500).send(connecionError)
         }
         const db = client.db("test");
@@ -62,8 +61,37 @@ router.post('/', function(req, res, next) {
     });
 });
 
+router.put('/:id', (req, res) => {
+    console.log(`updating id:${JSON.stringify(req.body)}`)
+    const client = new MongoClient(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+    client.connect(connecionError => {
+        if (connecionError) {
+            console.log(connecionError)
+            return res.status(500).send(connecionError)
+        }
+        const db = client.db("test");
+        const collection = db.collection('blocks');
+        collection.updateOne({
+            _id: ObjectId(req.params.id)
+        }, {
+            $set: {
+                name: req.body.name
+            }
+        }, function(err, result) {
+            client.close();
+            if (err) {
+                console.error(err)
+                return res.status(500).send(err)
+            }
+            res.send(result.result)
+        });
+    });
+})
+
 router.delete('/:id', (req, res) => {
-    console.log(req.params.id)
     const client = new MongoClient(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true
