@@ -104,7 +104,7 @@ router.delete('/:id', (req, res) => {
         const db = client.db("test");
         const collection = db.collection('blocks');
         collection.deleteOne({
-            "_id": req.params.id
+            _id: ObjectId(req.params.id)
         }, function(err, result) {
             client.close();
             if (err) {
