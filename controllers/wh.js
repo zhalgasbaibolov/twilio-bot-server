@@ -16,29 +16,33 @@ const ctrl = {
                 fromNumber,
                 msg
             })
+            const client = getConnect();
+            client.connect(connecionError => {
+                if (connecionError) {
+                    console.log(connecionError)
+                    return res.status(200).send(connecionError)
+                }
+                const db = client.db("test");
+                const userStates = db.collection('userStates');
+                userStates.findOne({
+                        phone: fromNumber
+                    }).then(state => {
+                        return res.send(state || 'not found last active')
 
-            return res.sendStatus(200)
+                    })
+                    .catch(err => {
+
+                        return res.status(200).send(err)
+                    })
+                    .finally(() => {
+                        client.close();
+                    })
+            });
         } catch (err) {
 
             return res.status(200).send(err)
         }
-        const client = getConnect();
-        client.connect(connecionError => {
-            if (connecionError) {
-                console.log(connecionError)
-                return res.sendStatus(500);
-            }
-            const db = client.db("test");
-            const userStates = db.collection('userStates');
-            userStates.findOne({
-                phone: fromNumber
-            }).then(state => {
-                console.log(state)
-            })
-            callback(db, arr, function() {
-                client.close();
-            });
-        });
+
     },
 };
 
