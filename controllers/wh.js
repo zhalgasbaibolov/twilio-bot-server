@@ -37,12 +37,22 @@ const msg = function(req, res) {
             userStates.findOne({
                     phone: fromNumber
                 }).then(state => {
-                    msgCtrl.sendMsg({
-                        fromNumber,
-                        msg: 'state'
-                    })
-                    return res.send(state || 'not found last active')
-
+                    if (!state) {
+                        userStates.insertOne({
+                            phone: fromNumber,
+                            last: 'main'
+                        }).then(inserted => {
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: JSON.stringify(inserted)
+                            })
+                        })
+                    } else {
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: JSON.stringify(state)
+                        })
+                    }
                 })
                 .catch(err => {
                     msgCtrl.sendMsg({
