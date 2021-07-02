@@ -16,10 +16,12 @@ const ctrl = {
                 fromNumber,
                 msg
             })
+
+            return res.sendStatus(200)
         } catch (err) {
-            console.log(err)
+
+            return res.status(200).send(err)
         }
-        return res.sendStatus(200)
         const client = getConnect();
         client.connect(connecionError => {
             if (connecionError) {
