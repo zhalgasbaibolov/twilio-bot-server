@@ -4,10 +4,9 @@ const msgCtrl = require('../controllers/msg')
 const msg = function(req, res) {
     console.log('wh controller', req)
     try {
-        const {
-            From: fromNumber,
-            Body: msg
-        } = req.body;
+        const fromNumber = req.body.From;
+        const msg = req.body.Body;
+
         if (!fromNumber || !msg) {
             msgCtrl.sendMsg({
                 fromNumber,
