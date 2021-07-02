@@ -27,6 +27,10 @@ const ctrl = {
                 userStates.findOne({
                         phone: fromNumber
                     }).then(state => {
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: JSON.stringify(state)
+                        })
                         return res.send(state || 'not found last active')
 
                     })
