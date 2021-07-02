@@ -2,10 +2,12 @@ const getConnect = require('../db/mongo').getConnect;
 const msgCtrl = require('../controllers/msg')
 
 const msg = function(req, res) {
-    console.log('wh controller', req.body)
     try {
-        const fromNumber = req.body.From;
-        const msg = req.body.Body;
+        const fromNumber = req.body.From || req.body['From'];
+        if ('whatsapp:+14155238886' === fromNumber)
+            return res.send(200)
+        const msg = req.body.Body || req.body['Body'];
+        console.log('wh controller', req.body)
 
         if (!fromNumber || !msg) {
             msgCtrl.sendMsg({
