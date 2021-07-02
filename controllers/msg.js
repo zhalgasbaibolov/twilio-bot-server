@@ -1,7 +1,7 @@
 const sendMsg = function({
     fromNumber,
     name,
-    msg
+    msg = "msg is null"
 }) {
     if ('whatsapp:+14155238886' === fromNumber)
         return;

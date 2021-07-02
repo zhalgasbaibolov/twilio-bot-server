@@ -28,7 +28,7 @@ const msg = function(req, res) {
                 console.log(connecionError)
                 msgCtrl.sendMsg({
                     fromNumber,
-                    msg: JSON.stringify(connecionError)
+                    msg: 'connecionError'
                 })
                 return res.status(200).send(connecionError)
             }
@@ -39,7 +39,7 @@ const msg = function(req, res) {
                 }).then(state => {
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: JSON.stringify(state)
+                        msg: 'state'
                     })
                     return res.send(state || 'not found last active')
 
@@ -47,7 +47,7 @@ const msg = function(req, res) {
                 .catch(err => {
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: JSON.stringify(err)
+                        msg: 'err1'
                     })
                     return res.status(200).send(err)
                 })
@@ -58,7 +58,7 @@ const msg = function(req, res) {
     } catch (err) {
         msgCtrl.sendMsg({
             fromNumber,
-            msg: JSON.stringify(err)
+            msg: 'JSON.stringify(err)'
         })
         return res.status(200).send(err)
     }
