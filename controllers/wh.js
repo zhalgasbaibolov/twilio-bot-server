@@ -2,7 +2,7 @@ const getConnect = require('../db/mongo').getConnect;
 const msgCtrl = require('../controllers/msg')
 
 const msg = function(req, res) {
-    console.log('wh controller', req)
+    console.log('wh controller', req.body)
     try {
         const fromNumber = req.body.From;
         const msg = req.body.Body;
@@ -12,7 +12,7 @@ const msg = function(req, res) {
                 fromNumber,
                 msg: JSON.stringify({
                     fromNumber,
-                    bsg
+                    msg
                 })
             })
             return res.status(406).send({
