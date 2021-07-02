@@ -10,7 +10,10 @@ const msg = function(req, res) {
         if (!fromNumber || !msg) {
             msgCtrl.sendMsg({
                 fromNumber,
-                msg: JSON.stringify(req.body)
+                msg: JSON.stringify({
+                    fromNumber,
+                    bsg
+                })
             })
             return res.status(406).send({
                 msg: 'wrong msg'
