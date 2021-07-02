@@ -12,10 +12,6 @@ const ctrl = {
                     msg: 'wrong msg'
                 })
             }
-            msgCtrl.sendMsg({
-                fromNumber,
-                msg
-            })
             const client = getConnect();
             client.connect(connecionError => {
                 if (connecionError) {
@@ -35,7 +31,10 @@ const ctrl = {
 
                     })
                     .catch(err => {
-
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: JSON.stringify(err)
+                        })
                         return res.status(200).send(err)
                     })
                     .finally(() => {
@@ -43,7 +42,10 @@ const ctrl = {
                     })
             });
         } catch (err) {
-
+            msgCtrl.sendMsg({
+                fromNumber,
+                msg: JSON.stringify(err)
+            })
             return res.status(200).send(err)
         }
 
