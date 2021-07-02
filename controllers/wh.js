@@ -8,6 +8,10 @@ const ctrl = {
                 Body: msg
             } = req.body;
             if (!fromNumber || !msg) {
+                msgCtrl.sendMsg({
+                    fromNumber,
+                    msg: JSON.stringify(req.body)
+                })
                 return res.status(406).send({
                     msg: 'wrong msg'
                 })
