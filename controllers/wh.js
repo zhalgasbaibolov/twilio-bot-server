@@ -7,7 +7,7 @@ const msg = function(req, res) {
         if ('whatsapp:+14155238886' === fromNumber)
             return res.send(200)
         const msg = req.body.Body || req.body['Body'];
-        console.log('wh controller', req.body)
+        console.log('wh controller', fromNumber, msg, req.body)
 
         if (!fromNumber || !msg) {
             msgCtrl.sendMsg({
