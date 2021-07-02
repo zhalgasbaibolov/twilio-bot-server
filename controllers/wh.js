@@ -8,7 +8,7 @@ const ctrl = {
                 Body: msg
             } = req.body;
             if (!fromNumber || !msg) {
-                return res.status(400).send({
+                return res.status(406).send({
                     msg: 'wrong msg'
                 })
             }
