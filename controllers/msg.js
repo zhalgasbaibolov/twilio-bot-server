@@ -3,6 +3,9 @@ const sendMsg = function({
     name,
     msg
 }) {
+    if ('whatsapp:+14155238886' === fromNumber)
+        return;
+
     const accountSid = 'ACf385192ef965f7cbf43324fdd6951445';
     const authToken = require('../getAuthToken')
     const client = require('twilio')(accountSid, authToken);
