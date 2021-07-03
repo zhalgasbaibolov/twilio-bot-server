@@ -92,7 +92,7 @@ const msg = function(req, res) {
                                             getProductsByCollectionHandle(storeMyShopify, accessToken, handle).then(response => {
                                                         const products = response.collectionByHandle.products.edges;
                                                         const txt = `Select Product:\n${products.map((pr,idx)=>`${idx+1}. ${pr.node.handle}`).join('\n')}`
-                                                        res.send(collections);
+                                                        res.send(products);
                                                         msgCtrl.sendMsg({
                                                             fromNumber,
                                                             msg: txt
