@@ -41,16 +41,31 @@ const msg = function(req, res) {
                                         }).then(inserted => {
                                             msgCtrl.sendMsg({
                                                 fromNumber,
-                                                msg: `
-                                Hello! What do you want?
-                                1. Catalogue
-                                2. Customer Support
-                                3. Order Status
-                                `
+                                                msg: `Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
                                             })
                                             client.close();
                                         })
+                                        res.send("ok");
                                     } else {
+                                        if (msg == 'main') {
+                                            msgCtrl.sendMsg({
+                                                fromNumber,
+                                                msg: `Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
+                                            })
+                                            userStates.updateOne({
+                                                phone: fromNumber
+                                            }, {
+                                                $set: {
+                                                    last: 'main',
+                                                }
+                                            }, function(err, result) {
+                                                client.close();
+                                                if (err) {
+                                                    console.error(err)
+                                                }
+                                            });
+                                            return res.send("main")
+                                        }
                                         if (state.last == 'main') {
                                             switch (msg) {
                                                 case '1':
