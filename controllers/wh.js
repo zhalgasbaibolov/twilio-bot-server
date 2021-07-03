@@ -88,29 +88,32 @@ const msg = function(req, res) {
                                                     break;
                                             }
                                         } else if (state.last == 'catalog') {
-                                            const handle = state.catalogs[msg].node.handle;
-                                            getProductsByCollectionHandle(storeMyShopify, accessToken, handle).then(response => {
+                                            const handle = state.catalogs[msg - 1].node.handle;
+                                            getProductsByCollectionHandle(storeMyShopify, accessToken, handle)
+                                                .then(response => {
                                                         const products = response.collectionByHandle.products.edges;
                                                         const txt = `Select Product:\n${products.map((pr,idx)=>`${idx+1}. ${pr.node.handle}`).join('\n')}`
-                                                        res.send(products);
-                                                        msgCtrl.sendMsg({
-                                                            fromNumber,
-                                                            msg: txt
-                                                        })
-                                                        userStates.updateOne({
-                                                            phone: fromNumber
-                                                        }, {
-                                                            $set: {
-                                                                last: 'products',
-                                                                products: products
-                                                            }
-                                                        }, function(err, result) {
-                                                            client.close();
-                                                            if (err) {
-                                                                console.error(err)
-                                                            }
-                                                        });
+                                            res.send(products);
+                                            msgCtrl.sendMsg({
+                                                fromNumber,
+                                                msg: txt
+                                            })
+                                            userStates.updateOne({
+                                                phone: fromNumber
+                                            }, {
+                                                $set: {
+                                                    last: 'products',
+                                                    products: products
+                                                }
+                                            }, function(err, result) {
+                                                client.close();
+                                                if (err) {
+                                                    console.error(err)
+                                                }
+                                            });
                             })
+                        }else if(state.last == 'products'){
+
                         }
                     }
                 })
