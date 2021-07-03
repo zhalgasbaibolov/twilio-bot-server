@@ -46,12 +46,14 @@ const msg = function(req, res) {
                                 fromNumber,
                                 msg: JSON.stringify(inserted)
                             })
+                            client.close();
                         })
                     } else {
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: JSON.stringify(state)
                         })
+                        client.close();
                     }
                 })
                 .catch(err => {
@@ -60,9 +62,6 @@ const msg = function(req, res) {
                         msg: 'err1'
                     })
                     return res.status(200).send(err)
-                })
-                .finally(() => {
-                    client.close();
                 })
         });
     } catch (err) {
