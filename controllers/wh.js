@@ -51,6 +51,7 @@ const msg = function(req, res) {
                                             client.close();
                                         })
                                     } else {
+                                        console.log('has old state:', state)
                                         let txt = '';
                                         if (state.last == 'main') {
                                             switch (msg) {
