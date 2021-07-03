@@ -1,6 +1,16 @@
 const getConnect = require('../db/mongo').getConnect;
 const msgCtrl = require('../controllers/msg')
 
+const accessToken = "0386d977a264448a1b62c295ac542a0d";
+const storeMyShopify = "fat-cat-studio.myshopify.com";
+const {
+    retireveCollections,
+    createCheckout,
+    retireveProducts,
+    getProductsByCollectionHandle,
+    retireveVariantsOfProduct,
+} = require("./storefrontAPI");
+
 const msg = function(req, res) {
     try {
         const fromNumber = req.body.From || req.body['From'];
@@ -40,14 +50,21 @@ const msg = function(req, res) {
                             client.close();
                         })
                     } else {
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: `Hello! What do you want?
-                            1. Catalogue
-                            2. Customer Support
-                            3. Order Status
-                            `
-                        })
+                        let txt = '';
+                        if (state.last == 'main')
+                            switch (msg) {
+                                case '1':
+                                    getCatalogue(res);
+                                    break;
+                                case '2':
+                                    txt = getSupport();
+                                    break;
+                                case '3':
+                                    txt = getOrderStatus();
+                                    break;
+                                default:
+                                    break;
+                            }
                         client.close();
                     }
                 })
@@ -68,7 +85,11 @@ const msg = function(req, res) {
     }
 
 }
-
+const getCatalogue = (res) => {
+    retireveCollections().then(response => {
+        res.send(response.collections.edges.map((val, idx) => `${idx+1}. ${val}`).join('\n'))
+    })
+}
 module.exports = {
     msg
 };
