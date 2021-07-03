@@ -88,7 +88,9 @@ const msg = function(req, res) {
 }
 const getCatalogue = (res) => {
     retireveCollections(storeMyShopify, accessToken).then(response => {
-        res.send(response.collections.edges.map((val, idx) => `${idx+1}. ${val}`).join('\n'))
+        const collections = response.collections.edges.map((val, idx) => `${idx+1}. ${val}`).join('\n')
+        res.send(collections);
+        console.log(collections)
     })
 }
 module.exports = {
