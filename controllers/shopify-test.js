@@ -20,5 +20,5 @@ const variantID =
 
 // retireveCollections(storeMyShopify, accessToken).then(res => console.log(res.collections.edges))
 // getProductsByCollectionHandle(storeMyShopify, accessToken, handle).then(res => console.log(res.collectionByHandle.products.edges))
-retireveVariantsOfProduct(storeMyShopify, accessToken, productID).then(res => console.log(res.node.variants.edges))
-    // createCheckout(storeMyShopify, accessToken, variantID);
+// retireveVariantsOfProduct(storeMyShopify, accessToken, productID).then(res => console.log(res.node.variants.edges))
+createCheckout(storeMyShopify, accessToken, variantID).then(console.log)

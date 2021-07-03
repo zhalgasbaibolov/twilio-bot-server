@@ -51,8 +51,6 @@ const msg = function(req, res) {
                                             client.close();
                                         })
                                     } else {
-                                        console.log('has old state:', state)
-                                        let txt = '';
                                         if (state.last == 'main') {
                                             switch (msg) {
                                                 case '1':
@@ -131,6 +129,32 @@ const msg = function(req, res) {
                                         $set: {
                                             last: 'variants',
                                             variants: variants
+                                        }
+                                    }, function(err, result) {
+                                        client.close();
+                                        if (err) {
+                                            console.error(err)
+                                        }
+                                    });
+                                })
+                        }else if(state.last == 'variants'){
+                            const variantID = state.variants[msg-1].node.id;
+                            createCheckout(storeMyShopify, accessToken, variantID)
+                                .then(response=>{
+                                    const txt = `Congratulations! Your order is almost created.\nPlease, open this url and finish him!\n${
+                                        response.checkoutCreate.checkout.webUrl
+                                    }\n`;
+                                    res.send(response);
+                                    msgCtrl.sendMsg({
+                                        fromNumber,
+                                        msg: txt
+                                    })
+                                    userStates.updateOne({
+                                        phone: fromNumber
+                                    }, {
+                                        $set: {
+                                            last: 'checkout',
+                                            checkoutCreate:response.checkoutCreate
                                         }
                                     }, function(err, result) {
                                         client.close();

@@ -144,7 +144,6 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
       }
     }
   `;
-    console.log(variantId);
     const variables = {
         input: {
             lineItems: [{
@@ -153,9 +152,7 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
             }],
         },
     };
-    const data = await graphQLClient.request(mutation, variables);
-
-    console.log(JSON.stringify(data, undefined, 2));
+    return graphQLClient.request(mutation, variables);
 };
 
 exports.retireveCollections = retireveCollections;
