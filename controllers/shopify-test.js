@@ -19,6 +19,6 @@ const variantID =
     "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MDEyMTM0MTg3MDI3MQ==";
 
 // retireveCollections(storeMyShopify, accessToken).then(res => console.log(res.collections.edges))
-getProductsByCollectionHandle(storeMyShopify, accessToken, handle);
-//retireveVariantsOfProduct(storeMyShopify, accessToken, productID);
-// createCheckout(storeMyShopify, accessToken, variantID);
+// getProductsByCollectionHandle(storeMyShopify, accessToken, handle).then(res => console.log(res.collectionByHandle.products.edges))
+retireveVariantsOfProduct(storeMyShopify, accessToken, productID).then(res => console.log(res.node.variants.edges))
+    // createCheckout(storeMyShopify, accessToken, variantID);

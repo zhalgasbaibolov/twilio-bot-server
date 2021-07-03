@@ -113,7 +113,32 @@ const msg = function(req, res) {
                                             });
                             })
                         }else if(state.last == 'products'){
-
+                            const productID = state.products[msg-1].node.id;
+                            retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
+                                .then(response=>{
+                                    const variants = response.node.variants.edges;
+                                    const txt = `Select variants:\n${
+                                        variants.map((v,idx)=>`${idx+1}. ${v.node.id}`).join('\n')
+                                    }`
+                                    res.send(variants);
+                                    msgCtrl.sendMsg({
+                                        fromNumber,
+                                        msg: txt
+                                    })
+                                    userStates.updateOne({
+                                        phone: fromNumber
+                                    }, {
+                                        $set: {
+                                            last: 'variants',
+                                            variants: variants
+                                        }
+                                    }, function(err, result) {
+                                        client.close();
+                                        if (err) {
+                                            console.error(err)
+                                        }
+                                    });
+                                })
                         }
                     }
                 })

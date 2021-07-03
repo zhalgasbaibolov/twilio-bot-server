@@ -117,9 +117,7 @@ const retireveVariantsOfProduct = async(
       }
     }
   `;
-    const data = await graphQLClient.request(query);
-
-    console.log(JSON.stringify(data));
+    return graphQLClient.request(query);
 };
 
 const createCheckout = async(storeMyShopify, accessToken, variantId) => {
