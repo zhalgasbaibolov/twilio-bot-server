@@ -9,19 +9,6 @@ const msg = function(req, res) {
         const msg = req.body.Body || req.body['Body'];
         console.log('wh controller', fromNumber, msg, req.body)
 
-        // if (!fromNumber || !msg) {
-        //     msgCtrl.sendMsg({
-        //         fromNumber,
-        //         msg: JSON.stringify({
-        //             fromNumber,
-        //             msg
-        //         })
-        //     })
-        //     console.log('return 406 from wh ctrl')
-        //     return res.status(406).send({
-        //         msg: 'wrong msg'
-        //     })
-        // }
         const client = getConnect();
         client.connect(connecionError => {
             if (connecionError) {
@@ -44,14 +31,22 @@ const msg = function(req, res) {
                         }).then(inserted => {
                             msgCtrl.sendMsg({
                                 fromNumber,
-                                msg: JSON.stringify(inserted.result.ops)
+                                msg: `Hello! What do you want?
+                                1. Catalogue
+                                2. Customer Support
+                                3. Order Status
+                                `
                             })
                             client.close();
                         })
                     } else {
                         msgCtrl.sendMsg({
                             fromNumber,
-                            msg: JSON.stringify(state)
+                            msg: `Hello! What do you want?
+                            1. Catalogue
+                            2. Customer Support
+                            3. Order Status
+                            `
                         })
                         client.close();
                     }
