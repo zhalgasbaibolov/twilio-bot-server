@@ -44,7 +44,7 @@ const msg = function(req, res) {
                         }).then(inserted => {
                             msgCtrl.sendMsg({
                                 fromNumber,
-                                msg: JSON.stringify(inserted)
+                                msg: JSON.stringify(inserted.result.ops)
                             })
                             client.close();
                         })
