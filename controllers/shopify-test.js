@@ -18,7 +18,7 @@ const productID = "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzY3NzM1MDczOTE2Nzk=";
 const variantID =
     "Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0VmFyaWFudC80MDEyMTM0MTg3MDI3MQ==";
 
-retireveCollections(storeMyShopify, accessToken).then(res => console.log(res.collections.edges))
-    //getProductsByCollectionHandle(storeMyShopify, accessToken, handle);
-    //retireveVariantsOfProduct(storeMyShopify, accessToken, productID);
-    // createCheckout(storeMyShopify, accessToken, variantID);
+// retireveCollections(storeMyShopify, accessToken).then(res => console.log(res.collections.edges))
+getProductsByCollectionHandle(storeMyShopify, accessToken, handle);
+//retireveVariantsOfProduct(storeMyShopify, accessToken, productID);
+// createCheckout(storeMyShopify, accessToken, variantID);

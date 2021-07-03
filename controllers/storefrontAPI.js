@@ -84,9 +84,7 @@ const getProductsByCollectionHandle = async(
       }
     }
   `;
-    const data = await graphQLClient.request(query);
-
-    console.log(JSON.stringify(data, undefined, 2));
+    return graphQLClient.request(query);
 };
 
 const retireveVariantsOfProduct = async(
