@@ -41,7 +41,8 @@ const msg = function(req, res) {
                         }).then(inserted => {
                             msgCtrl.sendMsg({
                                 fromNumber,
-                                msg: `Hello! What do you want?
+                                msg: `
+                                Hello! What do you want?
                                 1. Catalogue
                                 2. Customer Support
                                 3. Order Status
@@ -86,7 +87,7 @@ const msg = function(req, res) {
 
 }
 const getCatalogue = (res) => {
-    retireveCollections().then(response => {
+    retireveCollections(storeMyShopify, accessToken).then(response => {
         res.send(response.collections.edges.map((val, idx) => `${idx+1}. ${val}`).join('\n'))
     })
 }
