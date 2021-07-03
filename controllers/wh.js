@@ -55,13 +55,13 @@ const msg = function(req, res) {
                         if (state.last == 'main')
                             switch (msg) {
                                 case '1':
-                                    getCatalogue(res, msgCtrl);
+                                    getCatalogue(res, msgCtrl, fromNumber);
                                     break;
                                 case '2':
-                                    txt = getSupport();
+                                    txt = getSupport(res, msgCtrl);
                                     break;
                                 case '3':
-                                    txt = getOrderStatus();
+                                    txt = getOrderStatus(res, msgCtrl);
                                     break;
                                 default:
                                     break;
@@ -86,7 +86,7 @@ const msg = function(req, res) {
     }
 
 }
-const getCatalogue = (res, msgCtrl) => {
+const getCatalogue = (res, msgCtrl, fromNumber) => {
     retireveCollections(storeMyShopify, accessToken).then(response => {
         const collections = response.collections.edges.map((val, idx) => `${idx+1}. ${val}`).join('\n')
         res.send(collections);
@@ -94,8 +94,13 @@ const getCatalogue = (res, msgCtrl) => {
             fromNumber,
             msg: collections
         })
-        console.log(collections)
     })
+}
+const getSupport = (res, msgCtrl) => {
+
+}
+const getOrderStatus = (res, msgCtrl) => {
+
 }
 module.exports = {
     msg
