@@ -174,6 +174,44 @@ const msg = function(req, res) {
                                     console.error(err)
                                 }
                             });
+                        }else if(state.last == 'added-in-cart'){
+                            switch(msg){
+                                case '1':
+                                    userStates.insertOne({
+                                        phone: fromNumber,
+                                        last: 'main'
+                                    }).then(inserted => {
+                                        msgCtrl.sendMsg({
+                                            fromNumber,
+                                            msg: `What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
+                                        })
+                                        client.close();
+                                    })
+                                case '2':
+                                    // createCheckout(storeMyShopify, accessToken, variantID)
+                                    // .then(response=>{
+                                        const txt = `Congratulations! Your order is almost created.\nPlease, open this url and finish him!\n`;
+                                        res.send('Redirecting to catalogue');
+                                        msgCtrl.sendMsg({
+                                            fromNumber,
+                                            msg: txt
+                                        })
+                                        userStates.updateOne({
+                                            phone: fromNumber
+                                        }, {
+                                            $set: {
+                                                last: 'checkout',
+                                                checkoutCreate:response.checkoutCreate
+                                            }
+                                        }, function(err) {
+                                            client.close();
+                                            if (err) {
+                                                console.error(err)
+                                            }
+                                        });
+                                    // })
+                                
+                            }
                         }
                     }
                 })
