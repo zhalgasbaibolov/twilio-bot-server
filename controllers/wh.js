@@ -174,7 +174,7 @@ const msg = function(req, res) {
                                     console.error(err)
                                 }
                             });
-                        }else if(state.last == 'added-in-cart'){
+                        }else if(state.last == 'added-to-cart'){
                             switch(msg){
                                 case '1':
                                     userStates.insertOne({
