@@ -180,7 +180,7 @@ const msg = function(req, res) {
                 .catch(err => {
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: 'err1'
+                        msg: JSON.stringify(err)
                     })
                     return res.status(200).send(err)
                 })
