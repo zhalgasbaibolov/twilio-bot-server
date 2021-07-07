@@ -183,18 +183,15 @@ const msg = function(req, res) {
                                     }).then(inserted => {
                                         msgCtrl.sendMsg({
                                             fromNumber,
-                                            msg: `Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
-                                            // should I delete "Hello!" word?
+                                            msg: `What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
                                         })
                                         client.close();
                                     })
                                 case '2':
-                                    createCheckout(storeMyShopify, accessToken, variantID)
-                                    .then(response=>{
-                                        const txt = `Congratulations! Your order is almost created.\nPlease, open this url and finish him!\n${
-                                            response.checkoutCreate.checkout.webUrl
-                                        }\n`;
-                                        res.send(response);
+                                    // createCheckout(storeMyShopify, accessToken, variantID)
+                                    // .then(response=>{
+                                        const txt = `Congratulations! Your order is almost created.\nPlease, open this url and finish him!\n`;
+                                        res.send('Redirecting to catalogue');
                                         msgCtrl.sendMsg({
                                             fromNumber,
                                             msg: txt
@@ -206,13 +203,13 @@ const msg = function(req, res) {
                                                 last: 'checkout',
                                                 checkoutCreate:response.checkoutCreate
                                             }
-                                        }, function(err, result) {
+                                        }, function(err) {
                                             client.close();
                                             if (err) {
                                                 console.error(err)
                                             }
                                         });
-                                    })
+                                    // })
                                 
                             }
                         }
