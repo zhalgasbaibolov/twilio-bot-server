@@ -47,7 +47,7 @@ const msg = function(req, res) {
                                         })
                                         res.send("ok");
                                     } else {
-                                        if (msg.toLowerCase() == 'main') { //нет ли здесь ошибки?
+                                        if (msg.toLowerCase() == 'main') {
                                             msgCtrl.sendMsg({
                                                 fromNumber,
                                                 msg: `Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
@@ -165,8 +165,7 @@ const msg = function(req, res) {
                                 phone: fromNumber
                             }, {
                                 $set: {
-                                    last: 'added-to-cart',
-                                    // checkoutCreate:response.checkoutCreate что тут должно быть?
+                                    last: 'added-to-cart'
                                 } 
                             }, function(err, result) {
                                 client.close();
@@ -223,7 +222,8 @@ const msg = function(req, res) {
                         }
                     }
                 })
-                .catch(err => {
+                .catch(err => { 
+                    console.log(err)
                     msgCtrl.sendMsg({
                         fromNumber,
                         msg: JSON.stringify(err) // постоянно выводит ошибку в сообщения
