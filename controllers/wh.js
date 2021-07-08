@@ -43,16 +43,16 @@ const msg = function(req, res) {
                     phone: fromNumber
                 }).then(state => {
                     if (!state) {
-                        createNewDialog();
+                        createNewDialog(state);
                     } else {
-                        continueDialog();
+                        continueDialog(state);
                     }
                 })
                 .catch(errorHandler)
         }
 
 
-        const createNewDialog = () => {
+        const createNewDialog = (state) => {
             userStates.insertOne({
                 phone: fromNumber,
                 last: 'main'
@@ -66,7 +66,7 @@ const msg = function(req, res) {
             res.send("ok");
         }
 
-        const continueDialog = () => {
+        const continueDialog = (state) => {
                 if (msg.toLowerCase() == 'main') {
                     msgCtrl.sendMsg({
                         fromNumber,
