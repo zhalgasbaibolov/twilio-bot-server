@@ -34,10 +34,6 @@ const msg = function(req, res) {
     const msg = req.body.Body || req.body['Body'];
     console.log('wh controller', fromNumber, msg, req.body)
 
-    function onConnect() {
-
-    }
-
     const onConnect = () => {
 
         function createNewDialog(state) {
