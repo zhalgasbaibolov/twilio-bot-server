@@ -92,10 +92,10 @@ const msg = function(req, res) {
                                                     })
                                                     break;
                                                 case '2':
-                                                    txt = getSupport(res, msgCtrl);
+                                                    const txt = getSupport(res, msgCtrl);
                                                     break;
                                                 case '3':
-                                                    txt = getOrderStatus(res, msgCtrl);
+                                                    const txt = getOrderStatus(res, msgCtrl);
                                                     break;
                                                 default:
                                                     break;
@@ -175,28 +175,33 @@ const msg = function(req, res) {
                             });
                         }else if(state.last == 'added-to-cart'){
                             switch(msg){
-                                case '1':
-                                    const txt = `What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
-                                    res.send('redirecting to menu');
-                                    msgCtrl.sendMsg({
-                                        fromNumber,
-                                        msg: txt
+                                case '1': 
+                                    res.send('redirecting to catalog');
+                                    retireveCollections(storeMyShopify, accessToken).then(response => {
+                                        const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx+1}. ${val.node.handle}`).join('\n')
+                                        res.send(collections);
+                                        msgCtrl.sendMsg({
+                                            fromNumber,
+                                            msg: collections
+                                        })
+                                        userStates.updateOne({
+                                            phone: fromNumber
+                                        }, {
+                                            $set: {
+                                                last: 'catalog',
+                                                catalogs: response.collections.edges
+                                            }
+                                        }, function(err, result) {
+                                            client.close();
+                                            if (err) {
+                                                console.error(err)
+                                            }
+                                        });
                                     })
-                                    userStates.updateOne({
-                                        phone: fromNumber
-                                    }, {
-                                        $set:{
-                                            last: 'main'
-                                        }
-                                    }, function(err, result) {
-                                        client.close();
-                                        if (err) {
-                                            console.error(err)
-                                        }
-                                    });
+                                    break;
                                 case '2':
-                                    // createCheckout(storeMyShopify, accessToken, variantID)
-                                    // .then(response=>{
+                                    createCheckout(storeMyShopify, accessToken, variantID)
+                                     .then(response=>{
                                         const txt = `Congratulations! Your order is almost created.\nPlease, open this url and finish him!\n`;
                                         res.send('Redirecting to catalogue');
                                         msgCtrl.sendMsg({
@@ -216,7 +221,8 @@ const msg = function(req, res) {
                                                 console.error(err)
                                             }
                                         });
-                                    // })
+                                     })
+                                     break;
                                 
                             }
                         }
@@ -226,7 +232,7 @@ const msg = function(req, res) {
                     console.log(err)
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: JSON.stringify(err) // постоянно выводит ошибку в сообщения
+                        msg: JSON.stringify(err)
                     })
                     return res.status(200).send(err)
                 })
