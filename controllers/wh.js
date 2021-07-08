@@ -154,28 +154,26 @@ const msg = function(req, res) {
                                 })
                         }else if(state.last == 'variants'){
                             const variantID = state.variants[msg-1].node.id;
-                            savingInCart(storeMyShopify, accessToken).then(response=>{
-                                console.log(`saving-in-cart:${variantID}`)
-                                const txt =`Your item is placed in cart. What do you want next?\n1. Continue shopping.\n2. Proceed to payment.`
-                                res.sendStatus(200);
-                                msgCtrl.sendMsg({
-                                    fromNumber,
-                                    msg: txt
-                                })  
-                                userStates.updateOne({
-                                    phone: fromNumber
-                                }, {
-                                    $set: {
-                                        last: 'added-to-cart',
-                                        // checkoutCreate:response.checkoutCreate что тут должно быть?
-                                    } 
-                                }, function(err, result) {
-                                    client.close();
-                                    if (err) {
-                                        console.error(err)
-                                    }
-                                });
-                            })
+                            console.log(`saving-in-cart:${variantID}`)
+                            const txt =`Your item is placed in cart. What do you want next?\n1. Continue shopping.\n2. Proceed to payment.`
+                            res.sendStatus(200);
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: txt
+                            })  
+                            userStates.updateOne({
+                                phone: fromNumber
+                            }, {
+                                $set: {
+                                    last: 'added-to-cart',
+                                    // checkoutCreate:response.checkoutCreate что тут должно быть?
+                                } 
+                            }, function(err, result) {
+                                client.close();
+                                if (err) {
+                                    console.error(err)
+                                }
+                            });
                         }else if(state.last == 'added-to-cart'){
                             switch(msg){
                                 case '1':
@@ -228,7 +226,7 @@ const msg = function(req, res) {
                 .catch(err => {
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: JSON.stringify(err) 
+                        msg: JSON.stringify(err) // постоянно выводит ошибку в сообщения
                     })
                     return res.status(200).send(err)
                 })
