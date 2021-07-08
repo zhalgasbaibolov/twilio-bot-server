@@ -34,10 +34,13 @@ const msg = function(req, res) {
     const msg = req.body.Body || req.body['Body'];
     console.log('wh controller', fromNumber, msg, req.body)
 
+    function onConnect() {
+
+    }
 
     const onConnect = () => {
 
-        const createNewDialog = (state) => {
+        function createNewDialog(state) {
             userStates.insertOne({
                 phone: fromNumber,
                 last: 'main'
@@ -50,8 +53,9 @@ const msg = function(req, res) {
             })
             res.send("ok");
         }
-        const sendMainMenu = () => {
-            retireveCollections(storeMyShopify, accessToken).then(response => {
+
+        function sendMainMenu() {
+            retireveCollections(storeMyShopify, accessToken).then(function(response) {
                 const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx+1}. ${val.node.handle}`).join('\n')
                 res.send(collections);
                 msgCtrl.sendMsg({
@@ -74,7 +78,42 @@ const msg = function(req, res) {
             })
         }
 
-        const continueDialog = (state) => {
+
+
+        const getSupport = () => {
+
+        }
+        const getOrderStatus = () => {
+
+        }
+
+        const client = getConnect();
+        client.connect(connecionError => {
+            if (connecionError) {
+                console.log(connecionError)
+                msgCtrl.sendMsg({
+                    fromNumber,
+                    msg: 'connecionError'
+                })
+                return res.status(200).send(connecionError)
+            }
+            onConnect();
+        });
+        const db = client.db("test");
+        const userStates = db.collection('userStates');
+
+        userStates.findOne({
+                phone: fromNumber
+            }).then(function(state) {
+                if (!state) {
+                    createNewDialog(state);
+                } else {
+                    continueDialog(state);
+                }
+            })
+            .catch(errorHandler)
+
+        function continueDialog(state) {
             if (msg.toLowerCase() == 'main') {
                 msgCtrl.sendMsg({
                     fromNumber,
@@ -161,8 +200,8 @@ const msg = function(req, res) {
                     const variantID = state.variants[msg - 1].node.id;
                     createCheckout(storeMyShopify, accessToken, variantID).then(createdCheckoutId => {
                         const txt = `
-                        Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
-                        `
+                            Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
+                            `
 
                         msgCtrl.sendMsg({
                             fromNumber,
@@ -193,8 +232,8 @@ const msg = function(req, res) {
                 } else {
                     updateCheckout(storeMyShopify, accessToken, lastCheckoutId, variantID).then(updatedCheckoutId => {
                         const txt = `
-                        Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
-                        `
+                            Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
+                            `
 
                         msgCtrl.sendMsg({
                             fromNumber,
@@ -221,7 +260,7 @@ const msg = function(req, res) {
                     case '1':
                         {
                             const txt = `
-                        What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
+                            What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
                             res.send('redirecting to menu');
                             msgCtrl.sendMsg({
                                 fromNumber,
@@ -246,8 +285,8 @@ const msg = function(req, res) {
                             // createCheckout(storeMyShopify, accessToken, variantID)
                             // .then(response=>{
                             const txt = `
-                        Congratulations!
-                        Your order is almost created.\nPlease, open this url and finish him!\n `;
+                            Congratulations!
+                            Your order is almost created.\nPlease, open this url and finish him!\n `;
                             res.send('Redirecting to catalogue');
                             msgCtrl.sendMsg({
                                 fromNumber,
@@ -272,39 +311,6 @@ const msg = function(req, res) {
                 }
             }
         }
-
-        const getSupport = (res, msgCtrl) => {
-
-        }
-        const getOrderStatus = (res, msgCtrl) => {
-
-        }
-
-        const client = getConnect();
-        client.connect(connecionError => {
-            if (connecionError) {
-                console.log(connecionError)
-                msgCtrl.sendMsg({
-                    fromNumber,
-                    msg: 'connecionError'
-                })
-                return res.status(200).send(connecionError)
-            }
-            onConnect();
-        });
-        const db = client.db("test");
-        const userStates = db.collection('userStates');
-
-        userStates.findOne({
-                phone: fromNumber
-            }).then(state => {
-                if (!state) {
-                    createNewDialog(state);
-                } else {
-                    continueDialog(state);
-                }
-            })
-            .catch(errorHandler)
     }
 
 }
