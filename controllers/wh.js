@@ -13,7 +13,7 @@ const {
 
 const msg = function(req, res) {
 
-    const errorHandler = (err) => {
+    function errorHandler(err) {
         console.log(err)
         msgCtrl.sendMsg({
             fromNumber,
@@ -21,7 +21,8 @@ const msg = function(req, res) {
         })
         return res.status(200).send(err)
     }
-    const closeConnection = (err) => {
+
+    function closeConnection(err) {
         client.close();
         if (err) {
             console.error(err)
@@ -33,6 +34,21 @@ const msg = function(req, res) {
         return res.sendStatus(200)
     const msg = req.body.Body || req.body['Body'];
     console.log('wh controller', fromNumber, msg, req.body)
+
+
+    const client = getConnect();
+    client.connect(connecionError => {
+        if (connecionError) {
+            console.log(connecionError)
+            msgCtrl.sendMsg({
+                fromNumber,
+                msg: 'connecionError'
+            })
+            return res.status(200).send(connecionError)
+        }
+        onConnect();
+    });
+
 
     function onConnect() {
 
@@ -83,32 +99,6 @@ const msg = function(req, res) {
 
         }
 
-        const client = getConnect();
-        client.connect(connecionError => {
-            if (connecionError) {
-                console.log(connecionError)
-                msgCtrl.sendMsg({
-                    fromNumber,
-                    msg: 'connecionError'
-                })
-                return res.status(200).send(connecionError)
-            }
-            onConnect();
-        });
-        const db = client.db("test");
-        const userStates = db.collection('userStates');
-
-        userStates.findOne({
-                phone: fromNumber
-            }).then(function(state) {
-                if (!state) {
-                    createNewDialog(state);
-                } else {
-                    console.log('continueDialog')
-                    continueDialog(state);
-                }
-            })
-            .catch(errorHandler)
 
         function continueDialog(state) {
             if (msg.toLowerCase() == 'main') {
@@ -308,6 +298,20 @@ const msg = function(req, res) {
                 }
             }
         }
+        const db = client.db("test");
+        const userStates = db.collection('userStates');
+
+        userStates.findOne({
+                phone: fromNumber
+            }).then(function(state) {
+                if (!state) {
+                    createNewDialog(state);
+                } else {
+                    console.log('continueDialog')
+                    continueDialog(state);
+                }
+            })
+            .catch(errorHandler)
     }
 
 }
