@@ -47,7 +47,7 @@ const msg = function(req, res) {
                                         })
                                         res.send("ok");
                                     } else {
-                                        if (msg == 'main') {
+                                        if (msg.toLowerCase() == 'main') {
                                             msgCtrl.sendMsg({
                                                 fromNumber,
                                                 msg: `Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
@@ -155,7 +155,7 @@ const msg = function(req, res) {
                         }else if(state.last == 'variants'){
                             const variantID = state.variants[msg-1].node.id;
                             console.log(`saving-in-cart:${variantID}`)
-                            const txt ='Your item is placed in cart. What do you want next?\n1. Continue shopping.\n2. Proceed to payment.'
+                            const txt =`Your item is placed in cart. What do you want next?\n1. Continue shopping.\n2. Proceed to payment.`
                             res.sendStatus(200);
                             msgCtrl.sendMsg({
                                 fromNumber,
@@ -165,8 +165,7 @@ const msg = function(req, res) {
                                 phone: fromNumber
                             }, {
                                 $set: {
-                                    last: 'added-to-cart',
-                                    checkoutCreate:response.checkoutCreate
+                                    last: 'added-to-cart'
                                 } 
                             }, function(err, result) {
                                 client.close();
@@ -177,16 +176,24 @@ const msg = function(req, res) {
                         }else if(state.last == 'added-to-cart'){
                             switch(msg){
                                 case '1':
-                                    userStates.insertOne({
-                                        phone: fromNumber,
-                                        last: 'main'
-                                    }).then(inserted => {
-                                        msgCtrl.sendMsg({
-                                            fromNumber,
-                                            msg: `What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
-                                        })
-                                        client.close();
+                                    const txt = `What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
+                                    res.send('redirecting to menu');
+                                    msgCtrl.sendMsg({
+                                        fromNumber,
+                                        msg: txt
                                     })
+                                    userStates.updateOne({
+                                        phone: fromNumber
+                                    }, {
+                                        $set:{
+                                            last: 'main'
+                                        }
+                                    }, function(err, result) {
+                                        client.close();
+                                        if (err) {
+                                            console.error(err)
+                                        }
+                                    });
                                 case '2':
                                     // createCheckout(storeMyShopify, accessToken, variantID)
                                     // .then(response=>{
@@ -215,15 +222,16 @@ const msg = function(req, res) {
                         }
                     }
                 })
-                .catch(err => {
+                .catch(err => { 
+                    console.log(err)
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: JSON.stringify(err)
+                        msg: JSON.stringify(err) // постоянно выводит ошибку в сообщения
                     })
                     return res.status(200).send(err)
                 })
-        });
-    } catch (err) {
+            });
+        } catch (err) {
         msgCtrl.sendMsg({
             fromNumber,
             msg: 'JSON.stringify(err)'
