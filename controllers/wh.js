@@ -47,7 +47,7 @@ const msg = function(req, res) {
                                         })
                                         res.send("ok");
                                     } else {
-                                        if (msg == 'main') {
+                                        if (msg.toLowerCase() == 'main') { //нет ли здесь ошибки?
                                             msgCtrl.sendMsg({
                                                 fromNumber,
                                                 msg: `Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
