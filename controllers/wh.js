@@ -34,7 +34,7 @@ const msg = function(req, res) {
     const msg = req.body.Body || req.body['Body'];
     console.log('wh controller', fromNumber, msg, req.body)
 
-    const onConnect = () => {
+    function onConnect() {
 
         function createNewDialog(state) {
             userStates.insertOne({
@@ -104,6 +104,7 @@ const msg = function(req, res) {
                 if (!state) {
                     createNewDialog(state);
                 } else {
+                    console.log('continueDialog')
                     continueDialog(state);
                 }
             })
