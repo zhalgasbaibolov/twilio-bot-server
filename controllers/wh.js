@@ -87,15 +87,16 @@ const msg = function(req, res) {
                                                             client.close();
                                                             if (err) {
                                                                 console.error(err)
+
                                                             }
                                                         });
                                                     })
                                                     break;
                                                 case '2':
-                                                    txt = getSupport(res, msgCtrl);
+                                                 const txt = getSupport(res, msgCtrl);
                                                     break;
                                                 case '3':
-                                                    txt = getOrderStatus(res, msgCtrl);
+                                                    const txt = getOrderStatus(res, msgCtrl);
                                                     break;
                                                 default:
                                                     msgCtrl.sendMsg({
@@ -128,120 +129,120 @@ const msg = function(req, res) {
                                                     console.error(err)
                                                 }
                                             });
-                            })
-                        }else if(state.last == 'products'){
-                            const productID = state.products[msg-1].node.id;
-                            retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
-                                .then(response=>{
-                                    const variants = response.node.variants.edges;
-                                    const txt = `Select variants:\n${
-                                        variants.map((v,idx)=>`${idx+1}. ${v.node.id}`).join('\n')
-                                    }`
-                                    res.send(variants);
-                                    msgCtrl.sendMsg({
-                                        fromNumber,
-                                        msg: txt
-                                    })
-                                    userStates.updateOne({
-                                        phone: fromNumber
-                                    }, {
-                                        $set: {
-                                            last: 'variants',
-                                            variants: variants
+                                            })
+                                        }else if(state.last == 'products'){
+                                            const productID = state.products[msg-1].node.id;
+                                            retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
+                                                .then(response=>{
+                                                    const variants = response.node.variants.edges;
+                                                    const txt = `Select variants:\n${
+                                                        variants.map((v,idx)=>`${idx+1}. ${v.node.id}`).join('\n')
+                                                    }`
+                                                    res.send(variants);
+                                                    msgCtrl.sendMsg({
+                                                        fromNumber,
+                                                        msg: txt
+                                                    })
+                                                    userStates.updateOne({
+                                                        phone: fromNumber
+                                                    }, {
+                                                        $set: {
+                                                            last: 'variants',
+                                                            variants: variants
+                                                        }
+                                                    }, function(err, result) {
+                                                        client.close();
+                                                        if (err) {
+                                                            console.error(err)
+                                                        }
+                                                    });
+                                                })
+                                        }else if(state.last == 'variants'){
+                                            const variantID = state.variants[msg-1].node.id;
+                                            console.log(`saving-in-cart:${variantID}`)
+                                            const txt =`Your item is placed in cart. What do you want next?\n1. Continue shopping.\n2. Proceed to payment.`
+                                            res.sendStatus(200);
+                                            msgCtrl.sendMsg({
+                                                fromNumber,
+                                                msg: txt
+                                            })  
+                                            userStates.updateOne({
+                                                phone: fromNumber
+                                            }, {
+                                                $set: {
+                                                    last: 'added-to-cart'
+                                                } 
+                                            }, function(err, result) {
+                                                client.close();
+                                                if (err) {
+                                                    console.error(err)
+                                                }
+                                            });
+                                        }else if(state.last == 'added-to-cart'){
+                                            switch(msg){
+                                                case '1':
+                                                    const txt = `What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
+                                                    res.send('redirecting to menu');
+                                                    msgCtrl.sendMsg({
+                                                        fromNumber,
+                                                        msg: txt
+                                                    })
+                                                    userStates.updateOne({
+                                                        phone: fromNumber
+                                                    }, {
+                                                        $set:{
+                                                            last: 'main'
+                                                        }
+                                                    }, function(err, result) {
+                                                        client.close();
+                                                        if (err) {
+                                                            console.error(err)
+                                                        }
+                                                    });
+                                                case '2':
+                                                    createCheckout(storeMyShopify, accessToken, variantID)
+                                                    .then(response=>{
+                                                        const txt = `Congratulations! Your order is almost created.\nPlease, open this url and finish him!\n`;
+                                                        res.send('Redirecting to catalogue');
+                                                        msgCtrl.sendMsg({
+                                                            fromNumber,
+                                                            msg: txt
+                                                        })
+                                                        userStates.updateOne({
+                                                            phone: fromNumber
+                                                        }, {
+                                                            $set: {
+                                                                last: 'checkout',
+                                                                checkoutCreate: response.checkoutCreate
+                                                            }
+                                                        }, function(err) {
+                                                            client.close();
+                                                            if (err) {
+                                                                console.error(err)
+                                                            }
+                                                        });
+                                                    })
+                                                
+                                            }
                                         }
-                                    }, function(err, result) {
-                                        client.close();
-                                        if (err) {
-                                            console.error(err)
-                                        }
-                                    });
+                                    }
                                 })
-                        }else if(state.last == 'variants'){
-                            const variantID = state.variants[msg-1].node.id;
-                            console.log(`saving-in-cart:${variantID}`)
-                            const txt =`Your item is placed in cart. What do you want next?\n1. Continue shopping.\n2. Proceed to payment.`
-                            res.sendStatus(200);
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: txt
-                            })  
-                            userStates.updateOne({
-                                phone: fromNumber
-                            }, {
-                                $set: {
-                                    last: 'added-to-cart'
-                                } 
-                            }, function(err, result) {
-                                client.close();
-                                if (err) {
-                                    console.error(err)
-                                }
-                            });
-                        }else if(state.last == 'added-to-cart'){
-                            switch(msg){
-                                case '1':
-                                    const txt = `What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
-                                    res.send('redirecting to menu');
+                                .catch(err => { 
+                                    console.log(err)
                                     msgCtrl.sendMsg({
                                         fromNumber,
-                                        msg: txt
+                                        msg: JSON.stringify(err) // постоянно выводит ошибку в сообщения
                                     })
-                                    userStates.updateOne({
-                                        phone: fromNumber
-                                    }, {
-                                        $set:{
-                                            last: 'main'
-                                        }
-                                    }, function(err, result) {
-                                        client.close();
-                                        if (err) {
-                                            console.error(err)
-                                        }
-                                    });
-                                case '2':
-                                    // createCheckout(storeMyShopify, accessToken, variantID)
-                                    // .then(response=>{
-                                        const txt = `Congratulations! Your order is almost created.\nPlease, open this url and finish him!\n`;
-                                        res.send('Redirecting to catalogue');
-                                        msgCtrl.sendMsg({
-                                            fromNumber,
-                                            msg: txt
-                                        })
-                                        userStates.updateOne({
-                                            phone: fromNumber
-                                        }, {
-                                            $set: {
-                                                last: 'checkout',
-                                                checkoutCreate:response.checkoutCreate
-                                            }
-                                        }, function(err) {
-                                            client.close();
-                                            if (err) {
-                                                console.error(err)
-                                            }
-                                        });
-                                    // })
-                                
-                            }
-                        }
+                                    return res.status(200).send(err)
+                                })
+                            });
+                        } catch (err) {
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: 'JSON.stringify(err)'
+                        })
+                        return res.status(200).send(err)
                     }
-                })
-                .catch(err => { 
-                    console.log(err)
-                    msgCtrl.sendMsg({
-                        fromNumber,
-                        msg: JSON.stringify(err) // постоянно выводит ошибку в сообщения
-                    })
-                    return res.status(200).send(err)
-                })
-            });
-        } catch (err) {
-        msgCtrl.sendMsg({
-            fromNumber,
-            msg: 'JSON.stringify(err)'
-        })
-        return res.status(200).send(err)
-    }
 
 }
 const getSupport = (res, msgCtrl) => {
