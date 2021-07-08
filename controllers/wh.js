@@ -65,7 +65,29 @@ const msg = function(req, res) {
             })
             res.send("ok");
         }
-
+        const sendMainMenu = () => {
+            retireveCollections(storeMyShopify, accessToken).then(response => {
+                const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx+1}. ${val.node.handle}`).join('\n')
+                res.send(collections);
+                msgCtrl.sendMsg({
+                    fromNumber,
+                    msg: collections
+                })
+                userStates.updateOne({
+                    phone: fromNumber
+                }, {
+                    $set: {
+                        last: 'catalog',
+                        catalogs: response.collections.edges
+                    }
+                }, function(err, result) {
+                    client.close();
+                    if (err) {
+                        console.error(err)
+                    }
+                });
+            })
+        }
         const continueDialog = (state) => {
                 if (msg.toLowerCase() == 'main') {
                     msgCtrl.sendMsg({
@@ -84,27 +106,7 @@ const msg = function(req, res) {
                 if (state.last == 'main') {
                     switch (msg) {
                         case '1':
-                            retireveCollections(storeMyShopify, accessToken).then(response => {
-                                const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx+1}. ${val.node.handle}`).join('\n')
-                                res.send(collections);
-                                msgCtrl.sendMsg({
-                                    fromNumber,
-                                    msg: collections
-                                })
-                                userStates.updateOne({
-                                    phone: fromNumber
-                                }, {
-                                    $set: {
-                                        last: 'catalog',
-                                        catalogs: response.collections.edges
-                                    }
-                                }, function(err, result) {
-                                    client.close();
-                                    if (err) {
-                                        console.error(err)
-                                    }
-                                });
-                            })
+                            sendMainMenu();
                             break;
                         case '2':
                             getSupport(res, msgCtrl);
@@ -147,7 +149,7 @@ retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
 const variants = response.node.variants.edges;
 const txt = `Select variants:\n${
     variants.map((v,idx)=>`${idx+1}. ${v.node.id}`).join('\n')
-}`
+}`;
 res.send(variants);
 msgCtrl.sendMsg({
     fromNumber,
