@@ -194,7 +194,7 @@ const msg = function(req, res) {
                                         if (err) {
                                             console.error(err)
                                         }
-                                    })
+                                    });
                                 case '2':
                                     // createCheckout(storeMyShopify, accessToken, variantID)
                                     // .then(response=>{
