@@ -98,6 +98,10 @@ const msg = function(req, res) {
                                                     txt = getOrderStatus(res, msgCtrl);
                                                     break;
                                                 default:
+                                                    msgCtrl.sendMsg({
+                                                        fromNumber,
+                                                        msg: 'You are wrong, try again'
+                                                    });
                                                     break;
                                             }
                                         } else if (state.last == 'catalog') {
