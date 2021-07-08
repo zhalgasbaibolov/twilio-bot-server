@@ -92,10 +92,10 @@ const msg = function(req, res) {
                                                     })
                                                     break;
                                                 case '2':
-                                                    txt = getSupport(res, msgCtrl);
+                                                    getSupport(res, msgCtrl);
                                                     break;
                                                 case '3':
-                                                    txt = getOrderStatus(res, msgCtrl);
+                                                    getOrderStatus(res, msgCtrl);
                                                     break;
                                                 default:
                                                     break;
@@ -175,7 +175,7 @@ const msg = function(req, res) {
                             });
                         }else if(state.last == 'added-to-cart'){
                             switch(msg){
-                                case '1':
+                                case '1':{
                                     const txt = `What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`
                                     res.send('redirecting to menu');
                                     msgCtrl.sendMsg({
@@ -194,7 +194,8 @@ const msg = function(req, res) {
                                             console.error(err)
                                         }
                                     });
-                                case '2':
+                                }break;
+                                case '2':{
                                     // createCheckout(storeMyShopify, accessToken, variantID)
                                     // .then(response=>{
                                         const txt = `Congratulations! Your order is almost created.\nPlease, open this url and finish him!\n`;
@@ -217,7 +218,7 @@ const msg = function(req, res) {
                                             }
                                         });
                                     // })
-                                
+                                }break;
                             }
                         }
                     }
