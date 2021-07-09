@@ -198,15 +198,15 @@ const msg = function(req, res) {
                         });
                     })
             } else if (state.last == 'variants') {
+                if (!state.variants[msg - 1]) {
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: 'Please, send right command'
+                    })
+                    return
+                }
+                const variantID = state.variants[msg - 1].node.id;
                 if (!state.lastCheckoutInfo) {
-                    if (!state.variants[msg - 1]) {
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: 'Please, send right command'
-                        })
-                        return
-                    }
-                    const variantID = state.variants[msg - 1].node.id;
                     createCheckout(storeMyShopify, accessToken, variantID).then(createdCheckoutInfo => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
@@ -235,9 +235,8 @@ const msg = function(req, res) {
                             msg: JSON.stringify(err)
                         })
                     })
-
                 } else {
-
+                    const arr = state.lastCheckoutInfo.checkoutCreate;
                     updateCheckout(storeMyShopify, accessToken, lastCheckoutInfo, variantID).then(updatedCheckoutId => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
