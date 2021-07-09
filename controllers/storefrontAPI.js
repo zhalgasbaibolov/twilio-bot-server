@@ -182,34 +182,33 @@ const updateCheckout = async(storeMyShopify, accessToken, {
     });
 
     const mutation = gql `
-  mutation checkoutCreate($input: CheckoutCreateInput!) {
-    checkoutCreate(input: $input) {
-      checkout {
-        id
-        webUrl
-        lineItems(first: 20) {
-          edges {
-            node {
-              id
-              title
-              quantity
+    mutation checkoutLineItemsReplace($lineItems: [CheckoutLineItemInput!]!, $checkoutId: ID!) {
+      checkoutLineItemsReplace(lineItems: $lineItems, checkoutId: $checkoutId) {
+        checkout {
+          id
+          lineItems(first:25){
+            edges{
+              node{
+                id
+                title
+                quantity
+              }
             }
           }
         }
-      }
-      checkoutUserErrors {
-        code
-        field
-        message
+        userErrors {
+          code
+          field
+          message
+        }
       }
     }
-  }
 `;
     const variables = {
-        input: {
-            lineItems: lineItems,
-        },
-    };
+        "checkoutId": checkoutId,
+        "lineItems": lineItems
+    }
+
     return graphQLClient.request(mutation, variables);
 }
 
