@@ -11,20 +11,6 @@ const {
     retireveVariantsOfProduct,
 } = require("./storefrontAPI");
 
-const errorHandler = function(err) {
-    console.log(err)
-    msgCtrl.sendMsg({
-        fromNumber,
-        msg: JSON.stringify(err)
-    })
-}
-
-const closeConnection = function(err) {
-    client.close();
-    if (err) {
-        console.error(err)
-    }
-}
 const msg = function(req, res) {
     res.status(200).send("");
 
@@ -48,6 +34,21 @@ const msg = function(req, res) {
         onConnect();
     });
 
+
+    const errorHandler = function(err) {
+        console.log(err)
+        msgCtrl.sendMsg({
+            fromNumber,
+            msg: JSON.stringify(err)
+        })
+    }
+
+    const closeConnection = function(err) {
+        client.close();
+        if (err) {
+            console.error(err)
+        }
+    }
 
     function onConnect() {
 
@@ -109,7 +110,7 @@ const msg = function(req, res) {
                     $set: {
                         last: 'main',
                     }
-                }, (err) => closeConnection(err, client));
+                }, closeConnection);
                 return;
             }
             if (state.last == 'main') {
