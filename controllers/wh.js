@@ -251,28 +251,29 @@ const msg = function(req, res) {
                         })
 
                     createCheckoutList(storeMyShopify, accessToken, lineItems).then(updatedCheckoutId => {
-                        const txt = `
+                            const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
                             `
 
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: txt
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: txt
+                            })
+                            userStates.updateOne({
+                                phone: fromNumber
+                            }, {
+                                $set: {
+                                    last: 'added-to-cart',
+                                    lastCheckoutInfo: updatedCheckoutId
+                                }
+                            }, function(err, result) {
+                                client.close();
+                                if (err) {
+                                    console.error(err)
+                                }
+                            });
                         })
-                        userStates.updateOne({
-                            phone: fromNumber
-                        }, {
-                            $set: {
-                                last: 'added-to-cart',
-                                lastCheckoutInfo: updatedCheckoutId
-                            }
-                        }, function(err, result) {
-                            client.close();
-                            if (err) {
-                                console.error(err)
-                            }
-                        });
-                    })
+                        .catch(errorHandler)
                 }
             } else if (state.last == 'added-to-cart') {
                 switch (msg) {
