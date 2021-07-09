@@ -168,6 +168,47 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
     };
     return graphQLClient.request(mutation, variables);
 };
+const createCheckoutList = async(storeMyShopify, accessToken, lineItems) => {
+    console.log(lineItems)
+    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
+
+    const graphQLClient = new GraphQLClient(endpoint, {
+        headers: {
+            "X-Shopify-Storefront-Access-Token": accessToken,
+        },
+    });
+
+    const mutation = gql `
+  mutation checkoutCreate($input: CheckoutCreateInput!) {
+    checkoutCreate(input: $input) {
+      checkout {
+        id
+        webUrl
+        lineItems(first: 20) {
+          edges {
+            node {
+              id
+              title
+              quantity
+            }
+          }
+        }
+      }
+      checkoutUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
+    const variables = {
+        input: {
+            lineItems: lineItems,
+        },
+    };
+    return graphQLClient.request(mutation, variables);
+};
 
 const updateCheckout = async(storeMyShopify, accessToken, {
     checkoutId,
@@ -205,8 +246,8 @@ const updateCheckout = async(storeMyShopify, accessToken, {
     }
 `;
     const variables = {
-        "checkoutId": checkoutId,
-        "lineItems": lineItems
+        checkoutId: checkoutId,
+        lineItems: lineItems
     }
 
     return graphQLClient.request(mutation, variables);
@@ -218,6 +259,7 @@ exports.retireveProducts = retireveProducts;
 exports.getProductsByCollectionHandle = getProductsByCollectionHandle;
 exports.retireveVariantsOfProduct = retireveVariantsOfProduct;
 exports.createCheckout = createCheckout;
+exports.createCheckoutList = createCheckoutList;
 exports.updateCheckout = updateCheckout;
 
 module.exports = exports;

@@ -6,6 +6,7 @@ const storeMyShopify = "fat-cat-studio.myshopify.com";
 const {
     retireveCollections,
     createCheckout,
+    createCheckoutList,
     updateCheckout,
     getProductsByCollectionHandle,
     retireveVariantsOfProduct,
@@ -236,7 +237,6 @@ const msg = function(req, res) {
                         })
                     })
                 } else {
-                    const checkoutId = state.lastCheckoutInfo.checkoutCreate.checkout.id;
                     const lineItems = state.lastCheckoutInfo.checkoutCreate.checkout.lineItems.edges.map(item => ({
                         variantId: item.node.id,
                         quantity: item.node.quantity
@@ -249,11 +249,8 @@ const msg = function(req, res) {
                             variantId: variantID,
                             quantity: 1
                         })
-                    console.log('-------------checkoutId, lineItems----------------', checkoutId, lineItems)
-                    updateCheckout(storeMyShopify, accessToken, {
-                        checkoutId,
-                        lineItems
-                    }).then(updatedCheckoutId => {
+
+                    createCheckoutList(storeMyShopify, accessToken, lineItems).then(updatedCheckoutId => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
                             `
