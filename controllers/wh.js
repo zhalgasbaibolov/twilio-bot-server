@@ -249,6 +249,7 @@ const msg = function(req, res) {
                             variantId: variantID,
                             quantity: 1
                         })
+                    console.log('-------------checkoutId, lineItems----------------', checkoutId, lineItems)
                     updateCheckout(storeMyShopify, accessToken, {
                         checkoutId,
                         lineItems
