@@ -135,7 +135,9 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
         checkout {
           id
           webUrl
-          lineItems
+          lineItems {
+            ...
+          }
         }
         checkoutUserErrors {
           code
