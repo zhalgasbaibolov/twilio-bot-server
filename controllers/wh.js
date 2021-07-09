@@ -65,7 +65,7 @@ const msg = function(req, res) {
             })
         }
 
-        function sendMainMenu() {
+        function sendCatalog() {
             retireveCollections(storeMyShopify, accessToken).then(function(response) {
                 const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx+1}. ${val.node.handle}`).join('\n')
                 msgCtrl.sendMsg({
@@ -266,26 +266,8 @@ const msg = function(req, res) {
             } else if (state.last == 'added-to-cart') {
                 switch (msg) {
                     case '1':
-                        {
-                            const txt = `What do you want ?\n 1.Catalogue\n 2.Customer Support\n 3.Order Status `
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: txt
-                            })
-                            userStates.updateOne({
-                                phone: fromNumber
-                            }, {
-                                $set: {
-                                    last: 'main'
-                                }
-                            }, function(err, result) {
-                                client.close();
-                                if (err) {
-                                    console.error(err)
-                                }
-                            });
-                            break;
-                        }
+                        sendCatalog();
+                        break;
                     case '2':
                         {
                             let txt = state.lastCheckoutInfo.checkoutCreate.checkout.webUrl
