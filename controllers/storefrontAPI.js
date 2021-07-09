@@ -192,7 +192,7 @@ const updateCheckout = async(storeMyShopify, accessToken, {
           }
         }
       }
-      checkoutUserErrors {
+      userErrors {
         code
         field
         message
