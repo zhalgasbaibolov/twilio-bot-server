@@ -287,11 +287,12 @@ const msg = function(req, res) {
                         break;
                     case '2':
                         {
-                            // createCheckout(storeMyShopify, accessToken, variantID)
-                            // .then(response=>{
-                            const txt = `
+                             createCheckout(storeMyShopify, accessToken, variantID)
+                             .then(response=>{
+                            let txt = state.lastCheckoutInfo.checkoutCreate.checkout.webUrl
+                            txt = `
                             Congratulations!
-                            Your order is almost created.\nPlease, open this url and finish him!\n `;
+                            Your order is almost created.\nPlease, open this url and finish him!\n ` + txt;
                             msgCtrl.sendMsg({
                                 fromNumber,
                                 msg: txt
@@ -309,7 +310,7 @@ const msg = function(req, res) {
                                     console.error(err)
                                 }
                             });
-                            // })
+                            })
                         }
                         break;
                 }
