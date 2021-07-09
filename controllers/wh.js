@@ -11,23 +11,22 @@ const {
     retireveVariantsOfProduct,
 } = require("./storefrontAPI");
 
+const errorHandler = function(err) {
+    console.log(err)
+    msgCtrl.sendMsg({
+        fromNumber,
+        msg: JSON.stringify(err)
+    })
+}
+
+const closeConnection = function(err) {
+    client.close();
+    if (err) {
+        console.error(err)
+    }
+}
 const msg = function(req, res) {
-    res.sendStatus(200);
-
-    function errorHandler(err) {
-        console.log(err)
-        msgCtrl.sendMsg({
-            fromNumber,
-            msg: JSON.stringify(err)
-        })
-    }
-
-    function closeConnection(err) {
-        client.close();
-        if (err) {
-            console.error(err)
-        }
-    }
+    res.status(200).send("");
 
     const fromNumber = req.body.From || req.body['From'];
     if ('whatsapp:+14155238886' === fromNumber)
@@ -119,10 +118,10 @@ const msg = function(req, res) {
                         sendMainMenu();
                         break;
                     case '2':
-                        getSupport(res, msgCtrl);
+                        getSupport();
                         break;
                     case '3':
-                        getOrderStatus(res, msgCtrl);
+                        getOrderStatus();
                         break;
                     default:
                         break;
@@ -266,7 +265,7 @@ const msg = function(req, res) {
                             // .then(response=>{
                             const txt = `
                             Congratulations!
-                            Your order is almost created.\nPlease, open this url and finish him!\n `;                            
+                            Your order is almost created.\nPlease, open this url and finish him!\n `;
                             msgCtrl.sendMsg({
                                 fromNumber,
                                 msg: txt
