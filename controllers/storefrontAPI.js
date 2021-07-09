@@ -110,6 +110,11 @@ const retireveVariantsOfProduct = async(
             edges {
               node {
                 id
+                availableForSale
+                title
+                image {
+                  originalSrc
+                }
               }
             }
           }
