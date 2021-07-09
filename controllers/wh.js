@@ -266,8 +266,7 @@ const msg = function(req, res) {
                 switch (msg) {
                     case '1':
                         {
-                            const txt = `
-                        What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
+                            const txt = `What do you want ? \n1.Catalogue \n2.Customer Support\n3.Order Status`
                             msgCtrl.sendMsg({
                                 fromNumber,
                                 msg: txt
