@@ -207,74 +207,36 @@ const msg = function(req, res) {
                     return
                 }
                 const variantID = state.variants[msg - 1].node.id;
-                if (!state.lastCheckoutInfo) {
-                    createCheckout(storeMyShopify, accessToken, variantID).then(createdCheckoutInfo => {
-                        const txt = `
-                            Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
-                            `
-
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: txt
-                        })
-                        userStates.updateOne({
-                            phone: fromNumber
-                        }, {
-                            $set: {
-                                last: 'added-to-cart',
-                                lastCheckoutInfo: createdCheckoutInfo
-                            }
-                        }, function(err, result) {
-                            client.close();
-                            if (err) {
-                                console.error(err)
-                            }
-                        });
-                    }).catch(err => {
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: JSON.stringify(err)
-                        })
+                const storedLineItems = state.storedLineItems || [];
+                const existsVariant = storedLineItems.find(x => x.variantId === variantID);
+                if (existsVariant)
+                    existsVariant.quantity = existsVariant.quantity + 1;
+                else
+                    storedLineItems.push({
+                        variantId: variantID,
+                        quantity: 1
                     })
-                } else {
-                    const lineItems = state.lastCheckoutInfo.checkoutCreate.checkout.lineItems.edges.map(item => ({
-                        variantId: item.node.id,
-                        quantity: item.node.quantity
-                    }));
-                    const existsVariant = lineItems.find(x => x.variantId === variantID);
-                    if (existsVariant)
-                        existsVariant.quantity = existsVariant.quantity + 1;
-                    else
-                        lineItems.push({
-                            variantId: variantID,
-                            quantity: 1
-                        })
 
-                    createCheckoutList(storeMyShopify, accessToken, lineItems).then(updatedCheckoutId => {
-                            const txt = `
-                            Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
-                            `
+                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.`;
 
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: txt
-                            })
-                            userStates.updateOne({
-                                phone: fromNumber
-                            }, {
-                                $set: {
-                                    last: 'added-to-cart',
-                                    lastCheckoutInfo: updatedCheckoutId
-                                }
-                            }, function(err, result) {
-                                client.close();
-                                if (err) {
-                                    console.error(err)
-                                }
-                            });
-                        })
-                        .catch(errorHandler)
-                }
+                msgCtrl.sendMsg({
+                    fromNumber,
+                    msg: txt
+                })
+                userStates.updateOne({
+                    phone: fromNumber
+                }, {
+                    $set: {
+                        last: 'added-to-cart',
+                        storedLineItems: storedLineItems
+                    }
+                }, function(err, result) {
+                    client.close();
+                    if (err) {
+                        console.error(err)
+                    }
+                });
+
             } else if (state.last == 'added-to-cart') {
                 switch (msg) {
                     case '1':
@@ -300,27 +262,27 @@ const msg = function(req, res) {
                         break;
                     case '2':
                         {
-                            let txt = state.lastCheckoutInfo.checkoutCreate.checkout.webUrl
-                            txt = `
-                        Congratulations!
-                        Your order is almost created.\nPlease, open this url and finish him!\n ` + txt;
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: txt
-                            })
-                            userStates.updateOne({
-                                phone: fromNumber
-                            }, {
-                                $set: {
-                                    last: 'checkout',
-                                    checkoutCreate: response.checkoutCreate
-                                }
-                            }, function(err) {
-                                client.close();
-                                if (err) {
-                                    console.error(err)
-                                }
-                            });
+                            createCheckoutList(storeMyShopify, accessToken, state.storedLineItems).then(createdCheckoutInfo => {
+                                const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ` +
+                                    createdCheckoutInfo.checkoutCreate.checkout.webUrl;
+                                msgCtrl.sendMsg({
+                                    fromNumber,
+                                    msg: txt
+                                })
+                                userStates.updateOne({
+                                    phone: fromNumber
+                                }, {
+                                    $set: {
+                                        last: 'completed',
+                                        storedLineItems: []
+                                    }
+                                }, function(err) {
+                                    client.close();
+                                    if (err) {
+                                        console.error(err)
+                                    }
+                                });
+                            }).catch(errorHandler)
                         }
                         break;
                 }
