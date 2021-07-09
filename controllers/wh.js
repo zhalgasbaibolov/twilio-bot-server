@@ -241,7 +241,7 @@ const msg = function(req, res) {
                     const arr = state.lastCheckoutInfo.checkoutCreate;
                     updateCheckout(storeMyShopify, accessToken, lastCheckoutInfo, variantID).then(updatedCheckoutId => {
                         const txt = `
-                            Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
+                            Your item is placed in cart.What do you want next ?\n1.Continue shopping.\n2.Proceed to payment.
                             `
 
                         msgCtrl.sendMsg({
@@ -267,7 +267,7 @@ const msg = function(req, res) {
                 switch (msg) {
                     case '1':
                         {
-                            const txt = `What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
+                            const txt = `What do you want ?\n 1.Catalogue\n 2.Customer Support\n 3.Order Status `
                             msgCtrl.sendMsg({
                                 fromNumber,
                                 msg: txt
