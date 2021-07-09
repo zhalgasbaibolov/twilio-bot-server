@@ -132,7 +132,7 @@ const msg = function(req, res) {
                         break;
                 }
             } else if (state.last == 'catalog') {
-                if (!state.catalogs[msg-1]){
+                if (!state.catalogs[msg - 1]) {
                     msgCtrl.sendMsg({
                         fromNumber,
                         msg: 'Please, send right command'
@@ -165,7 +165,7 @@ const msg = function(req, res) {
                         });
                     })
             } else if (state.last == 'products') {
-                if (!state.products[msg-1]){
+                if (!state.products[msg - 1]) {
                     msgCtrl.sendMsg({
                         fromNumber,
                         msg: 'Please, send right command'
@@ -199,7 +199,7 @@ const msg = function(req, res) {
                     })
             } else if (state.last == 'variants') {
                 if (!state.lastCheckoutId) {
-                    if (!state.variants[msg-1]){
+                    if (!state.variants[msg - 1]) {
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: 'Please, send right command'
@@ -237,7 +237,7 @@ const msg = function(req, res) {
                     })
 
                 } else {
-                    
+
                     updateCheckout(storeMyShopify, accessToken, lastCheckoutInfo, variantID).then(updatedCheckoutId => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
@@ -265,48 +265,52 @@ const msg = function(req, res) {
             } else if (state.last == 'added-to-cart') {
                 switch (msg) {
                     case '1':
-                        const txt = `
+                        {
+                            const txt = `
                         What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: txt
-                        })
-                        userStates.updateOne({
-                            phone: fromNumber
-                        }, {
-                            $set: {
-                                last: 'main'
-                            }
-                        }, function(err, result) {
-                            client.close();
-                            if (err) {
-                                console.error(err)
-                            }
-                        });
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: txt
+                            })
+                            userStates.updateOne({
+                                phone: fromNumber
+                            }, {
+                                $set: {
+                                    last: 'main'
+                                }
+                            }, function(err, result) {
+                                client.close();
+                                if (err) {
+                                    console.error(err)
+                                }
+                            });
+                        }
                         break;
                     case '2':
-                        let txt = state.lastCheckoutInfo.checkoutCreate.checkout.webUrl
-                        txt = `
+                        {
+                            let txt = state.lastCheckoutInfo.checkoutCreate.checkout.webUrl
+                            txt = `
                         Congratulations!
                         Your order is almost created.\nPlease, open this url and finish him!\n ` + txt;
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: txt
-                        })
-                        userStates.updateOne({
-                            phone: fromNumber
-                        }, {
-                            $set: {
-                                last: 'checkout',
-                                checkoutCreate: response.checkoutCreate
-                            }
-                        }, function(err) {
-                            client.close();
-                            if (err) {
-                                console.error(err)
-                            }
-                        });
-                    break;
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: txt
+                            })
+                            userStates.updateOne({
+                                phone: fromNumber
+                            }, {
+                                $set: {
+                                    last: 'checkout',
+                                    checkoutCreate: response.checkoutCreate
+                                }
+                            }, function(err) {
+                                client.close();
+                                if (err) {
+                                    console.error(err)
+                                }
+                            });
+                        }
+                        break;
                 }
             }
         }
