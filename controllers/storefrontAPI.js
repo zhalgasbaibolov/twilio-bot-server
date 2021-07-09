@@ -136,7 +136,13 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
           id
           webUrl
           lineItems {
-            ...
+            edges {
+              node {
+                id
+                title
+                quantity
+              }
+            }
           }
         }
         checkoutUserErrors {
@@ -158,8 +164,11 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
     return graphQLClient.request(mutation, variables);
 };
 
-const updateCheckout = async(storeMyShopify,accessToken,{id, variants})=>{
-  
+const updateCheckout = async(storeMyShopify, accessToken, {
+    id,
+    variants
+}) => {
+
 }
 
 exports.retireveCollections = retireveCollections;
