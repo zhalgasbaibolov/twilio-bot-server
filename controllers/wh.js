@@ -198,7 +198,7 @@ const msg = function(req, res) {
                         });
                     })
             } else if (state.last == 'variants') {
-                if (!state.lastCheckoutId) {
+                if (!state.lastCheckoutInfo) {
                     if (!state.variants[msg - 1]) {
                         msgCtrl.sendMsg({
                             fromNumber,
