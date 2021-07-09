@@ -165,10 +165,46 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
 };
 
 const updateCheckout = async(storeMyShopify, accessToken, {
-    id,
-    variants
+    checkoutId,
+    lineItems
 }) => {
+    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
+    const graphQLClient = new GraphQLClient(endpoint, {
+        headers: {
+            "X-Shopify-Storefront-Access-Token": accessToken,
+        },
+    });
+
+    const mutation = gql `
+    mutation checkoutLineItemsReplace($lineItems: [CheckoutLineItemInput!]!, $checkoutId: ID!) {
+      checkoutLineItemsReplace(lineItems: $lineItems, checkoutId: $checkoutId) {
+      checkout {
+        id
+        webUrl
+        lineItems(first: 20) {
+          edges {
+            node {
+              id
+              title
+              quantity
+            }
+          }
+        }
+      }
+      checkoutUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
+    const parameters = {
+        checkoutId,
+        lineItems
+    };
+    return graphQLClient.request(mutation, parameters);
 }
 
 exports.retireveCollections = retireveCollections;

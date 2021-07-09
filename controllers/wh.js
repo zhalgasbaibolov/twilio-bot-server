@@ -236,8 +236,23 @@ const msg = function(req, res) {
                         })
                     })
                 } else {
-                    const arr = state.lastCheckoutInfo.checkoutCreate;
-                    updateCheckout(storeMyShopify, accessToken, lastCheckoutInfo, variantID).then(updatedCheckoutId => {
+                    const checkoutId = state.lastCheckoutInfo.checkoutCreate.checkout.id;
+                    const lineItems = state.lastCheckoutInfo.checkoutCreate.checkout.lineItems.edges.map(item => ({
+                        variantId: item.node.id,
+                        quantity: item.node.quantity
+                    }));
+                    const existsVariant = lineItems.find(x => x.variantId === variantID);
+                    if (existsVariant)
+                        existsVariant.quantity = existsVariant.quantity + 1;
+                    else
+                        lineItems.push({
+                            variantId: variantID,
+                            quantity: 1
+                        })
+                    updateCheckout(storeMyShopify, accessToken, {
+                        checkoutId,
+                        lineItems
+                    }).then(updatedCheckoutId => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
                             `
