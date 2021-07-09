@@ -128,6 +128,13 @@ const msg = function(req, res) {
                         break;
                 }
             } else if (state.last == 'catalog') {
+                if (!state.catalogs[msg-1]){
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: 'Please, send right command'
+                    })
+                    return
+                }
                 const handle = state.catalogs[msg - 1].node.handle;
                 getProductsByCollectionHandle(storeMyShopify, accessToken, handle)
                     .then(response => {
