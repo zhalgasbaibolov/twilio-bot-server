@@ -6,7 +6,7 @@ const storeMyShopify = "fat-cat-studio.myshopify.com";
 const {
     retireveCollections,
     createCheckout,
-    retireveProducts,
+    updateCheckout,
     getProductsByCollectionHandle,
     retireveVariantsOfProduct,
 } = require("./storefrontAPI");
@@ -134,7 +134,7 @@ const msg = function(req, res) {
                         }
                 }
             } else if (state.last == 'catalog') {
-                if (!state.catalogs[msg-1]){
+                if (!state.catalogs[msg - 1]) {
                     msgCtrl.sendMsg({
                         fromNumber,
                         msg: 'Please, send right command'
@@ -167,7 +167,7 @@ const msg = function(req, res) {
                         });
                     })
             } else if (state.last == 'products') {
-                if (!state.products[msg-1]){
+                if (!state.products[msg - 1]) {
                     msgCtrl.sendMsg({
                         fromNumber,
                         msg: 'Please, send right command'
@@ -200,15 +200,15 @@ const msg = function(req, res) {
                         });
                     })
             } else if (state.last == 'variants') {
-                if (!state.lastCheckoutId) {
-                    if (!state.variants[msg-1]){
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: 'Please, send right command'
-                        })
-                        return
-                    }
-                    const variantID = state.variants[msg - 1].node.id;
+                if (!state.variants[msg - 1]) {
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: 'Please, send right command'
+                    })
+                    return
+                }
+                const variantID = state.variants[msg - 1].node.id;
+                if (!state.lastCheckoutInfo) {
                     createCheckout(storeMyShopify, accessToken, variantID).then(createdCheckoutInfo => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
@@ -237,8 +237,8 @@ const msg = function(req, res) {
                             msg: JSON.stringify(err)
                         })
                     })
-
                 } else {
+                    const arr = state.lastCheckoutInfo.checkoutCreate;
                     updateCheckout(storeMyShopify, accessToken, lastCheckoutInfo, variantID).then(updatedCheckoutId => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
@@ -267,8 +267,7 @@ const msg = function(req, res) {
                 switch (msg) {
                     case '1':
                         {
-                            const txt = `
-                            What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
+                            const txt = `What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
                             msgCtrl.sendMsg({
                                 fromNumber,
                                 msg: txt
