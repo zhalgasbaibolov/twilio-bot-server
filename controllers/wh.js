@@ -52,7 +52,7 @@ const msg = function(req, res) {
 
     function onConnect() {
 
-        function createNewDialog(state) {
+        function createNewDialog() {
             userStates.insertOne({
                 phone: fromNumber,
                 last: 'main'
@@ -297,7 +297,7 @@ const msg = function(req, res) {
                 phone: fromNumber
             }).then(function(state) {
                 if (!state) {
-                    createNewDialog(state);
+                    createNewDialog();
                 } else {
                     console.log('continueDialog')
                     continueDialog(state);
