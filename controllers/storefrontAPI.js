@@ -150,6 +150,7 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
           field
           message
         }
+        queueToken
       }
     }
   `;
@@ -177,8 +178,8 @@ const updateCheckout = async(storeMyShopify, accessToken, {
     });
 
     const mutation = gql `
-    mutation checkoutLineItemsReplace($lineItems: [CheckoutLineItemInput!]!, $checkoutId: ID!) {
-      checkoutLineItemsReplace(lineItems: $lineItems, checkoutId: $checkoutId) {
+  mutation checkoutCreate($input: CheckoutCreateInput!) {
+    checkoutCreate(input: $input) {
       checkout {
         id
         webUrl
@@ -192,19 +193,21 @@ const updateCheckout = async(storeMyShopify, accessToken, {
           }
         }
       }
-      userErrors {
+      checkoutUserErrors {
         code
         field
         message
       }
+      queueToken
     }
   }
 `;
-    const parameters = {
-        checkoutId,
-        lineItems
+    const variables = {
+        input: {
+            lineItems: lineItems,
+        },
     };
-    return graphQLClient.request(mutation, parameters);
+    return graphQLClient.request(mutation, variables);
 }
 
 exports.retireveCollections = retireveCollections;
