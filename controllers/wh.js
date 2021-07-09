@@ -125,6 +125,10 @@ const msg = function(req, res) {
                         getOrderStatus();
                         break;
                     default:
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: 'Please, send right command'
+                        })
                         break;
                 }
             } else if (state.last == 'catalog') {
@@ -161,6 +165,13 @@ const msg = function(req, res) {
                         });
                     })
             } else if (state.last == 'products') {
+                if (!state.products[msg-1]){
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: 'Please, send right command'
+                    })
+                    return
+                }
                 const productID = state.products[msg - 1].node.id;
                 retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
                     .then(response => {
@@ -188,6 +199,13 @@ const msg = function(req, res) {
                     })
             } else if (state.last == 'variants') {
                 if (!state.lastCheckoutId) {
+                    if (!state.variants[msg-1]){
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: 'Please, send right command'
+                        })
+                        return
+                    }
                     const variantID = state.variants[msg - 1].node.id;
                     createCheckout(storeMyShopify, accessToken, variantID).then(createdCheckoutId => {
                         const txt = `
