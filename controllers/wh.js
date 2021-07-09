@@ -180,9 +180,9 @@ const msg = function(req, res) {
                         });
                     })
             } else if (state.last == 'variants') {
-                if (!state.lastCheckoutId) {
+                if (!state.lastCheckoutInfo) {
                     const variantID = state.variants[msg - 1].node.id;
-                    createCheckout(storeMyShopify, accessToken, variantID).then(createdCheckoutId => {
+                    createCheckout(storeMyShopify, accessToken, variantID).then(createdCheckoutInfo => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
                             `
@@ -196,7 +196,7 @@ const msg = function(req, res) {
                         }, {
                             $set: {
                                 last: 'added-to-cart',
-                                lastCheckoutId: createdCheckoutId
+                                lastCheckoutInfo: createdCheckoutInfo
                             }
                         }, function(err, result) {
                             client.close();
@@ -212,7 +212,7 @@ const msg = function(req, res) {
                     })
 
                 } else {
-                    updateCheckout(storeMyShopify, accessToken, lastCheckoutId, variantID).then(updatedCheckoutId => {
+                    updateCheckout(storeMyShopify, accessToken, lastCheckoutInfo, variantID).then(updatedCheckoutId => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
                             `
@@ -226,7 +226,7 @@ const msg = function(req, res) {
                         }, {
                             $set: {
                                 last: 'added-to-cart',
-                                lastCheckoutId: updatedCheckoutId
+                                lastCheckoutInfo: updatedCheckoutId
                             }
                         }, function(err, result) {
                             client.close();
