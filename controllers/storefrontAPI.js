@@ -150,7 +150,6 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
           field
           message
         }
-        queueToken
       }
     }
   `;
@@ -198,7 +197,6 @@ const updateCheckout = async(storeMyShopify, accessToken, {
         field
         message
       }
-      queueToken
     }
   }
 `;
