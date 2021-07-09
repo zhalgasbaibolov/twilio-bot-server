@@ -12,6 +12,7 @@ const {
 } = require("./storefrontAPI");
 
 const msg = function(req, res) {
+    res.sendStatus(200);
 
     function errorHandler(err) {
         console.log(err)
@@ -19,7 +20,6 @@ const msg = function(req, res) {
             fromNumber,
             msg: JSON.stringify(err)
         })
-        return res.status(200).send(err)
     }
 
     function closeConnection(err) {
@@ -31,7 +31,7 @@ const msg = function(req, res) {
 
     const fromNumber = req.body.From || req.body['From'];
     if ('whatsapp:+14155238886' === fromNumber)
-        return res.sendStatus(200)
+        return;
     const msg = req.body.Body || req.body['Body'];
     console.log('wh controller', fromNumber, msg, req.body)
 
@@ -44,7 +44,7 @@ const msg = function(req, res) {
                 fromNumber,
                 msg: 'connecionError'
             })
-            return res.status(200).send(connecionError)
+            return;
         }
         onConnect();
     });
@@ -63,13 +63,11 @@ const msg = function(req, res) {
                 })
                 client.close();
             })
-            res.send("ok");
         }
 
         function sendMainMenu() {
             retireveCollections(storeMyShopify, accessToken).then(function(response) {
                 const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx+1}. ${val.node.handle}`).join('\n')
-                res.send(collections);
                 msgCtrl.sendMsg({
                     fromNumber,
                     msg: collections
@@ -113,7 +111,7 @@ const msg = function(req, res) {
                         last: 'main',
                     }
                 }, (err) => closeConnection(err, client));
-                return res.send("main")
+                return;
             }
             if (state.last == 'main') {
                 switch (msg) {
@@ -136,7 +134,7 @@ const msg = function(req, res) {
                         const products = response.collectionByHandle.products.edges;
                         let txt = products.map((pr, idx) => `${idx+1}. ${pr.node.handle}`).join('\n');
                         txt = `Select Product:\n` + txt;
-                        res.send(products);
+
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: txt
@@ -163,7 +161,6 @@ const msg = function(req, res) {
                         let txt = variants.map((v, idx) => `${idx+1}. ${v.node.id}`).join('\n');
                         txt = "Select variants:\n" + txt;
 
-                        res.send(variants);
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: txt
@@ -207,13 +204,11 @@ const msg = function(req, res) {
                                 console.error(err)
                             }
                         });
-                        return res.sendStatus(200);
                     }).catch(err => {
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: JSON.stringify(err)
                         })
-                        return res.sendStatus(200);
                     })
 
                 } else {
@@ -239,7 +234,6 @@ const msg = function(req, res) {
                                 console.error(err)
                             }
                         });
-                        return res.sendStatus(200);
                     })
                 }
             } else if (state.last == 'added-to-cart') {
@@ -248,7 +242,6 @@ const msg = function(req, res) {
                         {
                             const txt = `
                             What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
-                            res.send('redirecting to menu');
                             msgCtrl.sendMsg({
                                 fromNumber,
                                 msg: txt
@@ -273,8 +266,7 @@ const msg = function(req, res) {
                             // .then(response=>{
                             const txt = `
                             Congratulations!
-                            Your order is almost created.\nPlease, open this url and finish him!\n `;
-                            res.send('Redirecting to catalogue');
+                            Your order is almost created.\nPlease, open this url and finish him!\n `;                            
                             msgCtrl.sendMsg({
                                 fromNumber,
                                 msg: txt
