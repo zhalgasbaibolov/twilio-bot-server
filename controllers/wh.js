@@ -6,7 +6,7 @@ const storeMyShopify = "fat-cat-studio.myshopify.com";
 const {
     retireveCollections,
     createCheckout,
-    retireveProducts,
+    updateCheckout,
     getProductsByCollectionHandle,
     retireveVariantsOfProduct,
 } = require("./storefrontAPI");
@@ -237,6 +237,7 @@ const msg = function(req, res) {
                     })
 
                 } else {
+                    
                     updateCheckout(storeMyShopify, accessToken, lastCheckoutInfo, variantID).then(updatedCheckoutId => {
                         const txt = `
                             Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.

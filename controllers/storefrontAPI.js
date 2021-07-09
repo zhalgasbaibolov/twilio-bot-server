@@ -155,11 +155,16 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
     return graphQLClient.request(mutation, variables);
 };
 
+const updateCheckout = async(storeMyShopify,accessToken,{id, variants})=>{
+  
+}
+
 exports.retireveCollections = retireveCollections;
 
 exports.retireveProducts = retireveProducts;
 exports.getProductsByCollectionHandle = getProductsByCollectionHandle;
 exports.retireveVariantsOfProduct = retireveVariantsOfProduct;
 exports.createCheckout = createCheckout;
+exports.updateCheckout = updateCheckout;
 
 module.exports = exports;
