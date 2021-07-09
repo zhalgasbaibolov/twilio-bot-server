@@ -264,54 +264,48 @@ const msg = function(req, res) {
             } else if (state.last == 'added-to-cart') {
                 switch (msg) {
                     case '1':
-                        {
-                            const txt = `
-                            What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: txt
-                            })
-                            userStates.updateOne({
-                                phone: fromNumber
-                            }, {
-                                $set: {
-                                    last: 'main'
-                                }
-                            }, function(err, result) {
-                                client.close();
-                                if (err) {
-                                    console.error(err)
-                                }
-                            });
-                        }
+                        const txt = `
+                        What do you want ? \n1.Catalogue\ n2.Customer Support\ n3.Order Status `
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: txt
+                        })
+                        userStates.updateOne({
+                            phone: fromNumber
+                        }, {
+                            $set: {
+                                last: 'main'
+                            }
+                        }, function(err, result) {
+                            client.close();
+                            if (err) {
+                                console.error(err)
+                            }
+                        });
                         break;
                     case '2':
-                        {
-                            // createCheckout(storeMyShopify, accessToken, variantID)
-                            // .then(response=>{
-                            const txt = `
-                            Congratulations!
-                            Your order is almost created.\nPlease, open this url and finish him!\n `;
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: txt
-                            })
-                            userStates.updateOne({
-                                phone: fromNumber
-                            }, {
-                                $set: {
-                                    last: 'checkout',
-                                    checkoutCreate: response.checkoutCreate
-                                }
-                            }, function(err) {
-                                client.close();
-                                if (err) {
-                                    console.error(err)
-                                }
-                            });
-                            // })
-                        }
-                        break;
+                        let txt = state.lastCheckoutInfo.checkoutCreate.checkout.webUrl
+                        txt = `
+                        Congratulations!
+                        Your order is almost created.\nPlease, open this url and finish him!\n ` + txt;
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: txt
+                        })
+                        userStates.updateOne({
+                            phone: fromNumber
+                        }, {
+                            $set: {
+                                last: 'checkout',
+                                checkoutCreate: response.checkoutCreate
+                            }
+                        }, function(err) {
+                            client.close();
+                            if (err) {
+                                console.error(err)
+                            }
+                        });
+                    break;
                 }
             }
         }
