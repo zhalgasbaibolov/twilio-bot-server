@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb+srv://nurlan:qwe123QWE___@cluster0.ikiuf.mongodb.net/twiliodb?retryWrites=true&w=majority";
+const uri = "mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/twiliodb?retryWrites=true&w=majority";
 module.exports = (callback, arr) => {
     const client = new MongoClient(uri, {
         useNewUrlParser: true,
