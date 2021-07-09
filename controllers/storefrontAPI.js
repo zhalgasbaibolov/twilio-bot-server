@@ -135,7 +135,7 @@ const createCheckout = async(storeMyShopify, accessToken, variantId) => {
         checkout {
           id
           webUrl
-          lineItems {
+          lineItems(first: 20) {
             edges {
               node {
                 id
