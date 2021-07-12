@@ -1,6 +1,8 @@
 const getConnect = require('../db/mongo').getConnect;
 const msgCtrl = require('../controllers/msg')
-const { generateSlug } =require("random-word-slugs");
+const {
+    generateSlug
+} = require("random-word-slugs");
 
 const accessToken = "0386d977a264448a1b62c295ac542a0d";
 const storeAPIkey = "0f6b58da9331414de7ed1d948c67ac35";
@@ -21,8 +23,7 @@ const {
 } = require("./storefrontAPI");
 const {
     shopifyDiscountCreate
-} = require("./discountRestAPI")
-;
+} = require("./discountRestAPI");
 const msg = function(req, res) {
     res.status(200).send("");
 
@@ -125,7 +126,7 @@ const msg = function(req, res) {
                 }, closeConnection);
                 return;
             }
-            
+
             if (state.last == 'main') {
                 switch (msg) {
                     case '1':
@@ -140,8 +141,8 @@ const msg = function(req, res) {
                     default:
                         {
                             msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: 'Please, send right command'
+                                fromNumber,
+                                msg: 'Please, send right command'
                             })
                             break;
                         }
@@ -315,7 +316,7 @@ const msg = function(req, res) {
                         msg: 'error on creating discount'
                     });
                 })
-            
+
             return
         }
 
@@ -330,7 +331,7 @@ const msg = function(req, res) {
                 }
             })
             .catch(errorHandler)
-    
+
     }
 
 }
