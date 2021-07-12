@@ -291,6 +291,14 @@ const msg = function(req, res) {
         const db = client.db("test");
         const userStates = db.collection('userStates');
 
+        if(msg.toLowerCase() == 'discount'){
+            msgCtrl.sendMsg({
+                fromNumber,
+                msg: 'Discount is approved'
+            })
+            return
+        }
+
         userStates.findOne({
                 phone: fromNumber
             }).then(function(state) {
