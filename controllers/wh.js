@@ -1,5 +1,6 @@
 const getConnect = require('../db/mongo').getConnect;
 const msgCtrl = require('../controllers/msg')
+import { generateSlug } from "random-word-slugs";
 
 const accessToken = "0386d977a264448a1b62c295ac542a0d";
 const storeMyShopify = "fat-cat-studio.myshopify.com";
@@ -294,7 +295,7 @@ const msg = function(req, res) {
         if(msg.toLowerCase() == 'discount'){
             msgCtrl.sendMsg({
                 fromNumber,
-                msg: 'Discount is approved'
+                msg: generateSlug()
             })
             return
         }
@@ -310,6 +311,7 @@ const msg = function(req, res) {
                 }
             })
             .catch(errorHandler)
+    
     }
 
 }
