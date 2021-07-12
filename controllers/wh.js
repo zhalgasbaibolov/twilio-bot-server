@@ -289,7 +289,7 @@ const msg = function(req, res) {
         if(msg.toLowerCase() == 'discount'){
                 shopifyDiscountCreate(storeMyShopify, apiVersion,storeAPIkey,storePassword, price_rule_id, generateSlug())
                 .then(response=> {
-                    const code = response.discount_code.code;
+                    const code = response.data.discount_code.code;
                     const discounted_url = `http://${storeMyShopify}/discount/${code}`;
                     msgCtrl.sendMsg({
                         fromNumber,
