@@ -190,29 +190,45 @@ const msg = function(req, res) {
                 }
                 const productID = state.products[msg - 1].node.id;
                 retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
-                    .then(response => {
-                        const variants = response.node.variants.edges;
-                        let txt = variants.map((v, idx) => `${idx+1}. ${v.node.id}`).join('\n');
-                        txt = "Select variants:\n" + txt;
-
+                .then(response => {
+                    const variants = response.node.variants.edges;
+                    const variantsSize = variants.length;
+                    variants.forEach((item, idx) => {
+                        const title = item.node.title
+                        const imgUrl = item.node.image.originalSrc;
                         msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: txt
+                            fromNumber: fromNumber,
+                            msg: `${idx + 1}. ${title}`,
+                            mediaUrl: imgUrl
                         })
-                        userStates.updateOne({
-                            phone: fromNumber
-                        }, {
-                            $set: {
-                                last: 'variants',
-                                variants: variants
-                            }
-                        }, function(err, result) {
-                            client.close();
-                            if (err) {
-                                console.error(err)
-                            }
-                        });
+                        if (idx == variantsSize - 1) {
+                            setTimeout(() => {
+
+                                let txt = variants.map((v, idx) => `${idx + 1}. ${v.node.id}`).join('\n');
+                                txt = "Select variants:\n" + txt;
+                                msgCtrl.sendMsg({
+                                    fromNumber,
+                                    msg: txt,
+
+                                })
+                                userStates.updateOne({
+                                    phone: fromNumber
+                                }, {
+                                    $set: {
+                                        last: 'variants',
+                                        variants: variants
+                                    }
+                                }, function (err, result) {
+                                    client.close();
+                                    if (err) {
+                                        console.error(err)
+                                    }
+                                });
+                            }, 3000);
+                        }
                     })
+
+                })
             } else if (state.last == 'variants') {
                 if (!state.variants[msg - 1]) {
                     msgCtrl.sendMsg({
