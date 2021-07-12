@@ -129,7 +129,7 @@ const msg = function(req, res) {
             if (state.last == 'main') {
                 switch (msg) {
                     case '1':
-                        sendMainMenu();
+                        sendCatalog();
                         break;
                     case '2':
                         getSupport();
