@@ -3,6 +3,8 @@ const msgCtrl = require('../controllers/msg')
 import { generateSlug } from "random-word-slugs";
 
 const accessToken = "0386d977a264448a1b62c295ac542a0d";
+const storeAPIkey = "0f6b58da9331414de7ed1d948c67ac35";
+const storePassword = "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";
 const storeMyShopify = "fat-cat-studio.myshopify.com";
 const price_rule_id = "950294741183";
 const apiVersion = "2021-04";
@@ -17,7 +19,10 @@ const {
     getProductsByCollectionHandle,
     retireveVariantsOfProduct,
 } = require("./storefrontAPI");
-
+const {
+    shopifyDiscountCreate
+} = require("./discountRestAPI")
+;
 const msg = function(req, res) {
     res.status(200).send("");
 
@@ -120,15 +125,7 @@ const msg = function(req, res) {
                 }, closeConnection);
                 return;
             }
-            if (msg.toLowerCase() == 'discount') {
-                shopifyDiscountCreate(storeMyShopify, price_rule_id, random_string).then(url=> {
-                    msgCtrl.sendMsg({
-                        fromNumber,
-                        msg: `Here is your promocode: http://${storeMyShopify}/discount/${random_string}`
-                    });
-                });
-                return;
-            }
+            
             if (state.last == 'main') {
                 switch (msg) {
                     case '1':
@@ -290,10 +287,22 @@ const msg = function(req, res) {
         const userStates = db.collection('userStates');
 
         if(msg.toLowerCase() == 'discount'){
-            msgCtrl.sendMsg({
-                fromNumber,
-                msg: generateSlug()
-            })
+                shopifyDiscountCreate(storeMyShopify, apiVersion,storeAPIkey,storePassword, price_rule_id, generateSlug())
+                .then(response=> {
+                    const code = response.discount_code.code;
+                    const discounted_url = `http://${storeMyShopify}/discount/${code}`;
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: `Here is your promocode: ${discounted_url}`
+                    });
+                }).catch(err=>{
+                    console.log(err)
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: 'error on creating discount'
+                    });
+                })
+            
             return
         }
 
