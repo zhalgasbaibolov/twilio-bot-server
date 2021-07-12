@@ -1,7 +1,8 @@
 const sendMsg = function({
     fromNumber,
     name,
-    msg = "msg is null"
+    msg = "msg is null",
+    mediaUrl = null
 }) {
     if ('whatsapp:+14155238886' === fromNumber)
         return;
@@ -14,7 +15,8 @@ const sendMsg = function({
         .create({
             body: msg,
             from: 'whatsapp:+14155238886',
-            to: fromNumber
+            to: fromNumber,
+            mediaUrl: mediaUrl
         })
         .catch(err => console.log(err))
         .done();
