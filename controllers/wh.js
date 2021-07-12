@@ -1,8 +1,6 @@
 const getConnect = require('../db/mongo').getConnect;
 const msgCtrl = require('../controllers/msg')
-const  {
-    shopifyDiscountCreate
-} = require("./discountRestAPI");
+import { generateSlug } from "random-word-slugs";
 
 const accessToken = "0386d977a264448a1b62c295ac542a0d";
 const storeMyShopify = "fat-cat-studio.myshopify.com";
@@ -14,6 +12,7 @@ const created_at_min = "2021-07-07T07:05:27-04:00";
 const {
     retireveCollections,
     createCheckout,
+    createCheckoutList,
     updateCheckout,
     getProductsByCollectionHandle,
     retireveVariantsOfProduct,
@@ -225,61 +224,36 @@ const msg = function(req, res) {
                     return
                 }
                 const variantID = state.variants[msg - 1].node.id;
-                if (!state.lastCheckoutInfo) {
-                    createCheckout(storeMyShopify, accessToken, variantID).then(createdCheckoutInfo => {
-                        const txt = `
-                            Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.
-                            `
-
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: txt
-                        })
-                        userStates.updateOne({
-                            phone: fromNumber
-                        }, {
-                            $set: {
-                                last: 'added-to-cart',
-                                lastCheckoutInfo: createdCheckoutInfo
-                            }
-                        }, function(err, result) {
-                            client.close();
-                            if (err) {
-                                console.error(err)
-                            }
-                        });
-                    }).catch(err => {
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: JSON.stringify(err)
-                        })
+                const storedLineItems = state.storedLineItems || [];
+                const existsVariant = storedLineItems.find(x => x.variantId === variantID);
+                if (existsVariant)
+                    existsVariant.quantity = existsVariant.quantity + 1;
+                else
+                    storedLineItems.push({
+                        variantId: variantID,
+                        quantity: 1
                     })
-                } else {
-                    const arr = state.lastCheckoutInfo.checkoutCreate;
-                    updateCheckout(storeMyShopify, accessToken, lastCheckoutInfo, variantID).then(updatedCheckoutId => {
-                        const txt = `
-                            Your item is placed in cart.What do you want next ?\n1.Continue shopping.\n2.Proceed to payment.
-                            `
 
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: txt
-                        })
-                        userStates.updateOne({
-                            phone: fromNumber
-                        }, {
-                            $set: {
-                                last: 'added-to-cart',
-                                lastCheckoutInfo: updatedCheckoutId
-                            }
-                        }, function(err, result) {
-                            client.close();
-                            if (err) {
-                                console.error(err)
-                            }
-                        });
-                    })
-                }
+                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.`;
+
+                msgCtrl.sendMsg({
+                    fromNumber,
+                    msg: txt
+                })
+                userStates.updateOne({
+                    phone: fromNumber
+                }, {
+                    $set: {
+                        last: 'added-to-cart',
+                        storedLineItems: storedLineItems
+                    }
+                }, function(err, result) {
+                    client.close();
+                    if (err) {
+                        console.error(err)
+                    }
+                });
+
             } else if (state.last == 'added-to-cart') {
                 switch (msg) {
                     case '1':
@@ -287,34 +261,41 @@ const msg = function(req, res) {
                         break;
                     case '2':
                         {
-                            let txt = state.lastCheckoutInfo.checkoutCreate.checkout.webUrl
-                            txt = `
-                            Congratulations!
-                            Your order is almost created.\nPlease, open this url and finish him!\n ` + txt;
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: txt
-                            })
-                            userStates.updateOne({
-                                phone: fromNumber
-                            }, {
-                                $set: {
-                                    last: 'checkout',
-                                    checkoutCreate: response.checkoutCreate
-                                }
-                            }, function(err) {
-                                client.close();
-                                if (err) {
-                                    console.error(err)
-                                }
-                            });
-                            break;
+                            createCheckoutList(storeMyShopify, accessToken, state.storedLineItems).then(createdCheckoutInfo => {
+                                const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ` +
+                                    createdCheckoutInfo.checkoutCreate.checkout.webUrl;
+                                msgCtrl.sendMsg({
+                                    fromNumber,
+                                    msg: txt
+                                })
+                                userStates.updateOne({
+                                    phone: fromNumber
+                                }, {
+                                    $set: {
+                                        last: 'completed',
+                                        storedLineItems: []
+                                    }
+                                }, function(err) {
+                                    client.close();
+                                    if (err) {
+                                        console.error(err)
+                                    }
+                                });
+                            }).catch(errorHandler)
                         }
                 }
             }
         }
         const db = client.db("test");
         const userStates = db.collection('userStates');
+
+        if(msg.toLowerCase() == 'discount'){
+            msgCtrl.sendMsg({
+                fromNumber,
+                msg: generateSlug()
+            })
+            return
+        }
 
         userStates.findOne({
                 phone: fromNumber
@@ -327,6 +308,7 @@ const msg = function(req, res) {
                 }
             })
             .catch(errorHandler)
+    
     }
 
 }
