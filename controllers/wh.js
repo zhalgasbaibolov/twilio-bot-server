@@ -4,6 +4,11 @@ import { generateSlug } from "random-word-slugs";
 
 const accessToken = "0386d977a264448a1b62c295ac542a0d";
 const storeMyShopify = "fat-cat-studio.myshopify.com";
+const price_rule_id = "950294741183";
+const apiVersion = "2021-04";
+const discount_percent = "-10";
+const random_string = "yellow-orange-23";
+const created_at_min = "2021-07-07T07:05:27-04:00";
 const {
     retireveCollections,
     createCheckout,
@@ -67,7 +72,7 @@ const msg = function(req, res) {
             })
         }
 
-        function sendMainMenu() {
+        function sendCatalog() {
             retireveCollections(storeMyShopify, accessToken).then(function(response) {
                 const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx+1}. ${val.node.handle}`).join('\n')
                 msgCtrl.sendMsg({
@@ -115,6 +120,15 @@ const msg = function(req, res) {
                 }, closeConnection);
                 return;
             }
+            if (msg.toLowerCase() == 'discount') {
+                shopifyDiscountCreate(storeMyShopify, price_rule_id, random_string).then(url=> {
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: `Here is your promocode: http://${storeMyShopify}/discount/${random_string}`
+                    });
+                });
+                return;
+            }
             if (state.last == 'main') {
                 switch (msg) {
                     case '1':
@@ -127,11 +141,13 @@ const msg = function(req, res) {
                         getOrderStatus();
                         break;
                     default:
-                        msgCtrl.sendMsg({
+                        {
+                            msgCtrl.sendMsg({
                             fromNumber,
                             msg: 'Please, send right command'
-                        })
-                        break;
+                            })
+                            break;
+                        }
                 }
             } else if (state.last == 'catalog') {
                 if (!state.catalogs[msg - 1]) {
@@ -241,25 +257,7 @@ const msg = function(req, res) {
             } else if (state.last == 'added-to-cart') {
                 switch (msg) {
                     case '1':
-                        {
-                            const txt = `What do you want ? \n1.Catalogue \n2.Customer Support\n3.Order Status`
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: txt
-                            })
-                            userStates.updateOne({
-                                phone: fromNumber
-                            }, {
-                                $set: {
-                                    last: 'main'
-                                }
-                            }, function(err, result) {
-                                client.close();
-                                if (err) {
-                                    console.error(err)
-                                }
-                            });
-                        }
+                        sendCatalog();
                         break;
                     case '2':
                         {
@@ -285,7 +283,6 @@ const msg = function(req, res) {
                                 });
                             }).catch(errorHandler)
                         }
-                        break;
                 }
             }
         }
