@@ -20,6 +20,7 @@
     "mongoose": "^5.12.14",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.7",
+    "random-word-slugs": "0.0.2",
     "twilio": "^3.64.0"
   }
 }
