@@ -1,6 +1,6 @@
 const getConnect = require('../db/mongo').getConnect;
 const msgCtrl = require('../controllers/msg')
-import { generateSlug } from "random-word-slugs";
+const { generateSlug } =require("random-word-slugs");
 
 const accessToken = "0386d977a264448a1b62c295ac542a0d";
 const storeAPIkey = "0f6b58da9331414de7ed1d948c67ac35";
