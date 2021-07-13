@@ -160,13 +160,7 @@ const msg = function (req, res) {
                         }
                 }
             } else if (state.last == 'tracking') {
-                if (msg === Number(msg)) {    // sometimes tracking numbers also contain letters
-                    const tracking_url = `https://t.17track.net/en#nums=${msg}`;
-                    msgCtrl.sendMsg({
-                        fromNumber,
-                        msg: `Please open this link to track your order!\n${tracking_url}`
-                    })
-                } else if (/^[a-zA-Z+-0-9]+@[A-Z0-9a-z\.]+$/.test('msg')) {
+                if (/^[a-zA-Z+-0-9]+@[A-Z0-9a-z\.]+$/.test('msg')) {
                     getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
                         .then(response => {
                             const trackNumbers = response.data.orders
@@ -196,9 +190,10 @@ const msg = function (req, res) {
                             });
                         })
                 } else {
+                    const tracking_url = `https://t.17track.net/en#nums=${msg}`;
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: 'Please, write your tracking number OR email correctly'
+                        msg: `Please open this link to track your order!\n${tracking_url}`
                     })
                 }
             } else if (state.last == 'catalog') {
