@@ -242,8 +242,7 @@ const msg = function (req, res) {
                         msg: 'Please, send right command'
                     })
                     return
-
-                };
+                }
 
                 const productID = state.products[msg - 1].node.id;
                 retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
@@ -359,7 +358,8 @@ const msg = function (req, res) {
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: 'Please,send right command'
-                        })
+                        });
+                        break;
                 }
             }
         }
