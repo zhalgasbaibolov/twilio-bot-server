@@ -160,7 +160,7 @@ const msg = function (req, res) {
                         }
                 }
             } else if (state.last == 'tracking') {
-                if (/^[a-zA-Z+-0-9]+@[A-Z0-9a-z\.]+$/.test('msg')) {
+                if (/@/.test('msg')) {
                     getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
                         .then(response => {
                             const trackNumbers = response.data.orders
