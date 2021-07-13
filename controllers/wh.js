@@ -10,9 +10,6 @@ const storePassword = "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";
 const storeMyShopify = "fat-cat-studio.myshopify.com";
 const price_rule_id = "950294741183";
 const apiVersion = "2021-04";
-const discount_percent = "-10";
-const random_string = "yellow-orange-23";
-const created_at_min = "2021-07-07T07:05:27-04:00";
 const {
     retireveCollections,
     createCheckout,
@@ -24,7 +21,10 @@ const {
 const {
     shopifyDiscountCreate
 } = require("./discountRestAPI");
-const msg = function(req, res) {
+const {
+    getAllOrders
+} = require("../getAllOrders");
+const msg = function (req, res) {
     res.status(200).send("");
 
     const fromNumber = req.body.From || req.body['From'];
@@ -48,7 +48,7 @@ const msg = function(req, res) {
     });
 
 
-    const errorHandler = function(err) {
+    const errorHandler = function (err) {
         console.log(err)
         msgCtrl.sendMsg({
             fromNumber,
@@ -56,7 +56,7 @@ const msg = function(req, res) {
         })
     }
 
-    const closeConnection = function(err) {
+    const closeConnection = function (err) {
         client.close();
         if (err) {
             console.error(err)
@@ -79,8 +79,8 @@ const msg = function(req, res) {
         }
 
         function sendCatalog() {
-            retireveCollections(storeMyShopify, accessToken).then(function(response) {
-                const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx+1}. ${val.node.handle}`).join('\n')
+            retireveCollections(storeMyShopify, accessToken).then(function (response) {
+                const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx + 1}. ${val.node.handle}`).join('\n')
                 msgCtrl.sendMsg({
                     fromNumber,
                     msg: collections
@@ -92,7 +92,7 @@ const msg = function(req, res) {
                         last: 'catalog',
                         catalogs: response.collections.edges
                     }
-                }, function(err, result) {
+                }, function (err, result) {
                     client.close();
                     if (err) {
                         console.error(err)
@@ -106,7 +106,19 @@ const msg = function(req, res) {
         const getSupport = () => {
 
         }
-        const getOrderStatus = () => {
+        const getOrderStatus = (state) => {
+            msgCtrl.sendMsg({
+                fromNumber,
+                msg: `Type your tracking number OR email.`
+            })
+            userStates.updateOne({
+                phone: fromNumber
+            }, {
+                $set: {
+                    last: 'tracking',
+                }
+            }, closeConnection);
+            return;
 
         }
 
@@ -147,6 +159,48 @@ const msg = function(req, res) {
                             break;
                         }
                 }
+            } else if (state.last == 'tracking') {
+                if (msg === Number(msg)) {    // sometimes tracking numbers also contain letters
+                    const tracking_url = `https://t.17track.net/en#nums=${msg}`;
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: `Please open this link to track your order!\n${tracking_url}`
+                    })
+                } else if (/^[a-zA-Z+-0-9]+@[A-Z0-9a-z\.]+$/.test('msg')) {
+                    getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
+                        .then(response => {
+                            const trackNumbers = response.data.orders
+                                .filter(ord => ord.email === msg)
+                                .map(ord => ord.fulfillments.tracking_nunmbers)
+                                .flat();
+                            const arr = Array.from(new Set(trackNumbers));
+                            const ordersListTxt = arr.map((trackNum, idx) => `${idx + 1}. https://t.17track.net/en#nums=${trackNum}`).join('\n');
+                            if (!ordersListTxt) {
+                                msgCtrl.sendMsg({
+                                    fromNumber,
+                                    msg: `There is no order with such email, please recheck your email.`
+                                });
+                                return;
+                            }
+                            const txt = `Orders for email '${msg}':\n${ordersListTxt}`;
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: txt
+                            });
+
+                        }).catch(err => {
+                            console.log(err)
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: 'error on creating tracking url'
+                            });
+                        })
+                } else {
+                    msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: 'Please, write your tracking number OR email correctly'
+                    })
+                }
             } else if (state.last == 'catalog') {
                 if (!state.catalogs[msg - 1]) {
                     msgCtrl.sendMsg({
@@ -159,7 +213,7 @@ const msg = function(req, res) {
                 getProductsByCollectionHandle(storeMyShopify, accessToken, handle)
                     .then(response => {
                         const products = response.collectionByHandle.products.edges;
-                        let txt = products.map((pr, idx) => `${idx+1}. ${pr.node.handle}`).join('\n');
+                        let txt = products.map((pr, idx) => `${idx + 1}. ${pr.node.handle}`).join('\n');
                         txt = `Select Product:\n` + txt;
 
                         msgCtrl.sendMsg({
@@ -173,7 +227,7 @@ const msg = function(req, res) {
                                 last: 'products',
                                 products: products
                             }
-                        }, function(err, result) {
+                        }, function (err, result) {
                             client.close();
                             if (err) {
                                 console.error(err)
@@ -190,46 +244,45 @@ const msg = function(req, res) {
                 }
                 const productID = state.products[msg - 1].node.id;
                 retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
-                .then(response => {
-                    const variants = response.node.variants.edges;
-                    const variantsSize = variants.length;
-                    variants.forEach((item, idx) => {
-                        const title = item.node.title
-                        const imgUrl = item.node.image.originalSrc;
-                        msgCtrl.sendMsg({
-                            fromNumber: fromNumber,
-                            msg: `${idx + 1}. ${title}`,
-                            mediaUrl: imgUrl
+                    .then(response => {
+                        const variants = response.node.variants.edges;
+                        const variantsSize = variants.length;
+                        variants.forEach((item, idx) => {
+                            const title = item.node.title
+                            const imgUrl = item.node.image.originalSrc;
+                            msgCtrl.sendMsg({
+                                fromNumber: fromNumber,
+                                msg: `${idx + 1}. ${title}`,
+                                mediaUrl: imgUrl
+                            })
+                            if (idx == variantsSize - 1) {
+                                setTimeout(() => {
+
+                                    let txt = variants.map((v, idx) => `${idx + 1}. ${v.node.id}`).join('\n');
+                                    txt = "Select variants:\n" + txt;
+                                    msgCtrl.sendMsg({
+                                        fromNumber,
+                                        msg: txt,
+
+                                    })
+                                    userStates.updateOne({
+                                        phone: fromNumber
+                                    }, {
+                                        $set: {
+                                            last: 'variants',
+                                            variants: variants
+                                        }
+                                    }, function (err, result) {
+                                        client.close();
+                                        if (err) {
+                                            console.error(err)
+                                        }
+                                    });
+                                }, 3000);
+                            }
                         })
-                        if (idx == variantsSize - 1) {
-                            setTimeout(() => {
 
-                                let txt = variants.map((v, idx) => `${idx + 1}. ${v.node.id}`).join('\n');
-                                txt = "Select variants:\n" + txt;
-                                msgCtrl.sendMsg({
-                                    fromNumber,
-                                    msg: txt,
-
-                                })
-                                userStates.updateOne({
-                                    phone: fromNumber
-                                }, {
-                                    $set: {
-                                        last: 'variants',
-                                        variants: variants
-                                    }, 
-                                    
-                                }, function (err, result) {
-                                    client.close();
-                                    if (err) {
-                                        console.error(err)
-                                    }
-                                });
-                            }, 3000);
-                        }
                     })
-
-                })
             } else if (state.last == 'variants') {
                 if (!state.variants[msg - 1]) {
                     msgCtrl.sendMsg({
@@ -264,7 +317,7 @@ const msg = function(req, res) {
                         last: 'added-to-cart',
                         storedLineItems: storedLineItems
                     }
-                }, function(err, result) {
+                }, function (err, result) {
                     client.close();
                     if (err) {
                         console.error(err)
@@ -306,7 +359,7 @@ const msg = function(req, res) {
                                         last: 'completed',
                                         storedLineItems: []
                                     }
-                                }, function(err) {
+                                }, function (err) {
                                     client.close();
                                     if (err) {
                                         console.error(err)
@@ -314,35 +367,45 @@ const msg = function(req, res) {
                                 });
                             }).catch(errorHandler)
                         }
+                        break;
+                    default:
+                        {
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: 'Please, send right command'
+                            })
+                            break;
+                        }
+
                 }
             }
         }
         const db = client.db("test");
         const userStates = db.collection('userStates');
 
-        if(msg.toLowerCase() == 'discount'){
-                const discountSlug = generateSlug();
-                shopifyDiscountCreate(storeMyShopify, apiVersion,storeAPIkey,storePassword, price_rule_id, discountSlug)
-                .then(response=> {
+        if (msg.toLowerCase() == 'discount') {
+            const discountSlug = generateSlug();
+            shopifyDiscountCreate(storeMyShopify, apiVersion, storeAPIkey, storePassword, price_rule_id, discountSlug)
+                .then(response => {
                     const code = response.data.discount_code.code;
                     const discounted_url = `http://${storeMyShopify}/discount/${code}`;
                     const discounts = db.collection('discounts');
                     discounts.insertOne({
                         discountCode: discountSlug,
                         phone: fromNumber
-                    }).then(()=>{
+                    }).then(() => {
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: `Here is your promocode: ${discounted_url}`
                         });
-                    }).catch(err=>{
+                    }).catch(err => {
                         console.log(err)
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: 'error on creating discount'
                         });
                     })
-                }).catch(err=>{
+                }).catch(err => {
                     console.log(err)
                     msgCtrl.sendMsg({
                         fromNumber,
@@ -354,15 +417,15 @@ const msg = function(req, res) {
         }
 
         userStates.findOne({
-                phone: fromNumber
-            }).then(function(state) {
-                if (!state) {
-                    createNewDialog();
-                } else {
-                    console.log('continueDialog')
-                    continueDialog(state);
-                }
-            })
+            phone: fromNumber
+        }).then(function (state) {
+            if (!state) {
+                createNewDialog();
+            } else {
+                console.log('continueDialog')
+                continueDialog(state);
+            }
+        })
             .catch(errorHandler)
 
     }
