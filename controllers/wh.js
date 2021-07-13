@@ -303,7 +303,7 @@ const msg = function(req, res) {
                         title
                     })
 
-                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2. See my cart. \n3.Proceed to payment.`;
+                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.`;
 
                 msgCtrl.sendMsg({
                     fromNumber,
@@ -319,7 +319,7 @@ const msg = function(req, res) {
                 }, function(err, result) {
                     client.close();
                     if (err) {
-                        console.error(err)
+                        console.log(err)
                     }
                 });
 
@@ -332,7 +332,7 @@ const msg = function(req, res) {
                         const txt = storedLineItems.filter(x => x.title && x.quantity).map(({
                             title,
                             quantity
-                        }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n') + '\n 1. Delete item'
+                        }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n') + '\n 1. Continue \n 2. Delete item \n 3. Back   '
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: txt
@@ -364,13 +364,13 @@ const msg = function(req, res) {
                                     phone: fromNumber
                                 }, {
                                     $set: {
-                                        last: 'completed',
+                                        last: 'variants',
                                         storedLineItems: []
                                     }
                                 }, function(err) {
                                     client.close();
                                     if (err) {
-                                        console.error(err)
+                                        console.log(err)
                                     }
                                 });
                             }).catch(errorHandler)
@@ -387,7 +387,24 @@ const msg = function(req, res) {
                 }
             }else if (state.last == 'cart'){
                 switch(msg){
-                    case '1':
+
+                    case '1':{
+                        userStates.updateOne({
+                            phone: fromNumber
+                        }, {
+                            $set: {
+                                last: 'completed',
+
+                            }
+                        }, function(err) {
+                            client.close();
+                            if (err) {
+                                console.error(err)
+                            }
+                        });
+                        break;
+                    }
+                    case '2':{
                         const txt = storedLineItems.filter(x => x.title && x.quantity).map(({
                             title,
                             quantity
@@ -410,6 +427,26 @@ const msg = function(req, res) {
                             }
                         });
                         break;
+                    }
+
+                    case '3':{
+                        userStates.updateOne({
+                            phone: fromNumber
+                        }, {
+                            $set: {
+                                last: '',
+
+                            }
+                        }, function(err) {
+                            client.close();
+                            if (err) {
+                                console.error(err)
+                            }
+                        });
+                        break;
+
+                    }
+
                     default :    {
                         msgCtrl.sendMsg({
                             fromNumber,
