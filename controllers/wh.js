@@ -171,7 +171,7 @@ const msg = function (req, res) {
                         .then(response => {
                             const trackNumbers = response.data.orders
                                 .filter(ord => ord.email === msg)
-                                .map(ord => ord.tracking_nunmbers)
+                                .map(ord => ord.fulfillments.tracking_nunmbers)
                                 .flat();
                             const arr = Array.from(new Set(trackNumbers));
                             const ordersListTxt = arr.map((trackNum, idx) => `${idx + 1}. https://t.17track.net/en#nums=${trackNum}`).join('\n');
