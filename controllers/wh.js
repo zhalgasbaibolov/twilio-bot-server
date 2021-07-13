@@ -24,7 +24,7 @@ const {
 const {
     getAllOrders
 } = require("../getAllOrders");
-const msg = function (req, res) {
+const msg = function(req, res) {
     res.status(200).send("");
 
     const fromNumber = req.body.From || req.body['From'];
@@ -48,7 +48,7 @@ const msg = function (req, res) {
     });
 
 
-    const errorHandler = function (err) {
+    const errorHandler = function(err) {
         console.log(err)
         msgCtrl.sendMsg({
             fromNumber,
@@ -56,7 +56,7 @@ const msg = function (req, res) {
         })
     }
 
-    const closeConnection = function (err) {
+    const closeConnection = function(err) {
         client.close();
         if (err) {
             console.error(err)
@@ -79,7 +79,7 @@ const msg = function (req, res) {
         }
 
         function sendCatalog() {
-            retireveCollections(storeMyShopify, accessToken).then(function (response) {
+            retireveCollections(storeMyShopify, accessToken).then(function(response) {
                 const collections = "Select catalog:\n" + response.collections.edges.map((val, idx) => `${idx + 1}. ${val.node.handle}`).join('\n')
                 msgCtrl.sendMsg({
                     fromNumber,
@@ -92,7 +92,7 @@ const msg = function (req, res) {
                         last: 'catalog',
                         catalogs: response.collections.edges
                     }
-                }, function (err, result) {
+                }, function(err, result) {
                     client.close();
                     if (err) {
                         console.error(err)
@@ -222,7 +222,7 @@ const msg = function (req, res) {
                                 last: 'products',
                                 products: products
                             }
-                        }, function (err, result) {
+                        }, function(err, result) {
                             client.close();
                             if (err) {
                                 console.error(err)
@@ -230,7 +230,7 @@ const msg = function (req, res) {
                         });
                     })
             } else if (state.last == 'products') {
-                
+
                 if (!state.products[msg - 1]) {
                     msgCtrl.sendMsg({
                         fromNumber,
@@ -269,7 +269,7 @@ const msg = function (req, res) {
                                             last: 'variants',
                                             variants: variants
                                         }
-                                    }, function (err, result) {
+                                    }, function(err, result) {
                                         client.close();
                                         if (err) {
                                             console.error(err)
@@ -288,7 +288,10 @@ const msg = function (req, res) {
                     })
                     return
                 }
-                const { id: variantID, title } = state.variants[msg - 1].node;
+                const {
+                    id: variantID,
+                    title
+                } = state.variants[msg - 1].node;
                 const storedLineItems = state.storedLineItems || [];
                 const existsVariant = storedLineItems.find(x => x.variantId === variantID);
                 if (existsVariant)
@@ -313,7 +316,7 @@ const msg = function (req, res) {
                         last: 'added-to-cart',
                         storedLineItems: storedLineItems
                     }
-                }, function (err, result) {
+                }, function(err, result) {
                     client.close();
                     if (err) {
                         console.error(err)
@@ -326,7 +329,10 @@ const msg = function (req, res) {
                         sendCatalog();
                         break;
                     case '2':
-                        const txt = storedLineItems.filter(x => x.title && x.quantity).map(({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
+                        const txt = storedLineItems.filter(x => x.title && x.quantity).map(({
+                            title,
+                            quantity
+                        }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: txt
@@ -337,7 +343,7 @@ const msg = function (req, res) {
                             $set: {
                                 last: 'cart'
                             }
-                        }, function (err) {
+                        }, function(err) {
                             client.close();
                             if (err) {
                                 console.error(err)
@@ -360,7 +366,7 @@ const msg = function (req, res) {
                                         last: 'completed',
                                         storedLineItems: []
                                     }
-                                }, function (err) {
+                                }, function(err) {
                                     client.close();
                                     if (err) {
                                         console.error(err)
@@ -369,11 +375,13 @@ const msg = function (req, res) {
                             }).catch(errorHandler)
                         }
                         break;
-                    default: 
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: 'Please,send right command'
-                        });
+                    default:
+                        {
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: 'Please,send right command'
+                            });
+                        }
                         break;
                 }
             }
@@ -415,15 +423,15 @@ const msg = function (req, res) {
         }
 
         userStates.findOne({
-            phone: fromNumber
-        }).then(function (state) {
-            if (!state) {
-                createNewDialog();
-            } else {
-                console.log('continueDialog')
-                continueDialog(state);
-            }
-        })
+                phone: fromNumber
+            }).then(function(state) {
+                if (!state) {
+                    createNewDialog();
+                } else {
+                    console.log('continueDialog')
+                    continueDialog(state);
+                }
+            })
             .catch(errorHandler)
 
     }
