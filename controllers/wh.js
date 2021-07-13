@@ -332,7 +332,7 @@ const msg = function(req, res) {
                         const txt = storedLineItems.filter(x => x.title && x.quantity).map(({
                             title,
                             quantity
-                        }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
+                        }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n') + '\n 1. Delete item'
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: txt
@@ -341,7 +341,8 @@ const msg = function(req, res) {
                             phone: fromNumber
                         }, {
                             $set: {
-                                last: 'cart'
+                                last: 'cart',
+
                             }
                         }, function(err) {
                             client.close();
@@ -384,8 +385,67 @@ const msg = function(req, res) {
                         }
                         break;
                 }
+            }else if (state.last == 'cart'){
+                switch(msg){
+                    case '1':
+                        const txt = storedLineItems.filter(x => x.title && x.quantity).map(({
+                            title,
+                            quantity
+                        }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n') + '\n Select item that you delete '
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: txt
+                        })
+                        userStates.updateOne({
+                            phone: fromNumber
+                        }, {
+                            $set: {
+                                last: 'removeitem',
+
+                            }
+                        }, function(err) {
+                            client.close();
+                            if (err) {
+                                console.error(err)
+                            }
+                        });
+                        break;
+                    default :    {
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: 'Please,send right command'
+                        });
+                    }
+                    break;
+                }
+            }else if (state.last == 'removeitem'){
+
+                const newList = storedLineItems.filter((t) =>{
+
+                    return t.variantId == msg;
+
+                })
+
+                userStates.updateOne({
+                    phone: fromNumber
+                }, {
+                    $set: {
+                        last: 'added-to-cart',
+                        storedLineItems:newList,
+
+                    }
+                }, function(err) {
+                    client.close();
+                    if (err) {
+                        console.error(err)
+                    }
+                });
+                break;
+
+                
             }
         }
+        
         const db = client.db("test");
         const userStates = db.collection('userStates');
 
