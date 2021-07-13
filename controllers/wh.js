@@ -25,8 +25,8 @@ const {
     shopifyDiscountCreate
 } = require("./discountRestAPI");
 const {
-    getOrderStatus
-} = require("../getOrderStatus");
+    getAllOrders
+} = require("../getAllOrders");
 const msg = function (req, res) {
     res.status(200).send("");
 
@@ -169,15 +169,28 @@ const msg = function (req, res) {
                         fromNumber,
                         msg: `Please open this link to track your order!\n${tracking_url}`
                     })
-                } else if (/^[a-zA-Z+-0-9]+@[A-Z0-9a-z\.]+$/.test('msg')) { // user email = json email??? msg === response.data.orders.email
-                    getOrderStatus(storeMyShopify, apiVersion, storeAPIkey, storePassword, newDate)
+                } else if (/^[a-zA-Z+-0-9]+@[A-Z0-9a-z\.]+$/.test('msg')) {
+                    getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
                         .then(response => {
-                            const tracking_number = response.data.orders.fulfillments.tracking_number;
-                            const tracking_url2 = `https://t.17track.net/en#nums=${tracking_number}`;
+                            const trackNumbers = response.data.orders
+                                .filter(ord => ord.email === msg)
+                                .map(ord => ord.tracking_nunmbers)
+                                .flat();
+                            const arr = Array.from(new Set(trackNumbers));
+                            const ordersListTxt = arr.map((trackNum, idx) => `${idx + 1}. https://t.17track.net/en#nums=${trackNum}`).join('\n');
+                            if (!ordersListTxt) {
+                                msgCtrl.sendMsg({
+                                    fromNumber,
+                                    msg: `There is no order with such email, please recheck your email.`
+                                });
+                                return;
+                            }
+                            const txt = `Orders for email '${msg}':\n${ordersListTxt}`;
                             msgCtrl.sendMsg({
                                 fromNumber,
-                                msg: `Please open this link to track your order!\n${tracking_url2}`
+                                msg: txt
                             });
+
                         }).catch(err => {
                             console.log(err)
                             msgCtrl.sendMsg({
@@ -185,9 +198,6 @@ const msg = function (req, res) {
                                 msg: 'error on creating tracking url'
                             });
                         })
-
-                    return
-
                 } else {
                     msgCtrl.sendMsg({
                         fromNumber,

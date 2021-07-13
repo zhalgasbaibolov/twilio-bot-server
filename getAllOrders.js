@@ -3,18 +3,17 @@ const axios = require("axios");
 
 
 
-async function getOrderStatus(
+async function getAllOrders(
 
-    //???? what variables i need to use
     storeMyShopify,
     apiVersion,
     storeAPIkey,
     storePassword,
-    newDate
+    enterDate = new Date()
 ) {
-    var enterDate = new Date();
-    enterDate.setDate(enterDate.getDate() - 5); // subtract 5 days from now
-    var newDate = enterDate.toISOString(); // shopify api need: updated_at_min=2005-07-31T15:57:11-04:00 format
+    enterDate.setDate(enterDate.getDate() - 5);
+    let newDate = enterDate.toISOString();
+    newDate = newDate.substring(0, newDate.length - 5);
 
     const url_lastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json?updated_at_min=${newDate}`;
 
@@ -35,5 +34,5 @@ async function getOrderStatus(
         });
 }
 
-exports.getOrderStatus = getOrderStatus;
+exports.getAllOrders = getAllOrders;
 module.exports = exports;
