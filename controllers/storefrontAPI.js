@@ -126,6 +126,7 @@ const retireveVariantsOfProduct = async(
 };
 
 const createCheckout = async(storeMyShopify, accessToken, variantId) => {
+  
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
     const graphQLClient = new GraphQLClient(endpoint, {
