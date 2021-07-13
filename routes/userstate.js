@@ -6,7 +6,3 @@ const router = express.Router();
 router.post('/', UserState.createUser);
 
 export default router;
-
-
-
-////////////////
