@@ -17,7 +17,6 @@ async function getAbandonedCart(
       },
     })
     .then(function (response) {
-      console.log(response);
       return response;
     })
     .catch(function (error) {
