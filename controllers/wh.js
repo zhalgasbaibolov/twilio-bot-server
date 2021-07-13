@@ -330,6 +330,7 @@ const msg = function(req, res) {
                         break;
                     case '2':
                         {
+                            const storedLineItems = state.storedLineItems || [];
                             const txt = storedLineItems.filter(x => x.title && x.quantity).map(({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
                             msgCtrl.sendMsg({
                                 fromNumber,
