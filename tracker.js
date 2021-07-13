@@ -27,7 +27,7 @@ setInterval(() => {
                 for (let j = 0; j < ourDiscounts.length; j++) {
                     for (let i = 0; i < allCarts; i++) {
                         if (ourDiscounts[j].discount == allCards[i].discount) {
-                            console.log(`user ${ourDiscounts[j].phone} has ${allCarts[i].discount} discount`)
+                            console.log(`user ${ourDiscounts[j].phone} abandoned cart with ${allCarts[i].discount} discount`)
                         } 
                     }
                 }

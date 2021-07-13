@@ -36,7 +36,7 @@ async function shopifyStoreDiscountsInitialize(
       },
     })
     .then(function (response) {
-      console.log("resposne is (price rule create):   ", response);
+      console.log("response is (price rule create):   ", response);
       return response;
     })
     .catch(function (error) {

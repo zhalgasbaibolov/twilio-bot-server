@@ -217,7 +217,8 @@ const msg = function(req, res) {
                                     $set: {
                                         last: 'variants',
                                         variants: variants
-                                    }
+                                    }, 
+                                    
                                 }, function (err, result) {
                                     client.close();
                                     if (err) {
@@ -238,6 +239,7 @@ const msg = function(req, res) {
                     return
                 }
                 const variantID = state.variants[msg - 1].node.id;
+                const productTitle = state.variants[msg-1].node.title;
                 const storedLineItems = state.storedLineItems || [];
                 const existsVariant = storedLineItems.find(x => x.variantId === variantID);
                 if (existsVariant)
@@ -245,10 +247,11 @@ const msg = function(req, res) {
                 else
                     storedLineItems.push({
                         variantId: variantID,
-                        quantity: 1
+                        quantity: 1,
+                        title: productTitle
                     })
 
-                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.`;
+                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2. See my cart. \n3.Proceed to payment.`;
 
                 msgCtrl.sendMsg({
                     fromNumber,
@@ -273,7 +276,21 @@ const msg = function(req, res) {
                     case '1':
                         sendCatalog();
                         break;
-                    case '2':
+                    case'2':
+                        let txt = '' ;
+                        let title;
+                        let quantity;
+                        for (let i=0; i<storedLineItems.length; i++){
+                            title = storedLineItems[i].title
+                            quantity = storedLineItems[i].quantity
+                            txt += i + '. ' + title + ': ' + quantity + '\n'
+                        }
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: txt
+                        })
+                        break;
+                    case '3':
                         {
                             createCheckoutList(storeMyShopify, accessToken, state.storedLineItems).then(createdCheckoutInfo => {
                                 const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ` +
