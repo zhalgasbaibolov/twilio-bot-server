@@ -291,7 +291,7 @@ const msg = function (req, res) {
                     })
                     return
                 }
-                const variantID = state.variants[msg - 1].node.id;
+                const { id: variantID, title } = state.variants[msg - 1].node;
                 const storedLineItems = state.storedLineItems || [];
                 const existsVariant = storedLineItems.find(x => x.variantId === variantID);
                 if (existsVariant)
@@ -299,10 +299,11 @@ const msg = function (req, res) {
                 else
                     storedLineItems.push({
                         variantId: variantID,
-                        quantity: 1
+                        quantity: 1,
+                        title
                     })
 
-                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.Proceed to payment.`;
+                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2. See my cart. \n3.Proceed to payment.`;
 
                 msgCtrl.sendMsg({
                     fromNumber,
@@ -328,6 +329,13 @@ const msg = function (req, res) {
                         sendCatalog();
                         break;
                     case '2':
+                        const txt = storedLineItems.map(({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: txt
+                        })
+                        break;
+                    case '3':
                         {
                             createCheckoutList(storeMyShopify, accessToken, state.storedLineItems).then(createdCheckoutInfo => {
                                 const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ` +
