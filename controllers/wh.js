@@ -291,8 +291,7 @@ const msg = function (req, res) {
                     })
                     return
                 }
-                const variantID = state.variants[msg - 1].node.id;
-                const productTitle = state.variants[msg-1].node.title;
+                const { id: variantID, title } = state.variants[msg - 1].node;
                 const storedLineItems = state.storedLineItems || [];
                 const existsVariant = storedLineItems.find(x => x.variantId === variantID);
                 if (existsVariant)
@@ -301,7 +300,7 @@ const msg = function (req, res) {
                     storedLineItems.push({
                         variantId: variantID,
                         quantity: 1,
-                        title: productTitle
+                        title
                     })
 
                 const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2. See my cart. \n3.Proceed to payment.`;
@@ -329,15 +328,8 @@ const msg = function (req, res) {
                     case '1':
                         sendCatalog();
                         break;
-                    case'2':
-                        let txt = '' ;
-                        let title;
-                        let quantity;
-                        for (let i=0; i<storedLineItems.length; i++){
-                            title = storedLineItems[i].title
-                            quantity = storedLineItems[i].quantity
-                            txt += i + '. ' + title + ': ' + quantity + '\n'
-                        }
+                    case '2':
+                        const txt = storedLineItems.map(({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: txt
