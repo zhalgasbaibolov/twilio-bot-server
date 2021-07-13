@@ -303,16 +303,29 @@ const msg = function(req, res) {
         const db = client.db("test");
         const userStates = db.collection('userStates');
 
-        if (msg.toLowerCase() == 'discount') {
-            shopifyDiscountCreate(storeMyShopify, apiVersion, storeAPIkey, storePassword, price_rule_id, generateSlug())
-                .then(response => {
+        if(msg.toLowerCase() == 'discount'){
+                const discountSlug = generateSlug();
+                shopifyDiscountCreate(storeMyShopify, apiVersion,storeAPIkey,storePassword, price_rule_id, discountSlug)
+                .then(response=> {
                     const code = response.data.discount_code.code;
                     const discounted_url = `http://${storeMyShopify}/discount/${code}`;
-                    msgCtrl.sendMsg({
-                        fromNumber,
-                        msg: `Here is your promocode: ${discounted_url}`
-                    });
-                }).catch(err => {
+                    const discounts = db.collection('discounts');
+                    discounts.insertOne({
+                        discountCode: discountSlug,
+                        phone: fromNumber
+                    }).then(()=>{
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: `Here is your promocode: ${discounted_url}`
+                        });
+                    }).catch(err=>{
+                        console.log(err)
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: 'error on creating discount'
+                        });
+                    })
+                }).catch(err=>{
                     console.log(err)
                     msgCtrl.sendMsg({
                         fromNumber,
