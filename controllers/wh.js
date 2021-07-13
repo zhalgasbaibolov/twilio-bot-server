@@ -303,7 +303,7 @@ const msg = function (req, res) {
                         title
                     })
 
-                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2. See my cart. \n3.Proceed to payment.`;
+                const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.`;
 
                 msgCtrl.sendMsg({
                     fromNumber,
@@ -319,7 +319,7 @@ const msg = function (req, res) {
                 }, function (err, result) {
                     client.close();
                     if (err) {
-                        console.error(err)
+                        console.log(err)
                     }
                 });
 
@@ -329,23 +329,25 @@ const msg = function (req, res) {
                         sendCatalog();
                         break;
                     case '2':
-                        const txt = storedLineItems.filter(x => x.title && x.quantity).map(({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
-                        msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: txt
-                        })
-                        userStates.updateOne({
-                            phone: fromNumber
-                        }, {
-                            $set: {
-                                last: 'cart'
-                            }
-                        }, function (err) {
-                            client.close();
-                            if (err) {
-                                console.error(err)
-                            }
-                        });
+                        {
+                            const txt = storedLineItems.filter(x => x.title && x.quantity).map(({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: txt
+                            })
+                            userStates.updateOne({
+                                phone: fromNumber
+                            }, {
+                                $set: {
+                                    last: 'cart'
+                                }
+                            }, function (err) {
+                                client.close();
+                                if (err) {
+                                    console.log(err)
+                                }
+                            });
+                        }
                         break;
                     case '3':
                         {
@@ -366,7 +368,7 @@ const msg = function (req, res) {
                                 }, function (err) {
                                     client.close();
                                     if (err) {
-                                        console.error(err)
+                                        console.log(err)
                                     }
                                 });
                             }).catch(errorHandler)
