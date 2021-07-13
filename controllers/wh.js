@@ -160,7 +160,7 @@ const msg = function (req, res) {
                         }
                 }
             } else if (state.last == 'tracking') {
-                if (msg === Number(msg)) {    // sometimes tracking numbers also contain letters
+                if (msg == Number(msg)) {    // sometimes tracking numbers also contain letters
                     const tracking_url = `https://t.17track.net/en#nums=${msg}`;
                     msgCtrl.sendMsg({
                         fromNumber,
