@@ -24,6 +24,9 @@ const {
 const {
     shopifyDiscountCreate
 } = require("./discountRestAPI");
+const {
+    getOrderStatus
+} = require("../getOrderStatus");
 const msg = function (req, res) {
     res.status(200).send("");
 
@@ -160,17 +163,35 @@ const msg = function (req, res) {
                         }
                 }
             } else if (state.last == 'tracking') {
-                if (msg === Number(msg)) {
+                if (msg === Number(msg)) {    // sometimes tracking numbers also contain letters
+                    const tracking_url = `https://t.17track.net/en#nums=${msg}`;
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: `https://t.17track.net/en#nums=${msg}`
+                        msg: `Please open this link to track your order!\n${tracking_url}`
                     })
-                } else if (/^[a-zA-Z+-0-9]+@[A-Z0-9a-z\.]+$/.test('msg')) {
+                } else if (/^[a-zA-Z+-0-9]+@[A-Z0-9a-z\.]+$/.test('msg')) { // user email = json email??? msg === response.data.orders.email
+                    getOrderStatus(storeMyShopify, apiVersion, storeAPIkey, storePassword, newDate)
+                        .then(response => {
+                            const tracking_number = response.data.orders.fulfillments.tracking_number;
+                            const tracking_url2 = `https://t.17track.net/en#nums=${tracking_number}`;
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: `Please open this link to track your order!\n${tracking_url2}`
+                            });
+                        }).catch(err => {
+                            console.log(err)
+                            msgCtrl.sendMsg({
+                                fromNumber,
+                                msg: 'error on creating tracking url'
+                            });
+                        })
+
+                    return
 
                 } else {
                     msgCtrl.sendMsg({
                         fromNumber,
-                        msg: 'Please, send right command'
+                        msg: 'Please, write your tracking number OR email correctly'
                     })
                 }
             } else if (state.last == 'catalog') {
