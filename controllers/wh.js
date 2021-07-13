@@ -297,6 +297,16 @@ const msg = function(req, res) {
                                 });
                             }).catch(errorHandler)
                         }
+                        break;
+                        default:
+                            {
+                                msgCtrl.sendMsg({
+                                    fromNumber,
+                                    msg: 'Please, send right command'
+                                })
+                                break;
+                            }
+
                 }
             }
         }
