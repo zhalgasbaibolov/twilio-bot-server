@@ -181,35 +181,42 @@ const msg = function(req, res) {
                         });
                     })
             } else if (state.last == 'products') {
+
                 if (!state.products[msg - 1]) {
+
                     msgCtrl.sendMsg({
                         fromNumber,
                         msg: 'Please, send right command'
                     })
                     return
-                }
+
+                };
+
                 const productID = state.products[msg - 1].node.id;
                 retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
                 .then(response => {
                     const variants = response.node.variants.edges;
                     const variantsSize = variants.length;
                     variants.forEach((item, idx) => {
+                        
                         const title = item.node.title
                         const imgUrl = item.node.image.originalSrc;
+
+
                         msgCtrl.sendMsg({
                             fromNumber: fromNumber,
                             msg: `${idx + 1}. ${title}`,
                             mediaUrl: imgUrl
                         })
+
                         if (idx == variantsSize - 1) {
                             setTimeout(() => {
 
-                                let txt = variants.map((v, idx) => `${idx + 1}. ${v.node.id}`).join('\n');
+                                let txt = variants.map((v, idx) => `${idx + 1}. ${v.node.title}`).join('\n');
                                 txt = "Select variants:\n" + txt;
                                 msgCtrl.sendMsg({
                                     fromNumber,
                                     msg: txt,
-
                                 })
                                 userStates.updateOne({
                                     phone: fromNumber
