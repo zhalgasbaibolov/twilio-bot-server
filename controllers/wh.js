@@ -189,7 +189,7 @@ const msg = function (req, res) {
                                 msg: 'error on creating tracking url'
                             });
                         })
-                } else {    // sometimes tracking numbers also contain letters
+                } else {
                     const tracking_url = `https://t.17track.net/en#nums=${msg}`;
                     msgCtrl.sendMsg({
                         fromNumber,
