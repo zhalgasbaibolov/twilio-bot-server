@@ -324,11 +324,23 @@ const msg = function (req, res) {
                         sendCatalog();
                         break;
                     case '2':
-                        const txt = storedLineItems.map(({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
+                        const txt = storedLineItems.filter(x => x.title && x.quantity).map(({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`).join('\n');
                         msgCtrl.sendMsg({
                             fromNumber,
                             msg: txt
                         })
+                        userStates.updateOne({
+                            phone: fromNumber
+                        }, {
+                            $set: {
+                                last: 'cart'
+                            }
+                        }, function (err) {
+                            client.close();
+                            if (err) {
+                                console.error(err)
+                            }
+                        });
                         break;
                     case '3':
                         {
