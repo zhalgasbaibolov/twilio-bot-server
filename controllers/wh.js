@@ -230,6 +230,7 @@ const msg = function (req, res) {
                         });
                     })
             } else if (state.last == 'products') {
+                
                 if (!state.products[msg - 1]) {
                     msgCtrl.sendMsg({
                         fromNumber,
@@ -237,6 +238,7 @@ const msg = function (req, res) {
                     })
                     return
                 }
+
                 const productID = state.products[msg - 1].node.id;
                 retireveVariantsOfProduct(storeMyShopify, accessToken, productID)
                     .then(response => {
@@ -367,15 +369,12 @@ const msg = function (req, res) {
                             }).catch(errorHandler)
                         }
                         break;
-                    default:
-                        {
-                            msgCtrl.sendMsg({
-                                fromNumber,
-                                msg: 'Please, send right command'
-                            })
-                            break;
-                        }
-
+                    default: 
+                        msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: 'Please,send right command'
+                        });
+                        break;
                 }
             }
         }
