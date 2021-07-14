@@ -24,11 +24,11 @@ const {
   getAllOrders,
 } = require('../getAllOrders');
 
-const userDiscount = require("../db/models/UserDiscountModel")
+const UserDiscount = require('../db/models/UserDiscountModel');
 
-const discount = new userDiscount({phone: 'string', discountCode: 'string'});
+const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
 
-discount.save(function (err) {
+discount.save((err) => {
   if (err) return console.log(err);
   // saved!
 });
