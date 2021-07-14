@@ -1,13 +1,17 @@
-const getConnect = require("../db/mongo").getConnect;
-const msgCtrl = require("../controllers/msg");
-const { generateSlug } = require("random-word-slugs");
+const {
+  generateSlug,
+} = require('random-word-slugs');
+const {
+  getConnect,
+} = require('../db/mongo');
+const msgCtrl = require('./msg');
 
-const accessToken = "0386d977a264448a1b62c295ac542a0d";
-const storeAPIkey = "0f6b58da9331414de7ed1d948c67ac35";
-const storePassword = "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";
-const storeMyShopify = "fat-cat-studio.myshopify.com";
-const price_rule_id = "950294741183";
-const apiVersion = "2021-04";
+const accessToken = '0386d977a264448a1b62c295ac542a0d';
+const storeAPIkey = '0f6b58da9331414de7ed1d948c67ac35';
+const storePassword = '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';
+const storeMyShopify = 'fat-cat-studio.myshopify.com';
+const price_rule_id = '950294741183';
+const apiVersion = '2021-04';
 const {
   retireveCollections,
   createCheckout,
@@ -15,16 +19,21 @@ const {
   updateCheckout,
   getProductsByCollectionHandle,
   retireveVariantsOfProduct,
-} = require("./storefrontAPI");
-const { shopifyDiscountCreate } = require("./discountRestAPI");
-const { getAllOrders } = require("../getAllOrders");
-const msg = function (req, res) {
-  res.status(200).send("");
+} = require('./storefrontAPI');
+const {
+  shopifyDiscountCreate,
+} = require('./discountRestAPI');
+const {
+  getAllOrders,
+} = require('../getAllOrders');
 
-  const fromNumber = req.body.From || req.body["From"];
-  if ("whatsapp:+14155238886" === fromNumber) return;
-  const msg = req.body.Body || req.body["Body"];
-  console.log("wh controller", fromNumber, msg, req.body);
+const msg = function (req, res) {
+  res.status(200).send('');
+
+  const fromNumber = req.body.From || req.body.From;
+  if (fromNumber === 'whatsapp:+14155238886') return;
+  const msg = req.body.Body || req.body.Body;
+  console.log('wh controller', fromNumber, msg, req.body);
 
   const client = getConnect();
   client.connect((connecionError) => {
@@ -32,7 +41,7 @@ const msg = function (req, res) {
       console.log(connecionError);
       msgCtrl.sendMsg({
         fromNumber,
-        msg: "connecionError",
+        msg: 'connecionError',
       });
       return;
     }
@@ -59,26 +68,25 @@ const msg = function (req, res) {
       userStates
         .insertOne({
           phone: fromNumber,
-          last: "main",
+          last: 'main',
         })
         .then(() => {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: `Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`,
+            msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status',
           });
           client.close();
         });
     }
 
     function sendCatalog() {
-      retireveCollections(storeMyShopify, accessToken).then(function (
-        response
-      ) {
-        const collections =
-          "Select catalog:\n" +
+      retireveCollections(storeMyShopify, accessToken).then((
+        response,
+      ) => {
+        const collections = `Select catalog:\n${
           response.collections.edges
             .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
-            .join("\n");
+            .join('\n')}`;
         msgCtrl.sendMsg({
           fromNumber,
           msg: collections,
@@ -89,16 +97,16 @@ const msg = function (req, res) {
           },
           {
             $set: {
-              last: "catalog",
+              last: 'catalog',
               catalogs: response.collections.edges,
             },
           },
-          function (err, result) {
+          (err, result) => {
             client.close();
             if (err) {
               console.error(err);
             }
-          }
+          },
         );
       });
     }
@@ -107,7 +115,7 @@ const msg = function (req, res) {
     const getOrderStatus = (state) => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `Type your tracking number OR email.`,
+        msg: 'Type your tracking number OR email.',
       });
       userStates.updateOne(
         {
@@ -115,19 +123,18 @@ const msg = function (req, res) {
         },
         {
           $set: {
-            last: "tracking",
+            last: 'tracking',
           },
         },
-        closeConnection
+        closeConnection,
       );
-      return;
     };
 
     function continueDialog(state) {
-      if (msg.toLowerCase() == "main") {
+      if (msg.toLowerCase() == 'main') {
         msgCtrl.sendMsg({
           fromNumber,
-          msg: `Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status`,
+          msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status',
         });
         userStates.updateOne(
           {
@@ -135,34 +142,34 @@ const msg = function (req, res) {
           },
           {
             $set: {
-              last: "main",
+              last: 'main',
             },
           },
-          closeConnection
+          closeConnection,
         );
         return;
       }
 
-      if (state.last == "main") {
+      if (state.last == 'main') {
         switch (msg) {
-          case "1":
+          case '1':
             sendCatalog();
             break;
-          case "2":
+          case '2':
             getSupport();
             break;
-          case "3":
+          case '3':
             getOrderStatus();
             break;
           default: {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: "Please, send right command",
+              msg: 'Please, send right command',
             });
             break;
           }
         }
-      } else if (state.last == "tracking") {
+      } else if (state.last == 'tracking') {
         if (/@/.test(msg)) {
           getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
             .then((response) => {
@@ -173,14 +180,13 @@ const msg = function (req, res) {
               const arr = Array.from(new Set(trackNumbers));
               const ordersListTxt = arr
                 .map(
-                  (trackNum, idx) =>
-                    `${idx + 1}. https://t.17track.net/en#nums=${trackNum}`
+                  (trackNum, idx) => `${idx + 1}. https://t.17track.net/en#nums=${trackNum}`,
                 )
-                .join("\n");
+                .join('\n');
               if (!ordersListTxt) {
                 msgCtrl.sendMsg({
                   fromNumber,
-                  msg: `There is no order with such email, please recheck your email.`,
+                  msg: 'There is no order with such email, please recheck your email.',
                 });
                 return;
               }
@@ -194,7 +200,7 @@ const msg = function (req, res) {
               console.log(err);
               msgCtrl.sendMsg({
                 fromNumber,
-                msg: "error on creating tracking url",
+                msg: 'error on creating tracking url',
               });
             });
         } else {
@@ -204,22 +210,22 @@ const msg = function (req, res) {
             msg: `Please open this link to track your order!\n${tracking_url}`,
           });
         }
-      } else if (state.last == "catalog") {
+      } else if (state.last == 'catalog') {
         if (!state.catalogs[msg - 1]) {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: "Please, send right command",
+            msg: 'Please, send right command',
           });
           return;
         }
-        const handle = state.catalogs[msg - 1].node.handle;
+        const { handle } = state.catalogs[msg - 1].node;
         getProductsByCollectionHandle(storeMyShopify, accessToken, handle).then(
           (response) => {
             const products = response.collectionByHandle.products.edges;
             let txt = products
               .map((pr, idx) => `${idx + 1}. ${pr.node.handle}`)
-              .join("\n");
-            txt = `Select Product:\n` + txt;
+              .join('\n');
+            txt = `Select Product:\n${txt}`;
 
             msgCtrl.sendMsg({
               fromNumber,
@@ -231,24 +237,24 @@ const msg = function (req, res) {
               },
               {
                 $set: {
-                  last: "products",
-                  products: products,
+                  last: 'products',
+                  products,
                 },
               },
-              function (err, result) {
+              (err, result) => {
                 client.close();
                 if (err) {
                   console.error(err);
                 }
-              }
+              },
             );
-          }
+          },
         );
-      } else if (state.last == "products") {
+      } else if (state.last == 'products') {
         if (!state.products[msg - 1]) {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: "Please, send right command",
+            msg: 'Please, send right command',
           });
           return;
         }
@@ -259,10 +265,10 @@ const msg = function (req, res) {
             const variants = response.node.variants.edges;
             const variantsSize = variants.length;
             variants.forEach((item, idx) => {
-              const title = item.node.title;
+              const { title } = item.node;
               const imgUrl = item.node.image.originalSrc;
               msgCtrl.sendMsg({
-                fromNumber: fromNumber,
+                fromNumber,
                 msg: `${idx + 1}. ${title}`,
                 mediaUrl: imgUrl,
               });
@@ -270,8 +276,8 @@ const msg = function (req, res) {
                 setTimeout(() => {
                   let txt = variants
                     .map((v, idx) => `${idx + 1}. ${v.node.id}`)
-                    .join("\n");
-                  txt = "Select variants:\n" + txt;
+                    .join('\n');
+                  txt = `Select variants:\n${txt}`;
                   msgCtrl.sendMsg({
                     fromNumber,
                     msg: txt,
@@ -282,44 +288,45 @@ const msg = function (req, res) {
                     },
                     {
                       $set: {
-                        last: "variants",
-                        variants: variants,
+                        last: 'variants',
+                        variants,
                       },
                     },
-                    function (err, result) {
+                    (err, result) => {
                       client.close();
                       if (err) {
                         console.error(err);
                       }
-                    }
+                    },
                   );
                 }, 3000);
               }
             });
-          }
+          },
         );
-      } else if (state.last == "variants") {
+      } else if (state.last == 'variants') {
         if (!state.variants[msg - 1]) {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: "Please, send right command",
+            msg: 'Please, send right command',
           });
           return;
         }
         const { id: variantID, title } = state.variants[msg - 1].node;
         const storedLineItems = state.storedLineItems || [];
         const existsVariant = storedLineItems.find(
-          (x) => x.variantId === variantID
+          (x) => x.variantId === variantID,
         );
-        if (existsVariant) existsVariant.quantity = existsVariant.quantity + 1;
-        else
+        if (existsVariant) existsVariant.quantity += 1;
+        else {
           storedLineItems.push({
             variantId: variantID,
             quantity: 1,
             title,
           });
+        }
 
-        const txt = `Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.`;
+        const txt = 'Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.';
 
         msgCtrl.sendMsg({
           fromNumber,
@@ -331,31 +338,30 @@ const msg = function (req, res) {
           },
           {
             $set: {
-              last: "added-to-cart",
-              storedLineItems: storedLineItems,
+              last: 'added-to-cart',
+              storedLineItems,
             },
           },
-          function (err, result) {
+          (err, result) => {
             client.close();
             if (err) {
               console.log(err);
             }
-          }
+          },
         );
-      } else if (state.last == "added-to-cart") {
+      } else if (state.last == 'added-to-cart') {
         switch (msg) {
-          case "1":
+          case '1':
             sendCatalog();
             break;
-          case "2":
+          case '2':
             {
               const txt = storedLineItems
                 .filter((x) => x.title && x.quantity)
                 .map(
-                  ({ title, quantity }, idx) =>
-                    `${idx + 1}. ${title}: ${quantity}`
+                  ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
                 )
-                .join("\n");
+                .join('\n');
               msgCtrl.sendMsg({
                 fromNumber,
                 msg: txt,
@@ -366,50 +372,47 @@ const msg = function (req, res) {
                 },
                 {
                   $set: {
-                    last: "cart",
+                    last: 'cart',
                   },
                 },
-                function (err) {
+                (err) => {
                   client.close();
                   if (err) {
                     console.log(err);
                   }
-                }
+                },
               );
             }
             break;
-          case "3":
+          case '3':
             {
               createCheckoutList(
                 storeMyShopify,
                 accessToken,
-                state.storedLineItems
+                state.storedLineItems,
               )
                 .then((createdCheckoutInfo) => {
-                  const txt =
-                    `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ` +
-                    createdCheckoutInfo.checkoutCreate.checkout.webUrl;
+                  const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ${
+                    createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
                   msgCtrl.sendMsg({
                     fromNumber,
                     msg: txt,
                   });
-                  userStates.updateOne(
-                    {
-                      phone: fromNumber,
+                  userStates.updateOne({
+                    phone: fromNumber,
+                  },
+                  {
+                    $set: {
+                      last: 'completed',
+                      storedLineItems: [],
                     },
-                    {
-                      $set: {
-                        last: "completed",
-                        storedLineItems: [],
-                      },
-                    },
-                    function (err) {
-                      client.close();
-                      if (err) {
-                        console.log(err);
-                      }
+                  },
+                  (err) => {
+                    client.close();
+                    if (err) {
+                      console.log(err);
                     }
-                  );
+                  });
                 })
                 .catch(errorHandler);
             }
@@ -418,17 +421,17 @@ const msg = function (req, res) {
             {
               msgCtrl.sendMsg({
                 fromNumber,
-                msg: "Please,send right command",
+                msg: 'Please,send right command',
               });
             }
             break;
         }
       }
     }
-    const db = client.db("test");
-    const userStates = db.collection("userStates");
+    const db = client.db('test');
+    const userStates = db.collection('userStates');
 
-    if (msg.toLowerCase() == "discount") {
+    if (msg.toLowerCase() == 'discount') {
       const discountSlug = generateSlug();
       shopifyDiscountCreate(
         storeMyShopify,
@@ -436,12 +439,12 @@ const msg = function (req, res) {
         storeAPIkey,
         storePassword,
         price_rule_id,
-        discountSlug
+        discountSlug,
       )
         .then((response) => {
-          const code = response.data.discount_code.code;
+          const { code } = response.data.discount_code;
           const discounted_url = `http://${storeMyShopify}/discount/${code}`;
-          const discounts = db.collection("discounts");
+          const discounts = db.collection('discounts');
           discounts
             .insertOne({
               discountCode: discountSlug,
@@ -457,7 +460,7 @@ const msg = function (req, res) {
               console.log(err);
               msgCtrl.sendMsg({
                 fromNumber,
-                msg: "error on creating discount",
+                msg: 'error on creating discount',
               });
             });
         })
@@ -465,7 +468,7 @@ const msg = function (req, res) {
           console.log(err);
           msgCtrl.sendMsg({
             fromNumber,
-            msg: "error on creating discount",
+            msg: 'error on creating discount',
           });
         });
 
@@ -476,11 +479,11 @@ const msg = function (req, res) {
       .findOne({
         phone: fromNumber,
       })
-      .then(function (state) {
+      .then((state) => {
         if (!state) {
           createNewDialog();
         } else {
-          console.log("continueDialog");
+          console.log('continueDialog');
           continueDialog(state);
         }
       })
