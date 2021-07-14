@@ -5,10 +5,10 @@ const UserStates = require('../db/models/Userstate');
 const discounts = require('../db/models/Userstate');
 const msgCtrl = require('./msg');
 
-const accessToken = '0386d977a264448a1b62c295ac542a0d';
-const storeAPIkey = '0f6b58da9331414de7ed1d948c67ac35';
-const storePassword = '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';
-const storeMyShopify = 'fat-cat-studio.myshopify.com';
+const accessToken = '9d75b9d30a16f02bb9517f2aafd9bd48';
+const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
+const storePassword = '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';
+const storeMyShopify = 'banarasi-outfit.myshopify.com';
 const priceRuleId = '950294741183';
 const apiVersion = '2021-04';
 const {
