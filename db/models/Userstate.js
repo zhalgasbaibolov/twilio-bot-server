@@ -15,7 +15,7 @@ const { Schema } = mongoose;
 
 const userStateSchema = new Schema({
   phone: { type: String, required: true },
-  lastAction: { type: String, required: false },
+  last: { type: String, required: false },
 });
 
 module.exports = mongoose.model('UserState', userStateSchema);
