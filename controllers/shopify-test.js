@@ -1,11 +1,7 @@
 // const getAbandonedCart = require("./cartAbandonement").getAbandonedCart;
+
 const {
-  // retireveCollections,
   createCheckout,
-  // queryProductVariants,
-  // retireveProducts,
-  // getProductsByCollectionHandle,
-  // retireveVariantsOfProduct,
 } = require('./storefrontAPI');
 
 // const storeAPIkey = '0f6b58da9331414de7ed1d948c67ac35';

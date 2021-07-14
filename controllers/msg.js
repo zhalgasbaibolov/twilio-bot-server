@@ -3,7 +3,6 @@ const authToken = require('../getAuthToken');
 
 const sendMsg = function ({
   fromNumber,
-  // name,
   msg = 'msg is null',
   mediaUrl = null,
 }) {
