@@ -219,6 +219,13 @@ const msg = function (req, res) {
             let txt = products
               .map((pr, idx) => `${idx + 1}. ${pr.node.handle}`)
               .join("\n");
+            if (txt == {}){
+                msgCtrl.sendMsg({
+                    fromNumber,
+                    msg: 'your product is out of stock',
+                  });
+                sendCatalog()
+            }
             txt = `Select Product:\n` + txt;
 
             msgCtrl.sendMsg({
