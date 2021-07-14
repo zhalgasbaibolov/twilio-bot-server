@@ -423,15 +423,21 @@ function handleMessage(req, res) {
   }
 
   UserStates
-    .find({
+    .findOne({
       phone: fromNumber,
-    })
-    .then((state) => {
-      if (!state) {
+    },
+    null,
+    null,
+    (err, result) => {
+      if (err) {
+        return console.log(err);
+      }
+      if (!result) {
         createNewDialog();
       } else {
-        continueDialog(state);
+        continueDialog(result);
       }
+      return result;
     });
 }
 module.exports = {
