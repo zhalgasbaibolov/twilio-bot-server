@@ -236,6 +236,7 @@ const updateCheckout = async (storeMyShopify, accessToken, {
           code
           field
           message
+          
         }
       }
     }
