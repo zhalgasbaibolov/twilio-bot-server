@@ -24,6 +24,15 @@ const {
   getAllOrders,
 } = require('../getAllOrders');
 
+const userDiscount = require("../db/models/UserDiscountModel")
+
+const discount = new userDiscount({phone: 'string', discountCode: 'string'});
+
+discount.save(function (err) {
+  if (err) return console.log(err);
+  // saved!
+});
+
 function handleMessage(req, res) {
   res.status(200).send('');
 
