@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 // Set up default mongoose connection
-const mongoDB = 'mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/twiliodb?retryWrites=true&w=majority';
+const mongoDB = 'mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/test?retryWrites=true&w=majority';
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Get the default connection
