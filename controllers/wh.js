@@ -64,6 +64,8 @@ function handleMessage(req, res) {
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
           .join('\n')}`;
+      // eslint-disable-next-line no-console
+      console.log(collections, fromNumber);
       msgCtrl.sendMsg({
         fromNumber,
         msg: collections,
@@ -77,7 +79,7 @@ function handleMessage(req, res) {
             last: 'catalog',
             catalogs: response.collections.edges,
           },
-        },
+        }, errorHandler,
       );
     }).catch(errorHandler);
   }
