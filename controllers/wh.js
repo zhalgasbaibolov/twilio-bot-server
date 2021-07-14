@@ -145,7 +145,7 @@ function handleMessage(req, res) {
       }
     // eslint-disable-next-line no-constant-condition
     } else if (true) {
-      console.log("state.last !== 'main'");
+      console.log("state.last !== 'main'", state);
     } else if (state.last === 'tracking') {
       if (/@/.test(msg)) {
         getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
