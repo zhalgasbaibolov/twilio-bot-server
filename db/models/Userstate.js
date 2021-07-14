@@ -17,4 +17,4 @@ const userStateSchema = new Schema({
     lastAction: { type: String, required: false }
 });
 
-module.exports = mongoose.model('UserState', UserState);
+module.exports = mongoose.model('UserState', userStateSchema);
