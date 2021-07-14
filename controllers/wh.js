@@ -430,6 +430,7 @@ function handleMessage(req, res) {
       if (err) {
         return console.log(err);
       }
+      console.log('find one result=', result);
       if (!result) {
         createNewDialog();
       } else {
