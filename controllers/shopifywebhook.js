@@ -32,4 +32,4 @@ app.post('/webhooks/fulfillment_events/update', async (req, res) => {
   return res.status(200);
 });
 
-app.listen(80, () => console.log('Example app listening on port 80!'))
+app.listen(80, () => console.log('Example app listening on port 80!'));
