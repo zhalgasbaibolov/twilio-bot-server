@@ -126,15 +126,15 @@ function handleMessage(req, res) {
 
     if (state.last === 'main') {
       switch (msg) {
-        case '1':
+        case '1': {
           sendCatalog();
-          break;
-        case '2':
+          break; }
+        case '2': {
           getSupport();
-          break;
-        case '3':
+          break; }
+        case '3': {
           getOrderStatus();
-          break;
+          break; }
         default: {
           msgCtrl.sendMsg({
             fromNumber,
