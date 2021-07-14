@@ -23,4 +23,4 @@ const userStateSchema = new Schema({
   storedLineItems: [Object],
 });
 
-module.exports = mongoose.model('UserState', userStateSchema);
+module.exports = mongoose.model('UserStates', userStateSchema);
