@@ -412,7 +412,6 @@ function handleMessage(req, res) {
       });
 
     return;
-    
   }
 
   UserStates
