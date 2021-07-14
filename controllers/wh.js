@@ -24,6 +24,14 @@ const {
   getAllOrders,
 } = require('../getAllOrders');
 
+const UserDiscount = require('../db/models/UserDiscountModel');
+
+const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
+UserDiscount.create({ discountCode: 'string' }, function (err, discount){
+  if (err) return console.log(err);
+  // saved!
+});
+
 function handleMessage(req, res) {
   res.status(200).send('');
 
@@ -85,7 +93,23 @@ function handleMessage(req, res) {
     }).catch(errorHandler);
   }
 
-  const getSupport = () => {};
+  const getSupport = () => {
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
+    });
+    UserStates.updateOne(
+      {
+        phone: fromNumber,
+      },
+      {
+        $set: {
+          last: 'tracking',
+        },
+      },
+    );
+  };
+
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
