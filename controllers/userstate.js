@@ -1,4 +1,4 @@
-const Userstate = require("../db/models/Userstate");
+const Userstate = require('../db/models/Userstate');
 
 exports.create = (req, res) => {
   if (!req.body.From) {
@@ -17,17 +17,4 @@ exports.create = (req, res) => {
     .catch((err) => {
       res.sendStatus(500).send(err);
     });
-
-    // Save in the database
-    userstate
-        .save(userstate)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            console.log('error')
-            res.sendStatus(500);
-        });
 };
-
-
