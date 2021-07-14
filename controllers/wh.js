@@ -27,8 +27,7 @@ const {
 const UserDiscount = require('../db/models/UserDiscountModel');
 
 const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
-
-discount.save((err) => {
+UserDiscount.create({ discountCode: 'string' }, function (err, discount){
   if (err) return console.log(err);
   // saved!
 });

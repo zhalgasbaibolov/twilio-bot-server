@@ -15,6 +15,8 @@ const { Schema } = mongoose;
 const userDiscountSchema = new Schema({
     phone: { type: String, required: true },
     discountCode: { type: String, required: true }
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model('UserDiscount', userDiscountSchema);
