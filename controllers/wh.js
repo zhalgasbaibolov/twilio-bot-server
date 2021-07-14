@@ -24,13 +24,13 @@ const {
   getAllOrders,
 } = require('../getAllOrders');
 
-const UserDiscount = require('../db/models/UserDiscountModel');
+// const UserDiscount = require('../db/models/UserDiscountModel');
 
-const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
-UserDiscount.create({ discountCode: 'string' }, function (err, discount){
-  if (err) return console.log(err);
-  // saved!
-});
+// const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
+// UserDiscount.create({ discountCode: 'string' }, (err, res) => {
+//   if (err) return console.log(err);
+//   return res;
+// });
 
 function handleMessage(req, res) {
   res.status(200).send('');
