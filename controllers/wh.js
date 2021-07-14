@@ -423,7 +423,7 @@ function handleMessage(req, res) {
   }
 
   UserStates
-    .findOne({
+    .find({
       phone: fromNumber,
     })
     .then((state) => {
