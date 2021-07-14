@@ -23,5 +23,8 @@
     "nodemon": "^2.0.7",
     "random-word-slugs": "0.0.2",
     "twilio": "^3.64.0"
+  },
+  "devDependencies": {
+    "lint": "^0.7.0"
   }
 }
