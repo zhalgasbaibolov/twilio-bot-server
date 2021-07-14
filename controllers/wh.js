@@ -79,7 +79,7 @@ function handleMessage(req, res) {
           },
         },
       );
-    });
+    }).catch(errorHandler);
   }
 
   const getSupport = () => {};
