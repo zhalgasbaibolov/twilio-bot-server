@@ -91,7 +91,23 @@ function handleMessage(req, res) {
     });
   }
 
-  const getSupport = () => {};
+  const getSupport = () => {
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
+    });
+    UserStates.updateOne(
+      {
+        phone: fromNumber,
+      },
+      {
+        $set: {
+          last: 'tracking',
+        },
+      },
+    );
+  };
+
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
