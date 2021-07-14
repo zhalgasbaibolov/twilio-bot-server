@@ -1,4 +1,5 @@
 const {
+  request,
   gql,
   GraphQLClient,
 } = require('graphql-request');
