@@ -1,47 +1,46 @@
-"use strict";
-const axios = require("axios");
+/* eslint-disable no-console */
+const axios = require('axios');
 
-//this initialize func to be called just once for each store when they first buy saletastic
+// this initialize func to be called just once for each store when they first buy saletastic
 async function shopifyStoreDiscountsInitialize(
   storeMyShopify,
   apiVersion,
   storeAPIkey,
   storePassword,
-  discount_percent
+  discountPercent,
 ) {
-  const data_price_rule = {
+  const dataPriceRule = {
     price_rule: {
-      title: "saletastic-cart-abd-discount",
-      target_type: "line_item",
-      target_selection: "all",
-      allocation_method: "across",
-      value_type: "percentage",
-      value: discount_percent,
-      customer_selection: "all",
+      title: 'saletastic-cart-abd-discount',
+      target_type: 'line_item',
+      target_selection: 'all',
+      allocation_method: 'across',
+      value_type: 'percentage',
+      value: discountPercent,
+      customer_selection: 'all',
       once_per_customer: true,
-      starts_at: "2021-07-09",
-      usage_limit: "1",
+      starts_at: '2021-07-09',
+      usage_limit: '1',
     },
   };
-  const session_url_price_rule = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules.json`;
+  const sessionUrlPriceRule = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules.json`;
 
   return axios
-    .post(session_url_price_rule, JSON.stringify(data_price_rule), {
+    .post(sessionUrlPriceRule, JSON.stringify(dataPriceRule), {
       auth: {
         username: storeAPIkey,
         password: storePassword,
       },
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     })
-    .then(function (response) {
-      console.log("response is (price rule create):   ", response);
+    .then((response) => {
+      console.log('response is (price rule create):   ', response);
       return response;
     })
-    .catch(function (error) {
-      // handle error
-      console.log("@@@@@@@@@@ERROR AT PRICE RULE CREATE:   ", error);
+    .catch((error) => {
+      console.log('@@@@@@@@@@ERROR AT PRICE RULE CREATE:   ', error);
       return false;
     });
 }
@@ -51,16 +50,16 @@ async function shopifyDiscountCreate(
   apiVersion,
   storeAPIkey,
   storePassword,
-  price_rule_id,
-  random_string
+  priceRuleId,
+  randomString,
 ) {
   const data_discount = {
     discount_code: {
-      code: random_string,
+      code: randomString,
     },
   };
 
-  const session_urldiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${price_rule_id}/discount_codes.json`;
+  const session_urldiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${priceRuleId}/discount_codes.json`;
 
   return axios
     .post(session_urldiscount, JSON.stringify(data_discount), {
@@ -69,18 +68,18 @@ async function shopifyDiscountCreate(
         password: storePassword,
       },
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     })
-    .then(function (response) {
+    .then((response) => {
       console.log(response);
-      const discounted_url = `http://${storeMyShopify}/discount/${random_string}`;
-      console.log("test link is: ", discounted_url);
+      const discounted_url = `http://${storeMyShopify}/discount/${randomString}`;
+      console.log('test link is: ', discounted_url);
       return response;
     })
-    .catch(function (error) {
+    .catch((error) => {
       // handle error
-      console.log("@@@@@@@@@@ERROR AT DISCOUNT CREATE:   ", error);
+      console.log('@@@@@@@@@@ERROR AT DISCOUNT CREATE:   ', error);
       return false;
     });
 }
