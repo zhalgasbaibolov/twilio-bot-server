@@ -421,13 +421,11 @@ function handleMessage(req, res) {
 
     return;
   }
-
+  console.log('UserStates.findOne');
   UserStates
     .findOne({
       phone: fromNumber,
     },
-    null,
-    null,
     (err, result) => {
       if (err) {
         return console.log(err);
