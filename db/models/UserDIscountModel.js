@@ -13,7 +13,6 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 const { Schema } = mongoose;
 
 const userDiscountSchema = new Schema({
-
     phone: { type: String, required: true },
     discountCode: { type: String, required: true }
 });
