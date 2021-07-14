@@ -103,7 +103,24 @@ const msg = function (req, res) {
       });
     }
 
-    const getSupport = () => {};
+    const getSupport = (state) => {
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: `Hi there! Welcome to customer support service. Please describe your problem, we will be contact with you within 10 minutes.`,
+      });
+      userStates.updateOne(
+        {
+          phone: fromNumber,
+        },
+        {
+          $set: {
+            last: "support",
+          },
+        },
+        closeConnection
+      );
+      return;
+    };
     const getOrderStatus = (state) => {
       msgCtrl.sendMsg({
         fromNumber,
