@@ -27,8 +27,6 @@ const retireveCollections = async (storeMyShopify, accessToken) => {
     }
   `;
   return graphQLClient.request(query);
-
-  // console.log(JSON.stringify(data, undefined, 2));
 };
 
 const retireveProducts = async (storeMyShopify, accessToken) => {
@@ -52,8 +50,7 @@ const retireveProducts = async (storeMyShopify, accessToken) => {
     }
   `;
   const data = await graphQLClient.request(query);
-
-  console.log(JSON.stringify(data, undefined, 2));
+  return data;
 };
 
 const getProductsByCollectionHandle = async (
@@ -168,7 +165,6 @@ const createCheckout = async (storeMyShopify, accessToken, variantId) => {
   return graphQLClient.request(mutation, variables);
 };
 const createCheckoutList = async (storeMyShopify, accessToken, lineItems) => {
-  console.log(lineItems);
   const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
   const graphQLClient = new GraphQLClient(endpoint, {

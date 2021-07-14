@@ -53,16 +53,16 @@ async function shopifyDiscountCreate(
   priceRuleId,
   randomString,
 ) {
-  const data_discount = {
+  const dataDiscount = {
     discount_code: {
       code: randomString,
     },
   };
 
-  const session_urldiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${priceRuleId}/discount_codes.json`;
+  const sessionUrlDiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${priceRuleId}/discount_codes.json`;
 
   return axios
-    .post(session_urldiscount, JSON.stringify(data_discount), {
+    .post(sessionUrlDiscount, JSON.stringify(dataDiscount), {
       auth: {
         username: storeAPIkey,
         password: storePassword,
@@ -73,8 +73,8 @@ async function shopifyDiscountCreate(
     })
     .then((response) => {
       console.log(response);
-      const discounted_url = `http://${storeMyShopify}/discount/${randomString}`;
-      console.log('test link is: ', discounted_url);
+      const discountedUrl = `http://${storeMyShopify}/discount/${randomString}`;
+      console.log('test link is: ', discountedUrl);
       return response;
     })
     .catch((error) => {

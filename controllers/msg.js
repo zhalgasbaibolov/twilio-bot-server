@@ -1,11 +1,11 @@
 const twilio = require('twilio');
 const authToken = require('../getAuthToken');
 
-const sendMsg = function ({
+const sendMsg = ({
   fromNumber,
   msg = 'msg is null',
   mediaUrl = null,
-}) {
+}) => {
   if (fromNumber === 'whatsapp:+14155238886') { return; }
 
   const accountSid = 'ACf385192ef965f7cbf43324fdd6951445';
@@ -18,7 +18,10 @@ const sendMsg = function ({
         to: fromNumber,
         mediaUrl,
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      })
       .done();
   } else {
     client.messages
@@ -27,7 +30,10 @@ const sendMsg = function ({
         from: 'whatsapp:+14155238886',
         to: fromNumber,
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        // eslint-disable-next-line no-console
+        console.log(err);
+      })
       .done();
   }
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // const getAbandonedCart = require("./cartAbandonement").getAbandonedCart;
 
 const {
