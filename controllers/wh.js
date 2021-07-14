@@ -143,6 +143,9 @@ function handleMessage(req, res) {
           break;
         }
       }
+    // eslint-disable-next-line no-constant-condition
+    } else if (true) {
+      console.log("state.last !== 'main'");
     } else if (state.last === 'tracking') {
       if (/@/.test(msg)) {
         getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
