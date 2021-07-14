@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "lint": "eslint ./controllers --fix",
     "start": "nodemon ./bin/www",
     "carttracker": "nodemon ./tracker.js"
   },
   "dependencies": {
     "amqplib": "^0.8.0",
+    "axios": "^0.21.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
@@ -22,6 +24,12 @@
     "morgan": "~1.9.1",
     "nodemon": "^2.0.7",
     "random-word-slugs": "0.0.2",
+    "raw-body": "^2.4.1",
     "twilio": "^3.64.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4"
   }
 }
