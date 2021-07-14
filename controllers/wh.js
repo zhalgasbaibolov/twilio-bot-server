@@ -60,6 +60,7 @@ function handleMessage(req, res) {
     retireveCollections(storeMyShopify, accessToken).then((
       response,
     ) => {
+      console.log('sendCatalog');
       const collections = `Select catalog:\n${
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
@@ -103,6 +104,8 @@ function handleMessage(req, res) {
   };
 
   function continueDialog(state) {
+    console.log('continueDialog', msg);
+
     if (msg.toLowerCase() === 'main') {
       msgCtrl.sendMsg({
         fromNumber,
