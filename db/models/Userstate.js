@@ -21,6 +21,6 @@ const userStateSchema = new Schema({
   variants: [Object],
   lastCheckoutInfo: Object,
   storedLineItems: [Object],
-}, { collection: 'UserStates' });
+}, { collection: 'userStates' });
 
 module.exports = mongoose.model('UserStates', userStateSchema);
