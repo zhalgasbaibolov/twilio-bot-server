@@ -1,3 +1,5 @@
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable default-case */
 const {
   generateSlug,
 } = require('random-word-slugs');
@@ -23,6 +25,7 @@ const {
 const {
   getAllOrders,
 } = require('../getAllOrders');
+const { reservationsUrl } = require('twilio/lib/jwt/taskrouter/util');
 
 // const UserDiscount = require('../db/models/UserDiscountModel');
 
@@ -312,9 +315,7 @@ function handleMessage(req, res) {
           title,
         });
       }
-
       const txt = 'Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.';
-
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
@@ -337,12 +338,12 @@ function handleMessage(req, res) {
           break;
         case '2':
           {
-            const txt = state.storedLineItems
+            const txt = `${state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
                 ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
               )
-              .join('\n');
+              .join('\n')}\n 1.Continure \n 2. Delete item \n 3.Back`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -394,6 +395,82 @@ function handleMessage(req, res) {
           break;
         }
       }
+    } else if (state.last === 'cart') {
+      switch (msg) {
+        case '1': {
+          UserStates.updateOne({
+            phone: fromNumber,
+          }, {
+            $set: {
+              last: 'completed',
+              storedLineItems: [],
+            },
+          });
+          break;
+        }
+        case '2': {
+          UserStates.updateOne({
+            phone: fromNumber,
+          }, {
+            $set: {
+              last: 'remoteitem',
+            },
+          });
+          break;
+        }
+        case '3': {
+          UserStates.updateOne({
+            phone: fromNumber,
+          }, {
+            $set: {
+              last: 'variants',
+            },
+          });
+          break;
+        }
+        default: {
+          msgCtrl.sendMsg({
+            fromNumber,
+            msg: 'Please,send right command',
+          });
+          break;
+        }
+      }
+    } else if (state.last === 'removeitem') {
+      const txt = `${state.storedLineItems
+        .filter((x) => x.title && x.quantity)
+        .map(
+          ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
+        )
+        .join('\n')}\n Select item that you are gonna delete`;
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: txt,
+      });
+      UserStates.updateOne(
+        {
+          phone: fromNumber,
+        },
+        {
+          $set: {
+            last: 'deleteitem',
+          },
+        },
+        errorHandler,
+      );
+    } else if (state.last === 'deleteitem') {
+      const newList = this.storedLineItems.filter((t) => t.variantId === msg);
+      UserStates.updateOne(
+        {
+          phone: fromNumber,
+        },
+        {
+          $set: {
+            last: 'deleteitem',
+            storedLineItems: newList,
+          },
+        },
+      );
     } else {
       // eslint-disable-next-line no-constant-condition
       console.log("state.last !== 'main'", state);
