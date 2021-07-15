@@ -219,6 +219,7 @@ function handleMessage(req, res) {
       const { handle } = state.catalogs[msg - 1].node;
       getProductsByCollectionHandle(storeMyShopify, accessToken, handle).then(
         (response) => {
+          console.log(response.collectionByHandle.products.edges);
           const products = response.collectionByHandle.products.edges;
           let txt = products
             .map((pr, idx) => `${idx + 1}. ${pr.node.handle}`)
