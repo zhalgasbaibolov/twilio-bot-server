@@ -23,7 +23,6 @@ const {
 const {
   getAllOrders,
 } = require('../getAllOrders');
-
 // const UserDiscount = require('../db/models/UserDiscountModel');
 
 // const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
@@ -312,9 +311,7 @@ function handleMessage(req, res) {
           title,
         });
       }
-
       const txt = 'Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.';
-
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
@@ -337,12 +334,13 @@ function handleMessage(req, res) {
           break;
         case '2':
           {
-            const txt = state.storedLineItems
+            const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
                 ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
               )
               .join('\n');
+            const txt = `${storedLineItemsText}\n 1.Continure \n 2. Delete item \n 3.Back`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -394,6 +392,83 @@ function handleMessage(req, res) {
           break;
         }
       }
+    } else if (state.last === 'cart') {
+      switch (msg) {
+        case '1': {
+          UserStates.updateOne({
+            phone: fromNumber,
+          }, {
+            $set: {
+              last: 'completed',
+              storedLineItems: [],
+            },
+          });
+          break;
+        }
+        case '2': {
+          UserStates.updateOne({
+            phone: fromNumber,
+          }, {
+            $set: {
+              last: 'removeItem',
+            },
+          });
+          break;
+        }
+        case '3': {
+          UserStates.updateOne({
+            phone: fromNumber,
+          }, {
+            $set: {
+              last: 'variants',
+            },
+          });
+          break;
+        }
+        default: {
+          msgCtrl.sendMsg({
+            fromNumber,
+            msg: 'Please,send right command',
+          });
+          break;
+        }
+      }
+    } else if (state.last === 'removeItem') {
+      const storedLineItemsText = state.storedLineItems
+        .filter((x) => x.title && x.quantity)
+        .map(
+          ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
+        )
+        .join('\n');
+      const txt = `${storedLineItemsText}\n Select item that you are gonna delete`;
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: txt,
+      });
+      UserStates.updateOne(
+        {
+          phone: fromNumber,
+        },
+        {
+          $set: {
+            last: 'deleteitem',
+          },
+        },
+        errorHandler,
+      );
+    } else if (state.last === 'deleteitem') {
+      const newList = this.storedLineItems.filter((t) => t.variantId === msg);
+      UserStates.updateOne(
+        {
+          phone: fromNumber,
+        },
+        {
+          $set: {
+            last: 'deleteitem',
+            storedLineItems: newList,
+          },
+        },
+      );
     } else {
       // eslint-disable-next-line no-constant-condition
       console.log("state.last !== 'main'", state);
