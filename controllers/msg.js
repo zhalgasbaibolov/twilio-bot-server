@@ -6,7 +6,10 @@ const sendMsg = ({
   msg = 'msg is null',
   mediaUrl = null,
 }) => {
-  if (fromNumber === 'whatsapp:+14155238886') { return; }
+  if (fromNumber === 'whatsapp:+14155238886') {
+    console.log(msg);
+    return;
+  }
 
   const accountSid = 'ACf385192ef965f7cbf43324fdd6951445';
   const client = twilio(accountSid, authToken);
