@@ -334,12 +334,13 @@ function handleMessage(req, res) {
           break;
         case '2':
           {
-            const txt = `${state.storedLineItems
+            const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
                 ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
               )
-              .join('\n')}\n 1.Continure \n 2. Delete item \n 3.Back`;
+              .join('\n');
+            const txt = `${storedLineItemsText}\n 1.Continure \n 2. Delete item \n 3.Back`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
