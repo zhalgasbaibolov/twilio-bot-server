@@ -1,5 +1,3 @@
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable default-case */
 const {
   generateSlug,
 } = require('random-word-slugs');
@@ -25,8 +23,6 @@ const {
 const {
   getAllOrders,
 } = require('../getAllOrders');
-const { reservationsUrl } = require('twilio/lib/jwt/taskrouter/util');
-
 // const UserDiscount = require('../db/models/UserDiscountModel');
 
 // const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
