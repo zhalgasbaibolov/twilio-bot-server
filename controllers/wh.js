@@ -242,7 +242,7 @@ function handleMessage(req, res) {
                 products,
               },
             },
-          );
+          ).exec();
         },
       );
     } else if (state.last === 'products') {
