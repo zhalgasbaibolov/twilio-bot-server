@@ -235,6 +235,8 @@ function handleMessage(req, res) {
               phone: fromNumber,
             },
             {
+              last: 'products',
+              products,
               $set: {
                 last: 'products',
                 products,
