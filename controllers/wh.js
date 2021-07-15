@@ -287,7 +287,7 @@ function handleMessage(req, res) {
                       variants,
                     },
                   },
-                );
+                ).exec();
               }, 3000);
             }
           });
@@ -329,7 +329,7 @@ function handleMessage(req, res) {
             storedLineItems,
           },
         },
-      );
+      ).exec();
     } else if (state.last === 'added-to-cart') {
       switch (msg) {
         case '1':
