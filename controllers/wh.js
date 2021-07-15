@@ -410,7 +410,7 @@ function handleMessage(req, res) {
             phone: fromNumber,
           }, {
             $set: {
-              last: 'remoteitem',
+              last: 'removeItem',
             },
           });
           break;
@@ -433,13 +433,14 @@ function handleMessage(req, res) {
           break;
         }
       }
-    } else if (state.last === 'removeitem') {
-      const txt = `${state.storedLineItems
+    } else if (state.last === 'removeItem') {
+      const storedLineItemsText = state.storedLineItems
         .filter((x) => x.title && x.quantity)
         .map(
           ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
         )
-        .join('\n')}\n Select item that you are gonna delete`;
+        .join('\n');
+      const txt = `${storedLineItemsText}\n Select item that you are gonna delete`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
