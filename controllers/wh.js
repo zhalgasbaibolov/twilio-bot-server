@@ -341,10 +341,10 @@ function handleMessage(req, res) {
             const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
-                ({ title, quantity }) => `${title}: ${quantity}`,
+                ({ title, quantity }, idx) => `Your cart is:\n${idx + 1}. ${title}: ${quantity}`,
               )
               .join('\n');
-            const txt = `${storedLineItemsText}\n\n1.Proceed to payment \n2. Delete item \n3.Continue shopping`;
+            const txt = `${storedLineItemsText}\n\nWhat do you want to do next?\n1. Proceed to payment \n2. Delete item \n3. Continue shopping`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
