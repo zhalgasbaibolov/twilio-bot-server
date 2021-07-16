@@ -105,7 +105,7 @@ function handleMessage(req, res) {
       },
       {
         $set: {
-          last: 'tracking',
+          last: 'support',
         },
       },
     );
@@ -125,7 +125,7 @@ function handleMessage(req, res) {
           last: 'tracking',
         },
       },
-    );
+    ).exec();
   };
 
   function continueDialog(state) {
