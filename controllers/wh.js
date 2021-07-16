@@ -506,7 +506,7 @@ function handleMessage(req, res) {
             const discountedUrl = `http://${externalUrl}/discount/${code}`;
 
             discounts
-              .insertOne({
+              .create({
                 discountCode: discountSlug,
                 phone: fromNumber,
               })
