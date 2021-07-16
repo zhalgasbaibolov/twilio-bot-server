@@ -320,7 +320,7 @@ function handleMessage(req, res) {
           title,
         });
       }
-      const txt = 'Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.';
+      const txt = 'Your item is placed in cart.What do you want next ? \n1. Continue shopping.\n2. See my cart. \n3. Proceed to payment.';
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
