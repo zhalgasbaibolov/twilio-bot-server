@@ -114,7 +114,7 @@ function handleMessage(req, res) {
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Type your tracking number OR email.',
+      msg: 'Type your tracking number OR email.\n(Demo: copy paste this tracking number UH037386106US)',
     });
     UserStates.updateOne(
       {
