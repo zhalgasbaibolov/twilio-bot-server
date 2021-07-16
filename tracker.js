@@ -1,4 +1,4 @@
-const { getConnect } = require('./db/mongo');
+const UserDiscount = require('./db/models/UserDiscount');
 const msgCtrl = require('./controllers/msg');
 const {
   getAbandonedCart,
@@ -27,34 +27,25 @@ setInterval(() => {
         return;
       }
 
-      const client = getConnect();
-      client.connect((connecionError) => {
-        if (connecionError) {
-          console.log(connecionError);
+      UserDiscount.find((err, pairs) => {
+        if (!pairs || !pairs.length) {
+          console.log('phone:discount pairs not found');
           return;
         }
-        const db = client.db('test');
-        const discounts = db.collection('discounts');
-        discounts.find({}).then((pairs) => {
-          if (!pairs || !pairs.length) {
-            console.log('phone:discount pairs not found');
+        allCarts.forEach((cart) => {
+          for (let i = 0; i < cart.discount_codes.length; i += 1) {
+            const code = cart.discount_codes[i];
+            const findedPair = pairs.find((p) => p.discountCode === code);
+            if (!findedPair) return;
+            msgCtrl.sendMsg({
+              fromNumber: findedPair.phone,
+              msg: `Please, complete your purchase!\n${cart.abandoned_checkout_url}`,
+            });
             return;
           }
-          allCarts.forEach((cart) => {
-            for (let i = 0; i < cart.discount_codes.length; i += 1) {
-              const code = cart.discount_codes[i];
-              const findedPair = pairs.find((p) => p.discountCode === code);
-              if (!findedPair) return;
-              msgCtrl.sendMsg({
-                fromNumber: findedPair.phone,
-                msg: `Please, complete your purchase!\n${cart.abandoned_checkout_url}`,
-              });
-              return;
-            }
-          });
-        }).catch((err) => {
-          console.log(err);
         });
+        // eslint-disable-next-line consistent-return
+        return pairs;
       });
     });
 }, 3000);
