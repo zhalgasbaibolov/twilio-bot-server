@@ -70,7 +70,7 @@ function handleMessage(req, res) {
       response,
     ) => {
       console.log('sendCatalog');
-      const collections = `Select catalog:\n${
+      const collections = `Select Catalogue:\n${
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
           .join('\n')}`;
@@ -280,7 +280,7 @@ function handleMessage(req, res) {
                 let txt = variants
                   .map((v, idx) => `${idx + 1}. ${v.node.title}`)
                   .join('\n');
-                txt = `Select variants:\n${txt}`;
+                txt = `Select Variants:\n${txt}`;
                 msgCtrl.sendMsg({
                   fromNumber,
                   msg: txt,
@@ -322,7 +322,7 @@ function handleMessage(req, res) {
           title,
         });
       }
-      const txt = 'Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.';
+      const txt = 'Your item is placed in cart. What do you want next ?\n1. Continue shopping.\n2. See my cart.\n3. Proceed to payment.';
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
@@ -376,7 +376,7 @@ function handleMessage(req, res) {
             state.storedLineItems,
           )
             .then((createdCheckoutInfo) => {
-              const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ${
+              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url and finish him!\n ${
                 createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
               msgCtrl.sendMsg({
                 fromNumber,
@@ -398,7 +398,7 @@ function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please,send right command',
+            msg: 'Please, send right command',
           });
           break;
         }
@@ -449,7 +449,7 @@ function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please,send right command',
+            msg: 'Please, send right command',
           });
           break;
         }
@@ -461,7 +461,7 @@ function handleMessage(req, res) {
           ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
         )
         .join('\n');
-      const txt = `${storedLineItemsText}\n Select item that you are gonna delete`;
+      const txt = `${storedLineItemsText}\nSelect item that you are gonna delete`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
