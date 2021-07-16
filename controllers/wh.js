@@ -11,7 +11,7 @@ const accessToken = '9d75b9d30a16f02bb9517f2aafd9bd48';
 const storeMyShopify = 'banarasi-outfit.myshopify.com';
 const externalUrl = 'banarasioutfit.in';
 const apiVersion = '2021-04';
-const priceRuleId = '950294741183';
+const priceRuleId = '942249935042';
 
 const {
   retireveCollections,
