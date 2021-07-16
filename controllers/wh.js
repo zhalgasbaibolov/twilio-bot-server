@@ -2,7 +2,7 @@ const {
   generateSlug,
 } = require('random-word-slugs');
 const UserStates = require('../db/models/Userstate');
-const discounts = require('../db/models/UserDiscount');
+const UserDiscount = require('../db/models/UserDiscount');
 const msgCtrl = require('./msg');
 
 const storeAPIkey = '0f6b58da9331414de7ed1d948c67ac35';
@@ -505,7 +505,7 @@ function handleMessage(req, res) {
             const { code } = response.data.discount_code;
             const discountedUrl = `http://${externalUrl}/discount/${code}`;
 
-            discounts
+            UserDiscount
               .create({
                 discountCode: discountSlug,
                 phone: fromNumber,
@@ -569,8 +569,8 @@ function handleMessage(req, res) {
         const { code } = response.data.discount_code;
         const discountedUrl = `http://${externalUrl}/discount/${code}`;
 
-        discounts
-          .insertOne({
+        UserDiscount
+          .create({
             discountCode: discountSlug,
             phone: fromNumber,
           })
