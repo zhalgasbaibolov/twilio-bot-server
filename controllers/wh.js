@@ -93,7 +93,12 @@ function handleMessage(req, res) {
       );
     }).catch(errorHandler);
   }
-
+  function resendCommand() {
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: 'Please, send right command\nWould you like to return to maun menu?\n1.Yes',
+    });
+  }
   const getSupport = () => {
     msgCtrl.sendMsg({
       fromNumber,
@@ -108,7 +113,7 @@ function handleMessage(req, res) {
           last: 'support',
         },
       },
-    );
+    ).exec();
   };
 
   const getOrderStatus = () => {
@@ -167,10 +172,7 @@ function handleMessage(req, res) {
           getOrderStatus();
           break; }
         default: {
-          msgCtrl.sendMsg({
-            fromNumber,
-            msg: 'Please, send right command',
-          });
+          resendCommand(fromNumber);
           break;
         }
       }
@@ -218,10 +220,7 @@ function handleMessage(req, res) {
       }
     } else if (state.last === 'catalog') {
       if (!state.catalogs[msg - 1]) {
-        msgCtrl.sendMsg({
-          fromNumber,
-          msg: 'Please, send right command',
-        });
+        resendCommand(fromNumber);
         return;
       }
       const { handle } = state.catalogs[msg - 1].node;
@@ -255,10 +254,7 @@ function handleMessage(req, res) {
       );
     } else if (state.last === 'products') {
       if (!state.products[msg - 1]) {
-        msgCtrl.sendMsg({
-          fromNumber,
-          msg: 'Please, send right command',
-        });
+        resendCommand(fromNumber);
         return;
       }
 
@@ -303,10 +299,7 @@ function handleMessage(req, res) {
       );
     } else if (state.last === 'variants') {
       if (!state.variants[msg - 1]) {
-        msgCtrl.sendMsg({
-          fromNumber,
-          msg: 'Please, send right command',
-        });
+        resendCommand(fromNumber);
         return;
       }
       const { id: variantID, title } = state.variants[msg - 1].node;
