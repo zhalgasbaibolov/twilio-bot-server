@@ -144,7 +144,7 @@ function handleMessage(req, res) {
             last: 'main',
           },
         },
-      );
+      ).exec();
       return;
     }
 
