@@ -123,7 +123,7 @@ function handleMessage(req, res) {
           last: 'tracking',
         },
       },
-    );
+    ).exec();
   };
 
   function continueDialog(state) {
