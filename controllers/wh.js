@@ -232,7 +232,7 @@ function handleMessage(req, res) {
           let txt = products
             .map((pr, idx) => `${idx + 1}. ${pr.node.handle}`)
             .join('\n');
-          txt = `Select Product:\n${txt}`;
+          txt = `Select Product:\n${txt.split('-').join(' ')}`;
 
           msgCtrl.sendMsg({
             fromNumber,
