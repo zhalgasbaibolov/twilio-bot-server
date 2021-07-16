@@ -2,15 +2,17 @@ const {
   generateSlug,
 } = require('random-word-slugs');
 const UserStates = require('../db/models/Userstate');
-const discounts = require('../db/models/Userstate');
+const UserDiscount = require('../db/models/UserDiscount');
 const msgCtrl = require('./msg');
 
-const accessToken = '9d75b9d30a16f02bb9517f2aafd9bd48';
 const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
 const storePassword = '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';
+const accessToken = '9d75b9d30a16f02bb9517f2aafd9bd48';
 const storeMyShopify = 'banarasi-outfit.myshopify.com';
-const priceRuleId = '950294741183';
+const externalUrl = 'banarasioutfit.in';
 const apiVersion = '2021-04';
+const priceRuleId = '942249935042';
+
 const {
   retireveCollections,
   createCheckoutList,
@@ -53,12 +55,12 @@ function handleMessage(req, res) {
     UserStates
       .create({
         phone: fromNumber,
-        last: 'main',
+        last: 'demoMain',
       })
       .then(() => {
         msgCtrl.sendMsg({
           fromNumber,
-          msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status',
+          msg: 'Hello! Are your here to receive a discount for Banasari Outfits ?\n1. Yes\n2. No',
         });
       }).catch(errorHandler);
   }
@@ -138,7 +140,7 @@ function handleMessage(req, res) {
     if (msg.toLowerCase() === 'main') {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status',
+        msg: 'Hello! What do you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*',
       });
       UserStates.updateOne(
         {
@@ -149,7 +151,7 @@ function handleMessage(req, res) {
             last: 'main',
           },
         },
-      );
+      ).exec();
       return;
     }
 
@@ -276,7 +278,7 @@ function handleMessage(req, res) {
             if (indx === variantsSize - 1) {
               setTimeout(() => {
                 let txt = variants
-                  .map((v, idx) => `${idx + 1}. ${v.node.id}`)
+                  .map((v, idx) => `${idx + 1}. ${v.node.title}`)
                   .join('\n');
                 txt = `Select Variants:\n${txt}`;
                 msgCtrl.sendMsg({
@@ -349,7 +351,7 @@ function handleMessage(req, res) {
                 ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
               )
               .join('\n');
-            const txt = `${storedLineItemsText}\n1. Continue\n 2. Delete item\n 3. Back`;
+            const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -403,18 +405,34 @@ function handleMessage(req, res) {
       }
     } else if (state.last === 'cart') {
       switch (msg) {
-        case '1': {
-          UserStates.updateOne({
-            phone: fromNumber,
-          }, {
-            $set: {
-              last: 'completed',
-              storedLineItems: [],
-            },
-          });
+        case '2': {
+          createCheckoutList(
+            storeMyShopify,
+            accessToken,
+            state.storedLineItems,
+          )
+            .then((createdCheckoutInfo) => {
+              const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ${
+                createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
+              msgCtrl.sendMsg({
+                fromNumber,
+                msg: txt,
+              });
+              UserStates.updateOne({
+                phone: fromNumber,
+              },
+              {
+                $set: {
+                  last: 'completed',
+                  storedLineItems: [],
+                },
+              },
+              errorHandler);
+            });
+
           break;
         }
-        case '2': {
+        case '3': {
           UserStates.updateOne({
             phone: fromNumber,
           }, {
@@ -424,14 +442,8 @@ function handleMessage(req, res) {
           });
           break;
         }
-        case '3': {
-          UserStates.updateOne({
-            phone: fromNumber,
-          }, {
-            $set: {
-              last: 'variants',
-            },
-          });
+        case '1': {
+          sendCatalog();
           break;
         }
         default: {
@@ -460,12 +472,12 @@ function handleMessage(req, res) {
         },
         {
           $set: {
-            last: 'deleteitem',
+            last: 'deleteItem',
           },
         },
         errorHandler,
       );
-    } else if (state.last === 'deleteitem') {
+    } else if (state.last === 'deleteItem') {
       const newList = this.storedLineItems.filter((t) => t.variantId === msg);
       UserStates.updateOne(
         {
@@ -473,11 +485,70 @@ function handleMessage(req, res) {
         },
         {
           $set: {
-            last: 'deleteitem',
+            last: 'deleteItem',
             storedLineItems: newList,
           },
         },
-      );
+      ).exec();
+    } else if (state.last === 'demoMain') {
+      if (msg === '1') {
+        const discountSlug = generateSlug();
+        shopifyDiscountCreate(
+          storeMyShopify,
+          apiVersion,
+          storeAPIkey,
+          storePassword,
+          priceRuleId,
+          discountSlug,
+        )
+          .then((response) => {
+            const { code } = response.data.discount_code;
+            const discountedUrl = `http://${externalUrl}/discount/${code}`;
+
+            UserDiscount
+              .create({
+                discountCode: discountSlug,
+                phone: fromNumber,
+              })
+              .then(() => {
+                msgCtrl.sendMsg({
+                  fromNumber,
+                  msg: `Here is your promocode(click this link): ${discountedUrl}`,
+                });
+              })
+              .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.log(err);
+                msgCtrl.sendMsg({
+                  fromNumber,
+                  msg: 'error on creating discount',
+                });
+              });
+          })
+          .catch((err) => {
+            // eslint-disable-next-line no-console
+            console.log(err);
+            msgCtrl.sendMsg({
+              fromNumber,
+              msg: 'error on creating discount',
+            });
+          });
+      } else {
+        msgCtrl.sendMsg({
+          fromNumber,
+          msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status',
+        });
+        UserStates.updateOne(
+          {
+            phone: fromNumber,
+          },
+          {
+            $set: {
+              last: 'main',
+            },
+          },
+        ).exec();
+      }
     } else {
       // eslint-disable-next-line no-constant-condition
       console.log("state.last !== 'main'", state);
@@ -496,17 +567,17 @@ function handleMessage(req, res) {
     )
       .then((response) => {
         const { code } = response.data.discount_code;
-        const discountedUrl = `http://${storeMyShopify}/discount/${code}`;
+        const discountedUrl = `http://${externalUrl}/discount/${code}`;
 
-        discounts
-          .insertOne({
+        UserDiscount
+          .create({
             discountCode: discountSlug,
             phone: fromNumber,
           })
           .then(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: `Here is your promocode: ${discountedUrl}`,
+              msg: `Here is your promocode(click this link): ${discountedUrl}`,
             });
           })
           .catch((err) => {

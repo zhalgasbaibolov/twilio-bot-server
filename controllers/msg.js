@@ -1,6 +1,8 @@
 const twilio = require('twilio');
 const authToken = require('../getAuthToken');
 
+const accountSid = 'ACf385192ef965f7cbf43324fdd6951445';
+
 const sendMsg = ({
   fromNumber,
   msg = 'msg is null',
@@ -11,7 +13,6 @@ const sendMsg = ({
     return;
   }
 
-  const accountSid = 'ACf385192ef965f7cbf43324fdd6951445';
   const client = twilio(accountSid, authToken);
   if (mediaUrl) {
     client.messages
