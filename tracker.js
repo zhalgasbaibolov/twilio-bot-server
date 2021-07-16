@@ -1,3 +1,16 @@
+/* eslint-disable no-console */
+const mongoose = require('mongoose');
+
+// Set up default mongoose connection
+const mongoDB = 'mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/test?retryWrites=true&w=majority';
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Get the default connection
+const db = mongoose.connection;
+
+// Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 const UserDiscount = require('./db/models/UserDiscount');
 const msgCtrl = require('./controllers/msg');
 const {
@@ -21,12 +34,13 @@ setInterval(() => {
       if (!response) {
         return;
       }
+
       const allCarts = response.data.checkouts;
       if (!allCarts || !allCarts.length) {
         console.log('abandoned carts not found');
         return;
       }
-
+      console.log(allCarts.map((x) => ({ discount_codes: x.discount_codes[0].code })));
       UserDiscount.find((err, pairs) => {
         if (!pairs || !pairs.length) {
           console.log('phone:discount pairs not found');
@@ -34,12 +48,13 @@ setInterval(() => {
         }
         allCarts.forEach((cart) => {
           for (let i = 0; i < cart.discount_codes.length; i += 1) {
-            const code = cart.discount_codes[i];
+            const { code } = cart.discount_codes[i];
             const findedPair = pairs.find((p) => p.discountCode === code);
             if (!findedPair) return;
+            console.log(`found pairs: ${findedPair.phone}: ${findedPair.discountCode}`);
             msgCtrl.sendMsg({
               fromNumber: findedPair.phone,
-              msg: `Please, complete your purchase!\n${cart.abandoned_checkout_url}`,
+              msg: `Hi! Come back & finish your purchase! Here's the link:\n${cart.abandoned_checkout_url}`,
             });
             return;
           }
