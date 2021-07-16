@@ -114,7 +114,7 @@ function handleMessage(req, res) {
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Type your tracking number OR email.',
+      msg: 'Type your tracking number OR email.\n(Demo: copy paste this tracking number UH037386106US)',
     });
     UserStates.updateOne(
       {
@@ -134,7 +134,7 @@ function handleMessage(req, res) {
     if (msg.toLowerCase() === 'main') {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status',
+        msg: 'Hello! What do you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*',
       });
       UserStates.updateOne(
         {
@@ -342,10 +342,10 @@ function handleMessage(req, res) {
             const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
-                ({ title, quantity }, idx) => `Your cart is:\n${idx + 1}. ${title}: ${quantity}`,
+                ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
               )
               .join('\n');
-            const txt = `${storedLineItemsText}\n\nWhat do you want to do next?\n1. Proceed to payment \n2. Delete item \n3. Continue shopping`;
+            const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -399,7 +399,7 @@ function handleMessage(req, res) {
       }
     } else if (state.last === 'cart') {
       switch (msg) {
-        case '1': {
+        case '2': {
           createCheckoutList(
             storeMyShopify,
             accessToken,
@@ -426,7 +426,7 @@ function handleMessage(req, res) {
 
           break;
         }
-        case '2': {
+        case '3': {
           UserStates.updateOne({
             phone: fromNumber,
           }, {
@@ -436,7 +436,7 @@ function handleMessage(req, res) {
           });
           break;
         }
-        case '3': {
+        case '1': {
           sendCatalog();
           break;
         }
