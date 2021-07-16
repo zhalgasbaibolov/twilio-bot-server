@@ -466,12 +466,12 @@ function handleMessage(req, res) {
         },
         {
           $set: {
-            last: 'deleteitem',
+            last: 'deleteItem',
           },
         },
         errorHandler,
       );
-    } else if (state.last === 'deleteitem') {
+    } else if (state.last === 'deleteItem') {
       const newList = this.storedLineItems.filter((t) => t.variantId === msg);
       UserStates.updateOne(
         {
@@ -479,11 +479,11 @@ function handleMessage(req, res) {
         },
         {
           $set: {
-            last: 'deleteitem',
+            last: 'deleteItem',
             storedLineItems: newList,
           },
         },
-      );
+      ).exec();
     } else {
       // eslint-disable-next-line no-constant-condition
       console.log("state.last !== 'main'", state);
