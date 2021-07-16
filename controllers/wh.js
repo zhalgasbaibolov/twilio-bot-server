@@ -385,9 +385,10 @@ function handleMessage(req, res) {
       ).exec();
     } else if (state.last === 'added-to-cart') {
       switch (msg) {
-        case '1':
+        case '1': {
           sendCatalog();
           break;
+        }
         case '2':
           {
             const storedLineItemsText = state.storedLineItems
@@ -440,6 +441,9 @@ function handleMessage(req, res) {
                 },
               },
               errorHandler);
+              setTimeout(() => {
+                sendTopBackMenu();
+              }, 5000);
             });
 
           break; }
