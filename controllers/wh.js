@@ -342,10 +342,10 @@ function handleMessage(req, res) {
             const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
-                ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
+                ({ title, quantity }, idx) => `Your cart is:\n${idx + 1}. ${title}: ${quantity}`,
               )
               .join('\n');
-            const txt = `${storedLineItemsText}\n 1.Proceed to payment \n 2. Delete item \n 3.Back`;
+            const txt = `${storedLineItemsText}\n\nWhat do you want to do next?\n1. Proceed to payment \n2. Delete item \n3. Continue shopping`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -437,21 +437,7 @@ function handleMessage(req, res) {
           break;
         }
         case '3': {
-          const txt = 'Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.';
-          msgCtrl.sendMsg({
-            fromNumber,
-            msg: txt,
-          });
-          UserStates.updateOne(
-            {
-              phone: fromNumber,
-            },
-            {
-              $set: {
-                last: 'added-to-cart',
-              },
-            },
-          ).exec();
+          sendCatalog();
           break;
         }
         default: {
