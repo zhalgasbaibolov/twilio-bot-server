@@ -103,7 +103,7 @@ function handleMessage(req, res) {
       },
       {
         $set: {
-          last: 'tracking',
+          last: 'support',
         },
       },
     );
