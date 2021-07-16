@@ -436,21 +436,7 @@ function handleMessage(req, res) {
           break;
         }
         case '3': {
-          const txt = 'Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.';
-          msgCtrl.sendMsg({
-            fromNumber,
-            msg: txt,
-          });
-          UserStates.updateOne(
-            {
-              phone: fromNumber,
-            },
-            {
-              $set: {
-                last: 'added-to-cart',
-              },
-            },
-          ).exec();
+          sendCatalog();
           break;
         }
         default: {
