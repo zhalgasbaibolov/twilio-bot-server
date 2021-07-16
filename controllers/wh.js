@@ -349,7 +349,7 @@ function handleMessage(req, res) {
                 ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
               )
               .join('\n');
-            const txt = `${storedLineItemsText}\n 1.Continure \n 2. Delete item \n 3.Back`;
+            const txt = `${storedLineItemsText}\n1. Continure\n 2. Delete item\n 3. Back`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
