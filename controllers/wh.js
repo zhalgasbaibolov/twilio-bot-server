@@ -116,6 +116,12 @@ function handleMessage(req, res) {
     ).exec();
   };
 
+  function sendTopBackMenu() {
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
+    });
+  }
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
@@ -412,7 +418,10 @@ function handleMessage(req, res) {
           createCheckoutList(
             storeMyShopify,
             accessToken,
-            state.storedLineItems,
+            state.storedLineItems.map((x) => ({
+              variantId: x.variantId,
+              quantity: x.quantity,
+            })),
           )
             .then((createdCheckoutInfo) => {
               const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url and finish him!\n ${
