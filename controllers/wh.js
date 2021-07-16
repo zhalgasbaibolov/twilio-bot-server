@@ -270,7 +270,7 @@ function handleMessage(req, res) {
             if (indx === variantsSize - 1) {
               setTimeout(() => {
                 let txt = variants
-                  .map((v, idx) => `${idx + 1}. ${v.node.id}`)
+                  .map((v, idx) => `${idx + 1}. ${v.node.title}`)
                   .join('\n');
                 txt = `Select variants:\n${txt}`;
                 msgCtrl.sendMsg({
@@ -343,7 +343,7 @@ function handleMessage(req, res) {
                 ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
               )
               .join('\n');
-            const txt = `${storedLineItemsText}\n 1.Continure \n 2. Delete item \n 3.Back`;
+            const txt = `${storedLineItemsText}\n 1.Proceed to payment \n 2. Delete item \n 3.Back`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -398,14 +398,30 @@ function handleMessage(req, res) {
     } else if (state.last === 'cart') {
       switch (msg) {
         case '1': {
-          UserStates.updateOne({
-            phone: fromNumber,
-          }, {
-            $set: {
-              last: 'completed',
-              storedLineItems: [],
-            },
-          });
+          createCheckoutList(
+            storeMyShopify,
+            accessToken,
+            state.storedLineItems,
+          )
+            .then((createdCheckoutInfo) => {
+              const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ${
+                createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
+              msgCtrl.sendMsg({
+                fromNumber,
+                msg: txt,
+              });
+              UserStates.updateOne({
+                phone: fromNumber,
+              },
+              {
+                $set: {
+                  last: 'completed',
+                  storedLineItems: [],
+                },
+              },
+              errorHandler);
+            });
+
           break;
         }
         case '2': {
@@ -419,13 +435,21 @@ function handleMessage(req, res) {
           break;
         }
         case '3': {
-          UserStates.updateOne({
-            phone: fromNumber,
-          }, {
-            $set: {
-              last: 'variants',
-            },
+          const txt = 'Your item is placed in cart.What do you want next ? \n1.Continue shopping.\n2.See my cart. \n3.Proceed to payment.';
+          msgCtrl.sendMsg({
+            fromNumber,
+            msg: txt,
           });
+          UserStates.updateOne(
+            {
+              phone: fromNumber,
+            },
+            {
+              $set: {
+                last: 'added-to-cart',
+              },
+            },
+          ).exec();
           break;
         }
         default: {
