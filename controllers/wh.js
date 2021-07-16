@@ -2,7 +2,7 @@ const {
   generateSlug,
 } = require('random-word-slugs');
 const UserStates = require('../db/models/Userstate');
-const discounts = require('../db/models/UserDiscountModel');
+const discounts = require('../db/models/UserDiscount');
 const msgCtrl = require('./msg');
 
 const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
