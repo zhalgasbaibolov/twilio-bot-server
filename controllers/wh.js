@@ -445,17 +445,6 @@ function handleMessage(req, res) {
                 fromNumber,
                 msg: txt,
               });
-              UserStates.updateOne({
-                phone: fromNumber,
-              },
-              {
-                $set: {
-                  last: 'completed',
-                  storedLineItems: [],
-                },
-              }).exec().catch((err) => {
-                errorHandler(err);
-              });
               sendTopBackMenu(5000);
             });
 
