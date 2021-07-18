@@ -122,17 +122,6 @@ function handleMessage(req, res) {
       msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
     });
     sendTopBackMenu(5000);
-
-    UserStates.updateOne(
-      {
-        phone: fromNumber,
-      },
-      {
-        $set: {
-          last: 'support',
-        },
-      },
-    ).exec();
   };
 
   const getOrderStatus = () => {
@@ -216,7 +205,7 @@ function handleMessage(req, res) {
     if (msg.toLowerCase() === 'main') {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: 'Hello! What do you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*',
+        msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart demo',
       });
       UserStates.updateOne(
         {
@@ -293,6 +282,7 @@ function handleMessage(req, res) {
           fromNumber,
           msg: `Please open this link to track your order!\n${trackingUrl}`,
         });
+        sendTopBackMenu(5000);
       }
     } else if (state.last === 'catalog') {
       if (!state.catalogs[msg - 1]) {
