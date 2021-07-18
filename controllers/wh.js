@@ -106,8 +106,8 @@ function handleMessage(req, res) {
             last: 'catalog',
             catalogs: response.collections.edges,
           },
-        }, errorHandler,
-      );
+        },
+      ).exec();
     }).catch(errorHandler);
   }
   function resendCommand() {
@@ -425,8 +425,7 @@ function handleMessage(req, res) {
                   last: 'cart',
                 },
               },
-              errorHandler,
-            );
+            ).exec();
           }
           break;
         case '3': {
@@ -480,8 +479,7 @@ function handleMessage(req, res) {
                   last: 'completed',
                   storedLineItems: [],
                 },
-              },
-              errorHandler);
+              }).exec();
             });
 
           break;
@@ -529,8 +527,7 @@ function handleMessage(req, res) {
             last: 'deleteItem',
           },
         },
-        errorHandler,
-      );
+      ).exec();
     } else if (state.last === 'deleteItem') {
       const newList = this.storedLineItems.filter((t) => t.variantId === msg);
       UserStates.updateOne(
