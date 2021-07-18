@@ -453,8 +453,9 @@ function handleMessage(req, res) {
                   last: 'completed',
                   storedLineItems: [],
                 },
-              },
-              errorHandler);
+              }).exec().catch((err) => {
+                errorHandler(err);
+              });
               sendTopBackMenu(5000);
             });
 
