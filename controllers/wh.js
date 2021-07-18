@@ -64,7 +64,24 @@ function handleMessage(req, res) {
         });
       }).catch(errorHandler);
   }
-
+  function sendTopBackMenu(ms = 0) {
+    setTimeout(() => {
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
+      });
+      UserStates.updateOne(
+        {
+          phone: fromNumber,
+        },
+        {
+          $set: {
+            last: 'main',
+          },
+        },
+      ).exec();
+    }, ms);
+  }
   function sendCatalog() {
     retireveCollections(storeMyShopify, accessToken).then((
       response,
@@ -104,6 +121,8 @@ function handleMessage(req, res) {
       fromNumber,
       msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
     });
+    sendTopBackMenu(5000);
+
     UserStates.updateOne(
       {
         phone: fromNumber,
@@ -116,12 +135,6 @@ function handleMessage(req, res) {
     ).exec();
   };
 
-  function sendTopBackMenu() {
-    msgCtrl.sendMsg({
-      fromNumber,
-      msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
-    });
-  }
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
@@ -166,8 +179,22 @@ function handleMessage(req, res) {
           .then(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: `Here is your promocode(click this link): ${discountedUrl}`,
+              msg: `Here is your promocode(click this link): ${discountedUrl}\nPlease click this link to proceed or click '5' to return`,
             });
+            msgCtrl.sendMsg({
+              fromNumber,
+              msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
+            });
+            UserStates.updateOne(
+              {
+                phone: fromNumber,
+              },
+              {
+                $set: {
+                  last: 'main',
+                },
+              },
+            ).exec();
           })
           .catch((err) => {
             // eslint-disable-next-line no-console
@@ -254,6 +281,7 @@ function handleMessage(req, res) {
               fromNumber,
               msg: txt,
             });
+            sendTopBackMenu();
           })
           .catch((err) => {
             // eslint-disable-next-line no-console
@@ -441,9 +469,7 @@ function handleMessage(req, res) {
                 },
               },
               errorHandler);
-              setTimeout(() => {
-                sendTopBackMenu();
-              }, 5000);
+              sendTopBackMenu(5000);
             });
 
           break; }
