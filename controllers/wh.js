@@ -68,7 +68,7 @@ function handleMessage(req, res) {
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
+        msg: 'Is there anything else that you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart',
       });
       UserStates.updateOne(
         {
@@ -577,7 +577,7 @@ function handleMessage(req, res) {
       if (msg === '5') {
         msgCtrl.sendMsg({
           fromNumber,
-          msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
+          msg: 'Is there anything else that you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart',
         });
 
         UserStates.updateOne(
