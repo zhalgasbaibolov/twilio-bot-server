@@ -584,20 +584,23 @@ function handleMessage(req, res) {
         ).exec();
       }
     } else if (state.last === 'return-to-main-if-5-pressed') {
-      msgCtrl.sendMsg({
-        fromNumber,
-        msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
-      });
-      UserStates.updateOne(
-        {
-          phone: fromNumber,
-        },
-        {
-          $set: {
-            last: 'main',
+      if (msg === '5') {
+        msgCtrl.sendMsg({
+          fromNumber,
+          msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
+        });
+
+        UserStates.updateOne(
+          {
+            phone: fromNumber,
           },
-        },
-      ).exec();
+          {
+            $set: {
+              last: 'main',
+            },
+          },
+        ).exec();
+      }
     } else {
       // eslint-disable-next-line no-constant-condition
       console.log("state.last !== 'main'", state);
