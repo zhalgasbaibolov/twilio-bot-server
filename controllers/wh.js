@@ -181,17 +181,13 @@ function handleMessage(req, res) {
               fromNumber,
               msg: `Here is your promocode(click this link): ${discountedUrl}\nPlease click this link to proceed or click '5' to return`,
             });
-            msgCtrl.sendMsg({
-              fromNumber,
-              msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
-            });
             UserStates.updateOne(
               {
                 phone: fromNumber,
               },
               {
                 $set: {
-                  last: 'main',
+                  last: 'return-to-main-if-5-pressed',
                 },
               },
             ).exec();
@@ -587,6 +583,21 @@ function handleMessage(req, res) {
           },
         ).exec();
       }
+    } else if (state.last === 'return-to-main-if-5-pressed') {
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: 'Is there anything else that you want?\n*1. Catalogue*\n*2. Customer Support*\n*3. Order Status*\n*4. Abandoned cart*',
+      });
+      UserStates.updateOne(
+        {
+          phone: fromNumber,
+        },
+        {
+          $set: {
+            last: 'main',
+          },
+        },
+      ).exec();
     } else {
       // eslint-disable-next-line no-constant-condition
       console.log("state.last !== 'main'", state);
