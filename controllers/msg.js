@@ -1,7 +1,7 @@
 const twilio = require('twilio');
 const authToken = require('../getAuthToken');
 
-const accountSid = 'ACf13396ae63a74e748647280ed29ee706';
+const accountSid = 'ACd40192a9c430fabab5e2e934c0f98fe4';
 
 const sendMsg = ({
   fromNumber,
