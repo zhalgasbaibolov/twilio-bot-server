@@ -462,7 +462,10 @@ function handleMessage(req, res) {
           createCheckoutList(
             storeMyShopify,
             accessToken,
-            state.storedLineItems,
+            state.storedLineItems.map((x) => ({
+              variantId: x.variantId,
+              quantity: x.quantity,
+            })),
           )
             .then((createdCheckoutInfo) => {
               const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ${
@@ -480,8 +483,7 @@ function handleMessage(req, res) {
                   storedLineItems: [],
                 },
               }).exec();
-            });
-
+            }).catch(errorHandler);
           break;
         }
         case '3': {
