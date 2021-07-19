@@ -9,36 +9,9 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  client.connect((connecionError) => {
-    if (connecionError) {
-      return res.status(500).send(connecionError);
-    }
-    const db = client.db('test');
-    const collection = db.collection('blocks');
-    collection.find({}).toArray((err, docs) => {
-      client.close();
-      if (err) {
-        return res.status(500).send(err);
-      }
-      docs.forEach((d) => d._id = d._id.toString());
-      const root = docs.filter((d) => !d.parentId);
-      const children = docs.filter((d) => d.parentId);
-
-      for (const node of root) { getChildren(node, children); }
-
-      function getChildren(n, arr) {
-        n.children = arr.filter((item) => item.parentId === n._id);
-        for (const node of n.children) { getChildren(node, arr); }
-      }
-      res.send(root);
-    });
-  });
+  res.send('blocks');
 });
-router.post('/', (req, res, next) => {
+router.post('/', (req, res) => {
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -49,12 +22,12 @@ router.post('/', (req, res, next) => {
     }
     const db = client.db('test');
     const collection = db.collection('blocks');
-    collection.insertOne(req.body, (err, result) => {
+    return collection.insertOne(req.body, (err, result) => {
       client.close();
       if (err) {
         return res.status(500).send(err);
       }
-      res.send(result.ops[0]);
+      return res.send(result.ops[0]);
     });
   });
 });
@@ -72,7 +45,7 @@ router.put('/:id', (req, res) => {
     }
     const db = client.db('test');
     const collection = db.collection('blocks');
-    collection.updateOne({
+    return collection.updateOne({
       _id: ObjectId(req.params.id),
     }, {
       $set: {
@@ -84,7 +57,7 @@ router.put('/:id', (req, res) => {
         console.error(err);
         return res.status(500).send(err);
       }
-      res.send(result.result);
+      return res.send(result.result);
     });
   });
 });
@@ -101,14 +74,14 @@ router.delete('/:id', (req, res) => {
     }
     const db = client.db('test');
     const collection = db.collection('blocks');
-    collection.deleteOne({
+    return collection.deleteOne({
       _id: ObjectId(req.params.id),
     }, (err, result) => {
       client.close();
       if (err) {
         return res.status(500).send(err);
       }
-      res.send(result.result.n);
+      return res.send(result.result.n);
     });
   });
 });
