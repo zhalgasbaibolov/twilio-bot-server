@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
-const jwt = require('../middlewares/auth')
-    
-router.get('/', jwt, function(req, res, next) {
-    res.send(req.headers);
+const express = require('express');
+
+const router = express.Router();
+const jwt = require('../middlewares/auth');
+
+router.get('/', jwt, (req, res) => {
+  res.send(req.headers);
 });
 
 module.exports = router;
