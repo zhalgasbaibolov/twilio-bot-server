@@ -345,7 +345,7 @@ function handleMessage(req, res) {
       UserReview
         .create({
           phone: fromNumber,
-          text: msg
+          text: msg,
         })
         .then(referToFriend).catch(errorHandler);
     } else if (state.last === 'refer') {
