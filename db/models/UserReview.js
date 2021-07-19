@@ -9,9 +9,10 @@ const { Schema } = mongoose;
 
 const userReviewSchema = new Schema({
   phone: { type: String, required: true },
-  timestamps: true,
   text: { type: String },
-
-}, { collection: 'userReviews' });
+}, {
+  collection: 'userReviews',
+  timestamps: true,
+});
 
 module.exports = mongoose.model('UserReview', userReviewSchema);
