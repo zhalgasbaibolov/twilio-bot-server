@@ -462,7 +462,10 @@ function handleMessage(req, res) {
           createCheckoutList(
             storeMyShopify,
             accessToken,
-            state.storedLineItems,
+            state.storedLineItems.map((x) => ({
+              variantId: x.variantId,
+              quantity: x.quantity,
+            })),
           )
             .then((createdCheckoutInfo) => {
               const txt = `Congratulations! \nYour order is almost created.\nPlease, open this url and finish him!\n ${
@@ -481,17 +484,27 @@ function handleMessage(req, res) {
                 },
               }).exec();
             }).catch(errorHandler);
-
           break;
         }
         case '3': {
+          const storedLineItemsText = state.storedLineItems
+            .filter((x) => x.title && x.quantity)
+            .map(
+              ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
+            )
+            .join('\n');
+          const txt = `${storedLineItemsText}\nSelect item that you are gonna delete`;
+          msgCtrl.sendMsg({
+            fromNumber,
+            msg: txt,
+          });
           UserStates.updateOne({
             phone: fromNumber,
           }, {
             $set: {
-              last: 'removeItem',
+              last: 'deleteItem',
             },
-          });
+          }).exec();
           break;
         }
         case '1': {
@@ -506,14 +519,15 @@ function handleMessage(req, res) {
           break;
         }
       }
-    } else if (state.last === 'removeItem') {
+    } else if (state.last === 'deleteItem') {
+      state.storedLineItems.splice(msg - 1, 1);
       const storedLineItemsText = state.storedLineItems
         .filter((x) => x.title && x.quantity)
         .map(
           ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
         )
         .join('\n');
-      const txt = `${storedLineItemsText}\nSelect item that you are gonna delete`;
+      const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
@@ -524,20 +538,8 @@ function handleMessage(req, res) {
         },
         {
           $set: {
-            last: 'deleteItem',
-          },
-        },
-      ).exec();
-    } else if (state.last === 'deleteItem') {
-      const newList = this.storedLineItems.filter((t) => t.variantId === msg);
-      UserStates.updateOne(
-        {
-          phone: fromNumber,
-        },
-        {
-          $set: {
-            last: 'deleteItem',
-            storedLineItems: newList,
+            last: 'cart',
+            storedLineItems: state.storedLineItems,
           },
         },
       ).exec();
