@@ -10,8 +10,8 @@ const { Schema } = mongoose;
 const userReviewSchema = new Schema({
   phone: { type: String, required: true },
   timestamps: true,
-  text: {type: String}
-  
+  text: { type: String },
+
 }, { collection: 'userReviews' });
 
 module.exports = mongoose.model('UserReview', userReviewSchema);
