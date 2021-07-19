@@ -317,7 +317,7 @@ function handleMessage(req, res) {
             },
           ).exec();
         },
-      );
+      ).catch(errorHandler);
     } else if (state.last === 'products') {
       if (!state.products[msg - 1]) {
         resendCommand(fromNumber);
@@ -362,7 +362,7 @@ function handleMessage(req, res) {
             }
           });
         },
-      );
+      ).catch(errorHandler);
     } else if (state.last === 'variants') {
       if (!state.variants[msg - 1]) {
         resendCommand(fromNumber);
@@ -445,7 +445,7 @@ function handleMessage(req, res) {
                 msg: txt,
               });
               sendTopBackMenu(5000);
-            });
+            }).catch(errorHandler);
 
           break; }
         default: {
