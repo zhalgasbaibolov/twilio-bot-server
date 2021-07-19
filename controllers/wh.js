@@ -3,6 +3,7 @@ const {
 } = require('random-word-slugs');
 const UserStates = require('../db/models/Userstate');
 const UserDiscount = require('../db/models/UserDiscount');
+const UserReview = require('../db/models/UserReview');
 const msgCtrl = require('./msg');
 
 const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
@@ -25,7 +26,8 @@ const {
 const {
   getAllOrders,
 } = require('../getAllOrders');
-// const UserDiscount = require('../db/models/UserDiscountModel');
+
+// const UserDiscount = require('../db/models/UserDiscount');
 
 // const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
 // UserDiscount.create({ discountCode: 'string' }, (err, res) => {
@@ -340,8 +342,12 @@ function handleMessage(req, res) {
         }
       }
     } else if (state.last === 'review') {
-      // todo: create model reviews
-      referToFriend();
+      UserReview
+        .create({
+          phone: fromNumber,
+          text: msg
+        })
+        .then(referToFriend).catch(errorHandler);
     } else if (state.last === 'refer') {
       switch (msg) {
         case '1': {
@@ -352,7 +358,7 @@ function handleMessage(req, res) {
           setTimeout(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/randomString',
+              msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/QkDXv9mr2bGzYaeRKE',
             });
             sendMainMenu(5000);
           }, 3000);
