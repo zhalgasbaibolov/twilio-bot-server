@@ -64,11 +64,12 @@ function handleMessage(req, res) {
         });
       }).catch(errorHandler);
   }
-  function sendTopBackMenu(ms = 0) {
+  function sendMainMenu(ms = 0, firstTime = false) {
+    const firstWord = firstTime?'Hello! What do you want?':'Is there anything else that you want?'
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: 'Is there anything else that you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart',
+        msg: firstWord + '\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart',
       });
       UserStates.updateOne(
         {
@@ -121,7 +122,7 @@ function handleMessage(req, res) {
       fromNumber,
       msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
     });
-    sendTopBackMenu(5000);
+    sendMainMenu(5000);
   };
 
   const getOrderStatus = () => {
@@ -203,20 +204,7 @@ function handleMessage(req, res) {
     console.log('continueDialog', msg);
 
     if (msg.toLowerCase() === 'main') {
-      msgCtrl.sendMsg({
-        fromNumber,
-        msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart demo',
-      });
-      UserStates.updateOne(
-        {
-          phone: fromNumber,
-        },
-        {
-          $set: {
-            last: 'main',
-          },
-        },
-      ).exec();
+      sendMainMenu(0,          true);
       return;
     }
 
@@ -266,7 +254,7 @@ function handleMessage(req, res) {
               fromNumber,
               msg: txt,
             });
-            sendTopBackMenu();
+            sendMainMenu();
           })
           .catch((err) => {
             // eslint-disable-next-line no-console
@@ -282,7 +270,7 @@ function handleMessage(req, res) {
           fromNumber,
           msg: `Please open this link to track your order!\n${trackingUrl}`,
         });
-        sendTopBackMenu(5000);
+        sendMainMenu(5000);
       }
     } else if (state.last === 'catalog') {
       if (!state.catalogs[msg - 1]) {
@@ -444,7 +432,7 @@ function handleMessage(req, res) {
                 fromNumber,
                 msg: txt,
               });
-              sendTopBackMenu(5000);
+              sendMainMenu(5000);
               UserStates.updateOne({
                 phone: fromNumber,
               },
@@ -482,7 +470,7 @@ function handleMessage(req, res) {
                 fromNumber,
                 msg: txt,
               });
-              sendTopBackMenu(5000);
+              sendMainMenu(5000);
               UserStates.updateOne({
                 phone: fromNumber,
               },
@@ -555,38 +543,11 @@ function handleMessage(req, res) {
       if (msg === '1') {
         sendDiscount();
       } else {
-        msgCtrl.sendMsg({
-          fromNumber,
-          msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart demo',
-        });
-        UserStates.updateOne(
-          {
-            phone: fromNumber,
-          },
-          {
-            $set: {
-              last: 'main',
-            },
-          },
-        ).exec();
+        sendMainMenu(0, true);
       }
     } else if (state.last === 'return-to-main-if-5-pressed') {
       if (msg === '5') {
-        msgCtrl.sendMsg({
-          fromNumber,
-          msg: 'Is there anything else that you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart',
-        });
-
-        UserStates.updateOne(
-          {
-            phone: fromNumber,
-          },
-          {
-            $set: {
-              last: 'main',
-            },
-          },
-        ).exec();
+        sendMainMenu();
       }
     } else {
       // eslint-disable-next-line no-constant-condition
