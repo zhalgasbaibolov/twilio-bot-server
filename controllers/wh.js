@@ -3,6 +3,7 @@ const {
 } = require('random-word-slugs');
 const UserStates = require('../db/models/Userstate');
 const UserDiscount = require('../db/models/UserDiscount');
+const UserReview = require('../db/models/UserReview');
 const msgCtrl = require('./msg');
 
 const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
@@ -25,9 +26,7 @@ const {
 const {
   getAllOrders,
 } = require('../getAllOrders');
-const UserReview = require('../db/models/userReview');
 
-const review = new UserReview({ phone: 'string', body: 'string', ID: 'string' });
 // const UserDiscount = require('../db/models/UserDiscount');
 
 // const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
@@ -343,13 +342,12 @@ function handleMessage(req, res) {
         }
       }
     } else if (state.last === 'review') {
-      // todo: create model reviews
-      review.create(((err) => {
-        if (err) { return errorHandler(err); }
-        return false;
-        // saved!
-      }));
-      referToFriend();
+      UserReview
+        .create({
+          phone: fromNumber,
+          text: msg
+        })
+        .then(referToFriend).catch(errorHandler);
     } else if (state.last === 'refer') {
       switch (msg) {
         case '1': {
