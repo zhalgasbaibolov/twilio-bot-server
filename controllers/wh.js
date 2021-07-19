@@ -69,7 +69,7 @@ function handleMessage(req, res) {
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: firstWord + '\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart',
+        msg: firstWord + '\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)',
       });
       UserStates.updateOne(
         {
@@ -147,6 +147,41 @@ function handleMessage(req, res) {
       },
     ).exec();
   };
+
+  const sendMarketing = () => {
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: 'Would you like to leave us a review for 5 points?\n1. Yes\n2. No',
+    });
+    UserStates.updateOne(
+      {
+        phone: fromNumber,
+      },
+      {
+        $set: {
+          last: 'marketing',
+        },
+      },
+    ).exec();
+  };
+
+  const referToFriend = () => {
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: 'Would you like to refer your friends to earn loyalty points?\n1. Yes\n2. No',
+    });
+    UserStates.updateOne(
+      {
+        phone: fromNumber,
+      },
+      {
+        $set: {
+          last: 'refer',
+        },
+      },
+    ).exec();
+  };
+
   function sendDiscount() {
     const discountSlug = generateSlug();
     shopifyDiscountCreate(
@@ -204,7 +239,7 @@ function handleMessage(req, res) {
     console.log('continueDialog', msg);
 
     if (msg.toLowerCase() === 'main') {
-      sendMainMenu(0,          true);
+      sendMainMenu(0, true);
       return;
     }
 
@@ -221,6 +256,10 @@ function handleMessage(req, res) {
           break; }
         case '4': {
           sendDiscount();
+          break;
+        }
+        case '5': {
+          sendMarketing();
           break;
         }
         default: {
@@ -254,7 +293,7 @@ function handleMessage(req, res) {
               fromNumber,
               msg: txt,
             });
-            sendMainMenu();
+            sendMainMenu(5000);
           })
           .catch((err) => {
             // eslint-disable-next-line no-console
@@ -272,7 +311,65 @@ function handleMessage(req, res) {
         });
         sendMainMenu(5000);
       }
-    } else if (state.last === 'catalog') {
+    } else if (state.last === 'marketing') {
+      switch (msg) {
+        case '1': {
+          msgCtrl.sendMsg({
+              fromNumber,
+              msg: 'Please type your review:',
+          });
+          UserStates.updateOne(
+            {
+              phone: fromNumber,
+            },
+            {
+              last: 'review'
+            },
+          ).exec();
+          break;
+        }
+        case '2':
+          referToFriend();
+          break;
+        default: {
+          msgCtrl.sendMsg({
+            fromNumber,
+            msg: 'Please, send right command',
+          });
+          break;
+        }
+      }    
+    } else if (state.last === 'review') {
+      // todo: create model reviews
+      referToFriend();
+    } else if (state.last === 'refer') {
+      switch (msg) {
+        case '1': {
+          msgCtrl.sendMsg({
+              fromNumber,
+              msg: 'Please forward below message.',
+          });
+          setTimeout(() => {
+            msgCtrl.sendMsg({
+              fromNumber,
+              msg: `Hey! I'm invite you check out Banarasi Outfits :)\nPlease click this link, we'll both get a discount.\nhttps://banarasioutfit.in/randomString`,
+            }); 
+            sendMainMenu(5000);
+          }, 3000);
+          break;
+        }
+        case '2':
+          sendMainMenu();
+          break;
+        default: {
+          msgCtrl.sendMsg({
+            fromNumber,
+            msg: 'Please, send right command',
+          });
+          break;
+        }
+      }    
+    }else if (state.last === 'catalog') {
       if (!state.catalogs[msg - 1]) {
         resendCommand(fromNumber);
         return;
