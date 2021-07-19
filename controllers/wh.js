@@ -65,11 +65,11 @@ function handleMessage(req, res) {
       }).catch(errorHandler);
   }
   function sendMainMenu(ms = 0, firstTime = false) {
-    const firstWord = firstTime?'Hello! What do you want?':'Is there anything else that you want?'
+    const firstWord = firstTime ? 'Hello! What do you want?' : 'Is there anything else that you want?';
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: firstWord + '\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)',
+        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
       });
       UserStates.updateOne(
         {
@@ -315,15 +315,15 @@ function handleMessage(req, res) {
       switch (msg) {
         case '1': {
           msgCtrl.sendMsg({
-              fromNumber,
-              msg: 'Please type your review:',
+            fromNumber,
+            msg: 'Please type your review:',
           });
           UserStates.updateOne(
             {
               phone: fromNumber,
             },
             {
-              last: 'review'
+              last: 'review',
             },
           ).exec();
           break;
@@ -338,7 +338,7 @@ function handleMessage(req, res) {
           });
           break;
         }
-      }    
+      }
     } else if (state.last === 'review') {
       // todo: create model reviews
       referToFriend();
@@ -346,14 +346,14 @@ function handleMessage(req, res) {
       switch (msg) {
         case '1': {
           msgCtrl.sendMsg({
-              fromNumber,
-              msg: 'Please forward below message.',
+            fromNumber,
+            msg: 'Please forward below message.',
           });
           setTimeout(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: `Hey! I'm invite you check out Banarasi Outfits :)\nPlease click this link, we'll both get a discount.\nhttps://banarasioutfit.in/randomString`,
-            }); 
+              msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/randomString',
+            });
             sendMainMenu(5000);
           }, 3000);
           break;
@@ -368,8 +368,8 @@ function handleMessage(req, res) {
           });
           break;
         }
-      }    
-    }else if (state.last === 'catalog') {
+      }
+    } else if (state.last === 'catalog') {
       if (!state.catalogs[msg - 1]) {
         resendCommand(fromNumber);
         return;
