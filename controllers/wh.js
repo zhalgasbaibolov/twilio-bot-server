@@ -25,7 +25,10 @@ const {
 const {
   getAllOrders,
 } = require('../getAllOrders');
-// const UserDiscount = require('../db/models/UserDiscountModel');
+const UserReview = require('../db/models/userReview');
+
+const review = new UserReview({ phone: 'string', body: 'string', ID: 'string' });
+// const UserDiscount = require('../db/models/UserDiscount');
 
 // const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
 // UserDiscount.create({ discountCode: 'string' }, (err, res) => {
@@ -341,6 +344,11 @@ function handleMessage(req, res) {
       }
     } else if (state.last === 'review') {
       // todo: create model reviews
+      review.create(((err) => {
+        if (err) { return errorHandler(err); }
+        return false;
+        // saved!
+      }));
       referToFriend();
     } else if (state.last === 'refer') {
       switch (msg) {
@@ -352,7 +360,7 @@ function handleMessage(req, res) {
           setTimeout(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/randomString',
+              msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/QkDXv9mr2bGzYaeRKE',
             });
             sendMainMenu(5000);
           }, 3000);
