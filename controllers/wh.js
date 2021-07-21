@@ -42,7 +42,27 @@ function handleMessage(req, res) {
   const msg = req.body.Body || req.body.Body;
   // eslint-disable-next-line no-console
   console.log('wh controller', fromNumber, msg, req.body);
-  if (fromNumber === 'whatsapp:+14155238886') return;
+  if (fromNumber === 'whatsapp:+14155238886') {
+    setTimeout(() => {
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)',
+      });
+      UserStates.findOneAndUpdate(
+        {
+          phone: req.body.To,
+        },
+        {
+          $set: {
+            last: 'main',
+          },
+        }, {
+          upsert: true,
+        },
+      ).exec();
+    }, 3000);
+    return;
+  }
 
   const errorHandler = (err) => {
     // eslint-disable-next-line no-console
