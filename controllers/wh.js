@@ -65,7 +65,7 @@ function handleMessage(req, res) {
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
+        msg: `${firstWord}\n1. Collection\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
       });
       UserStates.updateOne(
         {
@@ -83,7 +83,7 @@ function handleMessage(req, res) {
     retireveCollections(storeMyShopify, accessToken).then((
       response,
     ) => {
-      const collections = `Select Catalogue:\n${
+      const collections = `Select Collection:\n${
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
           .join('\n')}`;
