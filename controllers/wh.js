@@ -27,14 +27,6 @@ const {
   getAllOrders,
 } = require('../getAllOrders');
 
-// const UserDiscount = require('../db/models/UserDiscount');
-
-// const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
-// UserDiscount.create({ discountCode: 'string' }, (err, res) => {
-//   if (err) return console.log(err);
-//   return res;
-// });
-
 function handleMessage(req, res) {
   res.status(200).send('');
 
@@ -109,13 +101,10 @@ function handleMessage(req, res) {
     retireveCollections(storeMyShopify, accessToken).then((
       response,
     ) => {
-      console.log('sendCatalog');
       const collections = `Select Catalogue:\n${
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
           .join('\n')}`;
-      // eslint-disable-next-line no-console
-      console.log(collections, fromNumber);
       msgCtrl.sendMsg({
         fromNumber,
         msg: collections,
