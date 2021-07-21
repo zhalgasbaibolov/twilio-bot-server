@@ -39,10 +39,10 @@ function handleMessage(req, res) {
   res.status(200).send('');
 
   const fromNumber = req.body.From || req.body.From;
-  if (fromNumber === 'whatsapp:+14155238886') return;
   const msg = req.body.Body || req.body.Body;
   // eslint-disable-next-line no-console
   console.log('wh controller', fromNumber, msg, req.body);
+  if (fromNumber === 'whatsapp:+14155238886') return;
 
   const errorHandler = (err) => {
     // eslint-disable-next-line no-console
