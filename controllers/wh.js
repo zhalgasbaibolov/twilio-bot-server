@@ -27,14 +27,6 @@ const {
   getAllOrders,
 } = require('../getAllOrders');
 
-// const UserDiscount = require('../db/models/UserDiscount');
-
-// const discount = new UserDiscount({ phone: 'string', discountCode: 'string' });
-// UserDiscount.create({ discountCode: 'string' }, (err, res) => {
-//   if (err) return console.log(err);
-//   return res;
-// });
-
 function handleMessage(req, res) {
   res.status(200).send('');
 
@@ -43,24 +35,26 @@ function handleMessage(req, res) {
   // eslint-disable-next-line no-console
   console.log('wh controller', fromNumber, msg, req.body);
   if (fromNumber === 'whatsapp:+14155238886') {
-    setTimeout(() => {
-      msgCtrl.sendMsg({
-        fromNumber,
-        msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)',
-      });
-      UserStates.findOneAndUpdate(
-        {
-          phone: req.body.To,
-        },
-        {
-          $set: {
-            last: 'main',
+    if (!msg) {
+      setTimeout(() => {
+        msgCtrl.sendMsg({
+          fromNumber,
+          msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)',
+        });
+        UserStates.findOneAndUpdate(
+          {
+            phone: req.body.To,
           },
-        }, {
-          upsert: true,
-        },
-      ).exec();
-    }, 3000);
+          {
+            $set: {
+              last: 'main',
+            },
+          }, {
+            upsert: true,
+          },
+        ).exec();
+      }, 3000);
+    }
     return;
   }
 
@@ -109,13 +103,10 @@ function handleMessage(req, res) {
     retireveCollections(storeMyShopify, accessToken).then((
       response,
     ) => {
-      console.log('sendCatalog');
       const collections = `Select Catalogue:\n${
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
           .join('\n')}`;
-      // eslint-disable-next-line no-console
-      console.log(collections, fromNumber);
       msgCtrl.sendMsg({
         fromNumber,
         msg: collections,
@@ -239,27 +230,11 @@ function handleMessage(req, res) {
               },
             ).exec();
           })
-          .catch((err) => {
-            // eslint-disable-next-line no-console
-            console.log(err);
-            msgCtrl.sendMsg({
-              fromNumber,
-              msg: 'error on creating discount',
-            });
-          });
+          .catch(errorHandler);
       })
-      .catch((err) => {
-        // eslint-disable-next-line no-console
-        console.log(err);
-        msgCtrl.sendMsg({
-          fromNumber,
-          msg: 'error on creating discount',
-        });
-      });
+      .catch(errorHandler);
   }
   function continueDialog(state) {
-    console.log('continueDialog', msg);
-
     if (msg.toLowerCase() === 'main') {
       sendMainMenu(0, true);
       return;
@@ -317,14 +292,7 @@ function handleMessage(req, res) {
             });
             sendMainMenu(5000);
           })
-          .catch((err) => {
-            // eslint-disable-next-line no-console
-            console.log(err);
-            msgCtrl.sendMsg({
-              fromNumber,
-              msg: 'error on creating tracking url',
-            });
-          });
+          .catch(errorHandler);
       } else {
         const trackingUrl = `https://t.17track.net/en#nums=${msg}`;
         msgCtrl.sendMsg({
@@ -403,7 +371,6 @@ function handleMessage(req, res) {
       const { handle } = state.catalogs[msg - 1].node;
       getProductsByCollectionHandle(storeMyShopify, accessToken, handle).then(
         (response) => {
-          console.log(response.collectionByHandle.products.edges);
           const products = response.collectionByHandle.products.edges;
           let txt = products
             .map((pr, idx) => `${idx + 1}. ${pr.node.handle}`)
@@ -673,8 +640,7 @@ function handleMessage(req, res) {
         sendMainMenu();
       }
     } else {
-      // eslint-disable-next-line no-constant-condition
-      console.log("state.last !== 'main'", state);
+      resendCommand();
     }
   }
 
