@@ -136,7 +136,7 @@ function handleMessage(req, res) {
   function resendCommand() {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Please, send right command\nWould you like to return to main menu?\n1.Yes',
+      msg: 'Please, send right command\nOr type *main* to redirect to main menu',
     });
   }
   const getSupport = () => {
