@@ -31,9 +31,6 @@ module.exports = () => {
         }
         allCarts = allCarts.filter((cart) => cart.discount_codes
          && cart.discount_codes.length);
-        console.log(allCarts.map((x) => (x.discount_codes[0]
-          ? { discount_codes: x.discount_codes[0].code }
-          : null)));
         UserDiscount.find({
           notifiedCount: {
             $lt: 1,
@@ -63,8 +60,10 @@ module.exports = () => {
               }, {
                 notifiedCount: 2,
               }, {}, (err2, upd) => {
-                if (err2) console.log(err2);
-                console.log(upd);
+                if (err2) {
+                  return console.log(err2);
+                }
+                return console.log(upd);
               });
               return;
             }
