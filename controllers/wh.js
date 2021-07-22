@@ -193,6 +193,7 @@ function handleMessage(req, res) {
           .create({
             discountCode: discountSlug,
             phone: fromNumber,
+            notifiedCount: 0,
           })
           .then(() => {
             msgCtrl.sendMsg({

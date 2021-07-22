@@ -3,13 +3,27 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
+const tracker = require('./tracker');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const whRouter = require('./routes/wh');
-const blockRouter = require('./routes/block');
 const settingsRouter = require('./routes/settings');
 
+const mongoDB = 'mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/test?retryWrites=true&w=majority';
+mongoose.connect(mongoDB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+});
+
+const db = mongoose.connection;
+
+// Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+tracker();
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -26,7 +40,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/wh', whRouter);
-app.use('/blocks', blockRouter);
 app.use('/settings', settingsRouter);
 
 app.use((req, res, next) => {
