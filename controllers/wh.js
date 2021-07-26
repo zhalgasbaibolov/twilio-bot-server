@@ -104,6 +104,7 @@ async function handleMessage(req, res) {
         fromNumber,
         msg: collections,
       });
+      console.log(UserStates);
       UserStates.updateOne(
         {
           phone: fromNumber,
@@ -338,9 +339,9 @@ async function handleMessage(req, res) {
           }, 3000);
           break;
         }
-        case '2':
+        case '2': {
           sendMainMenu();
-          break;
+          break; }
         default: {
           msgCtrl.sendMsg({
             fromNumber,
