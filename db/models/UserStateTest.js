@@ -13,4 +13,4 @@ const userStateSchema = new Schema({
   storedLineItems: [Object],
 }, { collection: 'userStates' });
 
-module.exports = mongoose.model('UserStates', userStateSchema);
+module.exports = mongoose.model('UserState', userStateSchema);

@@ -29,12 +29,12 @@ const {
 
 function handleMessage(req, res) {
   res.status(200).send('');
-
+  const accountSid = req.body.AccountSid;
   const fromNumber = req.body.From || req.body.From;
   const msg = req.body.Body || req.body.Body;
   // eslint-disable-next-line no-console
   console.log('wh controller', fromNumber, msg, req.body);
-  if (fromNumber === 'whatsapp:+14155238886') {
+  if (!accountSid || fromNumber === 'whatsapp:+14155238886') {
     return;
   }
 
