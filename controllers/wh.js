@@ -28,8 +28,8 @@ const {
 async function handleMessage(req, res) {
   res.status(200).send('');
   const accountSid = req.body.AccountSid;
-  const fromNumber = req.body.From || req.body.From;
-  const msg = req.body.Body || req.body.Body;
+  const fromNumber = req.body.From;
+  const msg = req.body.Body;
   // eslint-disable-next-line no-console
   console.log('wh controller', fromNumber, msg, req.body);
   if (fromNumber === 'whatsapp:+14155238886') {
@@ -109,10 +109,8 @@ async function handleMessage(req, res) {
           phone: fromNumber,
         },
         {
-          $set: {
-            last: 'catalog',
-            catalogs: response.collections.edges,
-          },
+          last: 'catalog',
+          catalogs: response.collections.edges,
         },
       ).exec();
     }).catch(errorHandler);
