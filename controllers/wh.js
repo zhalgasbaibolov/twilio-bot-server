@@ -2,9 +2,10 @@ const {
   generateSlug,
 } = require('random-word-slugs');
 const UserStates = require('../db/models/Userstate');
+const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
-const msgCtrl = require('./msg');
+const WhatsapSender = require('../providers/WhatsapSender');
 
 const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
 const storePassword = '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';
@@ -19,7 +20,7 @@ const {
   createCheckoutList,
   getProductsByCollectionHandle,
   retireveVariantsOfProduct,
-} = require('./storefrontAPI');
+} = require('../providers/shopifyApi');
 const {
   shopifyDiscountCreate,
 } = require('./discountRestAPI');
@@ -27,7 +28,7 @@ const {
   getAllOrders,
 } = require('../getAllOrders');
 
-function handleMessage(req, res) {
+async function handleMessage(req, res) {
   res.status(200).send('');
 
   const fromNumber = req.body.From || req.body.From;
@@ -35,29 +36,24 @@ function handleMessage(req, res) {
   // eslint-disable-next-line no-console
   console.log('wh controller', fromNumber, msg, req.body);
   if (fromNumber === 'whatsapp:+14155238886') {
-    if (!msg) {
-      setTimeout(() => {
-        msgCtrl.sendMsg({
-          fromNumber,
-          msg: 'Hello! What do you want?\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)',
-        });
-        UserStates.findOneAndUpdate(
-          {
-            phone: req.body.To,
-          },
-          {
-            $set: {
-              last: 'main',
-            },
-          }, {
-            upsert: true,
-          },
-        ).exec();
-      }, 3000);
-    }
     return;
   }
 
+  let userSettings = null;
+  try {
+    userSettings = await UserSetting.find().exec();
+    userSettings = userSettings.find(
+      (sett) => sett && sett.twilio && sett.twilio.accountSid === accountSid,
+    );
+    if (!userSettings || !userSettings.twilio || !userSettings.shopify) {
+      console.log('wrong user settings:', userSettings);
+      return;
+    }
+  } catch (getSettigsErr) {
+    console.log(getSettigsErr);
+    return;
+  }
+  const msgCtrl = new WhatsapSender(userSettings);
   const errorHandler = (err) => {
     // eslint-disable-next-line no-console
     console.log(err);
@@ -66,7 +62,6 @@ function handleMessage(req, res) {
       msg: JSON.stringify(err),
     });
   };
-
   function createNewDialog() {
     UserStates
       .create({
