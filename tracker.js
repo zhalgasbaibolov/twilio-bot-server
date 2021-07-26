@@ -12,7 +12,14 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const UserDiscount = require('./db/models/UserDiscount');
-const msgCtrl = require('./controllers/msg');
+const { WhatsapSender } = require('./providers/WhatsapSender');
+
+const msgCtrl = new WhatsapSender({
+  accountSid:
+  'ACd40192a9c430fabab5e2e934c0f98fe4',
+  authToken:
+  'f76a5a44bbea4533fb7a17d0c9ff9954',
+});
 const {
   getAbandonedCart,
 } = require('./cartAbandonment');

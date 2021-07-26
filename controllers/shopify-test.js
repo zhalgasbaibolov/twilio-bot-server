@@ -3,7 +3,7 @@
 
 const {
   createCheckout,
-} = require('./storefrontAPI');
+} = require('../providers/shopifyApi');
 
 // const storeAPIkey = '0f6b58da9331414de7ed1d948c67ac35';
 // const storePassword = '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';

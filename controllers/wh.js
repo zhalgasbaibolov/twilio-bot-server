@@ -7,19 +7,16 @@ const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
 const WhatsapSender = require('../providers/WhatsapSender');
 
-const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
-const storePassword = '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';
-const accessToken = '9d75b9d30a16f02bb9517f2aafd9bd48';
-const storeMyShopify = 'banarasi-outfit.myshopify.com';
-const externalUrl = 'banarasioutfit.in';
-const apiVersion = '2021-04';
-const priceRuleId = '942249935042';
+// const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
+// const storePassword = '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';
+// const accessToken = '9d75b9d30a16f02bb9517f2aafd9bd48';
+// const storeMyShopify = 'banarasi-outfit.myshopify.com';
+// const externalUrl = 'banarasioutfit.in';
+// const apiVersion = '2021-04';
+// const priceRuleId = '942249935042';
 
 const {
-  retireveCollections,
-  createCheckoutList,
-  getProductsByCollectionHandle,
-  retireveVariantsOfProduct,
+  ShopifyApi,
 } = require('../providers/shopifyApi');
 const {
   shopifyDiscountCreate,
@@ -53,7 +50,8 @@ async function handleMessage(req, res) {
     console.log(getSettigsErr);
     return;
   }
-  const msgCtrl = new WhatsapSender(userSettings);
+  const msgCtrl = new WhatsapSender(userSettings.twilio);
+  const shopifyApi = new ShopifyApi(userSettings.shopify);
   const errorHandler = (err) => {
     // eslint-disable-next-line no-console
     console.log(err);
@@ -95,7 +93,7 @@ async function handleMessage(req, res) {
     }, ms);
   }
   function sendCatalog() {
-    retireveCollections(storeMyShopify, accessToken).then((
+    shopifyApi.retireveCollections().then((
       response,
     ) => {
       const collections = `Select Catalogue:\n${
@@ -193,16 +191,11 @@ async function handleMessage(req, res) {
   function sendDiscount() {
     const discountSlug = generateSlug();
     shopifyDiscountCreate(
-      storeMyShopify,
-      apiVersion,
-      storeAPIkey,
-      storePassword,
-      priceRuleId,
       discountSlug,
     )
       .then((response) => {
         const { code } = response.data.discount_code;
-        const discountedUrl = `http://${externalUrl}/discount/${code}`;
+        const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
 
         UserDiscount
           .create({
@@ -261,7 +254,7 @@ async function handleMessage(req, res) {
       }
     } else if (state.last === 'tracking') {
       if (/@/.test(msg)) {
-        getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
+        getAllOrders()
           .then((response) => {
             const trackNumbers = response.data.orders
               .filter((ord) => ord.email === msg)
@@ -364,7 +357,7 @@ async function handleMessage(req, res) {
         return;
       }
       const { handle } = state.catalogs[msg - 1].node;
-      getProductsByCollectionHandle(storeMyShopify, accessToken, handle).then(
+      shopifyApi.getProductsByCollectionHandle(handle).then(
         (response) => {
           const products = response.collectionByHandle.products.edges;
           let txt = products
@@ -398,7 +391,7 @@ async function handleMessage(req, res) {
       }
 
       const productID = state.products[msg - 1].node.id;
-      retireveVariantsOfProduct(storeMyShopify, accessToken, productID).then(
+      shopifyApi.retireveVariantsOfProduct(productID).then(
         (response) => {
           const variants = response.node.variants.edges;
           const variantsSize = variants.length;
@@ -502,9 +495,7 @@ async function handleMessage(req, res) {
           }
           break;
         case '3': {
-          createCheckoutList(
-            storeMyShopify,
-            accessToken,
+          shopifyApi.createCheckoutList(
             state.storedLineItems.map((x) => ({
               variantId: x.variantId,
               quantity: x.quantity,
@@ -540,9 +531,7 @@ async function handleMessage(req, res) {
     } else if (state.last === 'cart') {
       switch (msg) {
         case '2': {
-          createCheckoutList(
-            storeMyShopify,
-            accessToken,
+          shopifyApi.createCheckoutList(
             state.storedLineItems.map((x) => ({
               variantId: x.variantId,
               quantity: x.quantity,

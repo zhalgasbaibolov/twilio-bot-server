@@ -1,7 +1,7 @@
 const twilio = require('twilio');
 
-module.exports.WhatsapSender = function WhatsapSender(settings) {
-  const client = twilio(settings.accountSid, settings.authToken);
+module.exports.WhatsapSender = function WhatsapSender({ accountSid, authToken }) {
+  const client = twilio(accountSid, authToken);
   return {
     sendMsg: ({
       fromNumber,

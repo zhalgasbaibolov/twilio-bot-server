@@ -55,8 +55,6 @@ module.exports.ShopifyApi = function ShopifyApi({ storeMyShopify, accessToken })
   };
 
   const getProductsByCollectionHandle = async (
-    storeMyShopify,
-    accessToken,
     handle,
   ) => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
@@ -85,8 +83,6 @@ module.exports.ShopifyApi = function ShopifyApi({ storeMyShopify, accessToken })
   };
 
   const retireveVariantsOfProduct = async (
-    storeMyShopify,
-    accessToken,
     productID,
   ) => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
