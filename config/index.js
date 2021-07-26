@@ -42,5 +42,4 @@ if (process.env.twilio) {
   Object.assign(conf, twilio[process.env.twilio]);
 }
 
-console.log(conf);
 module.exports = conf;

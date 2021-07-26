@@ -17,6 +17,7 @@ amqp.connect('amqp://localhost', (error0, connection) => {
     channel.sendToQueue(queue, Buffer.from(msg), {
       persistent: true,
     });
+    // eslint-disable-next-line no-console
     console.log(" [x] Sent '%s'", msg);
   });
   setTimeout(() => {

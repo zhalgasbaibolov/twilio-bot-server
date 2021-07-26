@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const twilio = require('twilio');
 
 module.exports.WhatsapSender = function WhatsapSender({ accountSid, authToken }) {

@@ -16,7 +16,7 @@ async function getAbandonedCart(
     })
     .then((response) => response)
     .catch((error) => {
-      // handle error
+      // eslint-disable-next-line no-console
       console.log('@@@@@@@@@@ERROR at getAbandonedCart:   ', error);
       return false;
     });
