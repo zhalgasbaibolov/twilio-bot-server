@@ -5,9 +5,11 @@ const {
 } = require('graphql-request');
 const axios = require('axios');
 
-module.exports.ShopifyApi = function ShopifyApi({
-  storeMyShopify, accessToken, apiVersion, priceRuleId, storeAPIkey, storePassword,
-}) {
+module.exports.ShopifyApi = function ShopifyApi(settings) {
+  const {
+    storeMyShopify, accessToken, apiVersion, priceRuleId, storeAPIkey, storePassword,
+  } = settings;
+  console.log(settings);
   const retireveCollections = async () => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
@@ -55,7 +57,6 @@ module.exports.ShopifyApi = function ShopifyApi({
         },
       })
       .then((response) => {
-        console.log(response);
         const discountedUrl = `http://${storeMyShopify}/discount/${randomString}`;
         console.log('test link is: ', discountedUrl);
         return response;
