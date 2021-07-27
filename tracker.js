@@ -10,7 +10,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 const UserDiscount = require('./db/models/UserDiscount');
 const { WhatsapSender } = require('./providers/WhatsapSender');
 
-const msgCtrl = new WhatsapSender({
+const msgCtrl = WhatsapSender({
   accountSid:
   'ACd40192a9c430fabab5e2e934c0f98fe4',
   authToken:

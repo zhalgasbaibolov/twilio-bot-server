@@ -39,6 +39,7 @@ async function handleMessage(req, res) {
   let userSettings = null;
   try {
     userSettings = await UserSetting.find({}).exec();
+    console.log(userSettings);
     userSettings = userSettings.find(
       (sett) => sett && sett.twilio && sett.twilio.accountSid === accountSid,
     );
@@ -50,8 +51,8 @@ async function handleMessage(req, res) {
     console.log(getSettigsErr);
     return;
   }
-  const msgCtrl = new WhatsapSender(userSettings.twilio);
-  const shopifyApi = new ShopifyApi(userSettings.shopify);
+  const msgCtrl = WhatsapSender(userSettings.twilio);
+  const shopifyApi = ShopifyApi(userSettings.shopify);
   const errorHandler = (err) => {
     // eslint-disable-next-line no-console
     console.log(err);
