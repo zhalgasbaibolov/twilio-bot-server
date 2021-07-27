@@ -38,7 +38,7 @@ async function handleMessage(req, res) {
 
   let userSettings = null;
   try {
-    userSettings = await UserSetting.find().exec();
+    userSettings = await UserSetting.find({}).exec();
     userSettings = userSettings.find(
       (sett) => sett && sett.twilio && sett.twilio.accountSid === accountSid,
     );
