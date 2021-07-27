@@ -6,7 +6,7 @@ const UserStates = require('../db/models/Userstate');
 const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
-const WhatsapSender = require('../providers/WhatsapSender');
+const { WhatsapSender } = require('../providers/WhatsapSender');
 
 // const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
 // const storePassword = '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';
@@ -39,7 +39,6 @@ async function handleMessage(req, res) {
   let userSettings = null;
   try {
     userSettings = await UserSetting.find({}).exec();
-    console.log(userSettings);
     userSettings = userSettings.find(
       (sett) => sett && sett.twilio && sett.twilio.accountSid === accountSid,
     );
