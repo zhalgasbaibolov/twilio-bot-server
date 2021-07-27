@@ -1,9 +1,13 @@
+/* eslint-disable no-console */
 const {
   gql,
   GraphQLClient,
 } = require('graphql-request');
+const axios = require('axios');
 
-module.exports.ShopifyApi = function ShopifyApi({ storeMyShopify, accessToken }) {
+module.exports.ShopifyApi = function ShopifyApi({
+  storeMyShopify, accessToken, apiVersion, priceRuleId, storeAPIkey, storePassword,
+}) {
   const retireveCollections = async () => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
@@ -29,7 +33,39 @@ module.exports.ShopifyApi = function ShopifyApi({ storeMyShopify, accessToken })
     `;
     return graphQLClient.request(query);
   };
+  const shopifyDiscountCreate = async (
+    randomString,
+  ) => {
+    const dataDiscount = {
+      discount_code: {
+        code: randomString,
+      },
+    };
 
+    const sessionUrlDiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${priceRuleId}/discount_codes.json`;
+    console.log(sessionUrlDiscount);
+    return axios
+      .post(sessionUrlDiscount, JSON.stringify(dataDiscount), {
+        auth: {
+          username: storeAPIkey,
+          password: storePassword,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        const discountedUrl = `http://${storeMyShopify}/discount/${randomString}`;
+        console.log('test link is: ', discountedUrl);
+        return response;
+      })
+      .catch((error) => {
+        // handle error
+        console.log('@@@@@@@@@@ERROR AT DISCOUNT CREATE:   ', error);
+        return false;
+      });
+  };
   const retireveProducts = async () => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
@@ -252,6 +288,7 @@ module.exports.ShopifyApi = function ShopifyApi({ storeMyShopify, accessToken })
     createCheckout,
     createCheckoutList,
     updateCheckout,
+    shopifyDiscountCreate,
   };
   return shopifyApi;
 };

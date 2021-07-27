@@ -8,20 +8,10 @@ const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
 const { WhatsapSender } = require('../providers/WhatsapSender');
 
-// const storeAPIkey = 'a55e9f8e5d6feebd23752396acd80cc4';
-// const storePassword = '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';
-// const accessToken = '9d75b9d30a16f02bb9517f2aafd9bd48';
-// const storeMyShopify = 'banarasi-outfit.myshopify.com';
-// const externalUrl = 'banarasioutfit.in';
-// const apiVersion = '2021-04';
-// const priceRuleId = '942249935042';
-
 const {
   ShopifyApi,
 } = require('../providers/shopifyApi');
-const {
-  shopifyDiscountCreate,
-} = require('./discountRestAPI');
+
 const {
   getAllOrders,
 } = require('../getAllOrders');
@@ -189,7 +179,7 @@ async function handleMessage(req, res) {
 
   function sendDiscount() {
     const discountSlug = generateSlug();
-    shopifyDiscountCreate(
+    ShopifyApi.shopifyDiscountCreate(
       discountSlug,
     )
       .then((response) => {
