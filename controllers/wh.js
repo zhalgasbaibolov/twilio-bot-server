@@ -179,7 +179,7 @@ async function handleMessage(req, res) {
 
   function sendDiscount() {
     const discountSlug = generateSlug();
-    ShopifyApi.shopifyDiscountCreate(
+    shopifyApi.shopifyDiscountCreate(
       discountSlug,
     )
       .then((response) => {
