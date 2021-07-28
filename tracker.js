@@ -18,7 +18,8 @@ const storeMyShopify = 'banarasi-outfit.myshopify.com';
 
 const apiVersion = '2021-04';
 
-module.exports = () => {
+module.exports.tracker = () => {
+  console.log('tracker starting...2');
   setInterval(() => {
     getAbandonedCart(
       storeMyShopify,
@@ -27,10 +28,6 @@ module.exports = () => {
       storePassword,
     )
       .then((response) => {
-        if (!response) {
-          return;
-        }
-
         let allCarts = response.data && response.data.checkouts;
         if (!allCarts || !allCarts.length) {
           console.log('abandoned carts not found');
@@ -38,20 +35,29 @@ module.exports = () => {
         }
         allCarts = allCarts.filter((cart) => cart.discount_codes
          && cart.discount_codes.length);
+        // console.log(allCarts);
         UserDiscount.find({
           notifiedCount: {
             $lt: 1,
           },
         }, (err, pairs) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
           if (!pairs || !pairs.length) {
             console.log('phone:discount pairs not found');
             return;
           }
-          allCarts.filter((cart) => cart.discount_codes).forEach((cart) => {
+          const foundOneAsLeast = false;
+          allCarts.forEach((cart) => {
             for (let i = 0; i < cart.discount_codes.length; i += 1) {
               const { code } = cart.discount_codes[i];
               const findedPair = pairs.find((p) => p.discountCode === code);
-              if (!findedPair) return;
+              if (!findedPair) {
+                return;
+              }
+              foundOneAsLeast = true;
               console.log(`found pairs: ${findedPair.phone}: ${findedPair.discountCode}: ${findedPair.notifiedCount}`);
 
               msgCtrl.sendMsg({
@@ -75,11 +81,14 @@ module.exports = () => {
               return;
             }
           });
+          if (!foundOneAsLeast) {
+            console.log('not found pairs for this list of discounts');
+          }
           // eslint-disable-next-line consistent-return
           return pairs;
         });
       }).catch((err) => {
         console.log(err);
       });
-  }, 3000);
+  }, 30000);
 };
