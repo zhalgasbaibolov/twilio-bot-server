@@ -324,8 +324,13 @@ async function handleMessage(req, res) {
             msgCtrl.sendMsg({
               fromNumber,
               msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/QkDXv9mr2bGzYaeRKE',
-            });
-            sendMainMenu(5000);
+            }).then(()=>{
+              msgCtrl.sendMsg({
+                fromNumber,
+                msg: 'Congratulations! You\'ve earned 5 points!!!',
+              });
+              sendMainMenu(5000);
+            })
           }, 3000);
           break;
         }
