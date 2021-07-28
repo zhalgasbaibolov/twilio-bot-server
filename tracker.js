@@ -6,7 +6,7 @@ const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
 const msgCtrl = WhatsapSender({
   accountSid:
-  'ACd40192a9c430fabab5e2e934c0f98fe4',
+  'AC534b07c807465b936b2241514b536512',
   authToken:
   token,
 });
@@ -21,7 +21,6 @@ const storeMyShopify = 'banarasi-outfit.myshopify.com';
 const apiVersion = '2021-04';
 
 module.exports.tracker = () => {
-  console.log('tracker starting...2');
   setInterval(() => {
     getAbandonedCart(
       storeMyShopify,
@@ -83,9 +82,6 @@ module.exports.tracker = () => {
               return;
             }
           });
-          if (!foundOneAsLeast) {
-            console.log('not found pairs for this list of discounts');
-          }
           // eslint-disable-next-line consistent-return
           return pairs;
         });
