@@ -212,7 +212,7 @@ async function handleMessage(req, res) {
       .catch(errorHandler);
   }
   function continueDialog(state) {
-    if (msg.toLowerCase() === 'main') {
+    if (msg === '0') {
       sendMainMenu(0, true);
       return;
     }
@@ -330,7 +330,10 @@ async function handleMessage(req, res) {
                 fromNumber,
                 msg: 'Congratulations! You\'ve earned 5 points!!!',
               });
-            }, sendMainMenu(5000));
+              setTimeout(() => {
+                sendMainMenu()
+              }, 5000)
+            }, 3000);
           }, 3000);
           break;
         }
