@@ -387,10 +387,14 @@ async function handleMessage(req, res) {
         return;
       }
 
-      const productID = state.products[msg - 1].node.id;
+      const { title: productTitle, id: productID } = state.products[msg - 1].node;
       shopifyApi.retireveVariantsOfProduct(productID).then(
         (response) => {
           const variants = response.node.variants.edges;
+          for (let i = 0; i < variants.length; i++) {
+            const v = variants[i];
+            v.productTitle = productTitle;
+          }
           const variantsSize = variants.length;
           variants.forEach((item, indx) => {
             const { title } = item.node;
