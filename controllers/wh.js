@@ -212,7 +212,7 @@ async function handleMessage(req, res) {
       .catch(errorHandler);
   }
   function continueDialog(state) {
-    if (msg.toLowerCase() === 'main') {
+    if (msg === '0') {
       sendMainMenu(0, true);
       return;
     }
