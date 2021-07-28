@@ -395,20 +395,33 @@ async function handleMessage(req, res) {
             const v = variants[i];
             v.productTitle = productTitle;
           }
-          const mediaUrlList = variants.map((item) => item.node.image.originalSrc);
-          msgCtrl.sendMediaList({
-            fromNumber,
-            mediaUrl: mediaUrlList,
-          }).then(() => {
+          const mediaUrlList = variants.map(
+            (item) => item.node.image && item.node.image.originalSrc,
+          );
+          if (mediaUrlList && mediaUrlList.length) {
+            msgCtrl.sendMediaList({
+              fromNumber,
+              mediaUrl: mediaUrlList,
+            }).then(() => {
+              let txt = variants
+                .map((v, idx) => `${idx + 1}. ${v.node.title}`)
+                .join('\n');
+              txt = `Select Variants of ${variants[0].productTitle}:\n${txt}\n--------------\n0. Back to main menu`;
+              msgCtrl.sendMsg({
+                fromNumber,
+                msg: txt,
+              });
+            });
+          } else {
             let txt = variants
-              .map((v, idx) => `${idx + 1}. ${v.productTitle}, ${v.node.title}`)
+              .map((v, idx) => `${idx + 1}. ${v.node.title}`)
               .join('\n');
-            txt = `Select Variants:\n${txt}\n--------------\n0. Back to main menu`;
+            txt = `Select Variants of ${variants[0].productTitle}:\n${txt}\n--------------\n0. Back to main menu`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
             });
-          });
+          }
           UserState.updateOne(
             {
               phone: fromNumber,
