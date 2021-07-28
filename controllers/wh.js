@@ -401,13 +401,13 @@ async function handleMessage(req, res) {
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
-              msg: variants[0].productTitle,
+              msg: 'Select variants',
               mediaUrl: mediaUrlList,
             }).then(() => {
               let txt = variants
                 .map((v, idx) => `${idx + 1}. ${v.node.title}`)
                 .join('\n');
-              txt = `Select Variants of ${variants[0].productTitle}:\n${txt}\n--------------\n0. Back to main menu`;
+              txt = `${variants[0].productTitle}:\n${txt}\n--------------\n0. Back to main menu`;
               msgCtrl.sendMsg({
                 fromNumber,
                 msg: txt,

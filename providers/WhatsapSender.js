@@ -45,6 +45,7 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => {
       if (fromNumber === 'whatsapp:+14155238886') {
         return null;
       }
+      console.log(mediaUrlList);
 
       return client.messages
         .create({
