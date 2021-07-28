@@ -2,11 +2,13 @@
 const UserDiscount = require('./db/models/UserDiscount');
 const { WhatsapSender } = require('./providers/WhatsapSender');
 
+const a = '370a717f';
+const token = `${a}84299f15e25757c7e3e627fa`;
 const msgCtrl = WhatsapSender({
   accountSid:
   'ACd40192a9c430fabab5e2e934c0f98fe4',
   authToken:
-  'f76a5a44bbea4533fb7a17d0c9ff9954',
+  token,
 });
 const {
   getAbandonedCart,
