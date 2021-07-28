@@ -37,8 +37,9 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => {
         })
         .done();
     },
-    sendMediaList: ({
+    sendMediaList: async ({
       fromNumber,
+      msg,
       mediaUrlList,
     }) => {
       if (fromNumber === 'whatsapp:+14155238886') {
@@ -48,11 +49,11 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => {
       return client.messages
         .create({
           from: 'whatsapp:+14155238886',
+          body: msg,
           to: fromNumber,
           mediaUrl: mediaUrlList,
-        })
-        .catch((err) => {
-          // eslint-disable-next-line no-console
+        }).catch((err) => {
+        // eslint-disable-next-line no-console
           console.log(err, mediaUrlList);
         });
     },

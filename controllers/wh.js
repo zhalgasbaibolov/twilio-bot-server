@@ -401,6 +401,7 @@ async function handleMessage(req, res) {
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
+              msg: variants[0].productTitle,
               mediaUrl: mediaUrlList,
             }).then(() => {
               let txt = variants
