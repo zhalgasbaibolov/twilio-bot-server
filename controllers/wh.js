@@ -633,6 +633,11 @@ async function handleMessage(req, res) {
       return result;
     });
 }
+function handleStatus(req, res) {
+  console.log('status:', req.body);
+  res.send('status');
+}
 module.exports = {
   handleMessage,
+  handleStatus,
 };

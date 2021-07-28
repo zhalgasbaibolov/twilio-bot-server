@@ -7,4 +7,6 @@ router.all('/', async (req, res) => {
   await whCtrl.handleMessage(req, res);
 });
 
+router.all('/status', whCtrl.handleStatus);
+
 module.exports = router;
