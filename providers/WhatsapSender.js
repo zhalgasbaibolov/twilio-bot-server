@@ -14,32 +14,28 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => {
         return;
       }
 
-      if (mediaUrl) {
-        client.messages
-          .create({
-            body: msg,
-            from: 'whatsapp:+14155238886',
-            to: fromNumber,
-            mediaUrl,
-          })
-          .catch((err) => {
+      return mediaUrl ? client.messages
+        .create({
+          body: msg,
+          from: 'whatsapp:+14155238886',
+          to: fromNumber,
+          mediaUrl,
+        })
+        .catch((err) => {
           // eslint-disable-next-line no-console
-            console.log(err);
-          })
-          .done();
-      } else {
-        client.messages
-          .create({
-            body: msg,
-            from: 'whatsapp:+14155238886',
-            to: fromNumber,
-          })
-          .catch((err) => {
+          console.log(err);
+        })
+        .done() : client.messages
+        .create({
+          body: msg,
+          from: 'whatsapp:+14155238886',
+          to: fromNumber,
+        })
+        .catch((err) => {
           // eslint-disable-next-line no-console
-            console.log(err);
-          })
-          .done();
-      }
+          console.log(err);
+        })
+        .done();
     },
   };
 };
