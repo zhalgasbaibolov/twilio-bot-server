@@ -1,12 +1,4 @@
 /* eslint-disable no-console */
-const mongoose = require('mongoose');
-
-// Get the default connection
-const db = mongoose.connection;
-
-// Bind connection to error event (to get notification of connection errors)
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 const UserDiscount = require('./db/models/UserDiscount');
 const { WhatsapSender } = require('./providers/WhatsapSender');
 
@@ -26,44 +18,68 @@ const storeMyShopify = 'banarasi-outfit.myshopify.com';
 
 const apiVersion = '2021-04';
 
-setInterval(() => {
-  getAbandonedCart(
-    storeMyShopify,
-    apiVersion,
-    storeAPIkey,
-    storePassword,
-  )
-    .then((response) => {
-      if (!response) {
-        return;
-      }
-
-      const allCarts = response.data.checkouts;
-      if (!allCarts || !allCarts.length) {
-        console.log('abandoned carts not found');
-        return;
-      }
-      console.log(allCarts.map((x) => ({ discount_codes: x.discount_codes[0].code })));
-      UserDiscount.find((err, pairs) => {
-        if (!pairs || !pairs.length) {
-          console.log('phone:discount pairs not found');
+module.exports = () => {
+  setInterval(() => {
+    getAbandonedCart(
+      storeMyShopify,
+      apiVersion,
+      storeAPIkey,
+      storePassword,
+    )
+      .then((response) => {
+        if (!response) {
           return;
         }
-        allCarts.forEach((cart) => {
-          for (let i = 0; i < cart.discount_codes.length; i += 1) {
-            const { code } = cart.discount_codes[i];
-            const findedPair = pairs.find((p) => p.discountCode === code);
-            if (!findedPair) return;
-            console.log(`found pairs: ${findedPair.phone}: ${findedPair.discountCode}`);
-            msgCtrl.sendMsg({
-              fromNumber: findedPair.phone,
-              msg: `Hi! Come back & finish your purchase! Here's the link:\n${cart.abandoned_checkout_url}`,
-            });
+
+        let allCarts = response.data && response.data.checkouts;
+        if (!allCarts || !allCarts.length) {
+          console.log('abandoned carts not found');
+          return;
+        }
+        allCarts = allCarts.filter((cart) => cart.discount_codes
+         && cart.discount_codes.length);
+        UserDiscount.find({
+          notifiedCount: {
+            $lt: 1,
+          },
+        }, (err, pairs) => {
+          if (!pairs || !pairs.length) {
+            console.log('phone:discount pairs not found');
             return;
           }
+          allCarts.filter((cart) => cart.discount_codes).forEach((cart) => {
+            for (let i = 0; i < cart.discount_codes.length; i += 1) {
+              const { code } = cart.discount_codes[i];
+              const findedPair = pairs.find((p) => p.discountCode === code);
+              if (!findedPair) return;
+              console.log(`found pairs: ${findedPair.phone}: ${findedPair.discountCode}: ${findedPair.notifiedCount}`);
+
+              msgCtrl.sendMsg({
+                fromNumber: findedPair.phone,
+                msg:
+                `Hi! Come back & finish your purchase! Here's the link:\n${
+                  cart.abandoned_checkout_url}`,
+              });
+
+              UserDiscount.updateOne({
+                discountCode: findedPair.discountCode,
+                phone: findedPair.phone,
+              }, {
+                notifiedCount: 2,
+              }, {}, (err2, upd) => {
+                if (err2) {
+                  return console.log(err2);
+                }
+                return console.log(upd);
+              });
+              return;
+            }
+          });
+          // eslint-disable-next-line consistent-return
+          return pairs;
         });
-        // eslint-disable-next-line consistent-return
-        return pairs;
+      }).catch((err) => {
+        console.log(err);
       });
-    });
-}, 3000);
+  }, 3000);
+};

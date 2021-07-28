@@ -2,7 +2,7 @@
 const {
   generateSlug,
 } = require('random-word-slugs');
-const UserStates = require('../db/models/Userstate');
+const UserState = require('../db/models/UserState');
 const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
@@ -51,7 +51,7 @@ async function handleMessage(req, res) {
     });
   };
   function createNewDialog() {
-    UserStates
+    UserState
       .create({
         phone: fromNumber,
         last: 'demoMain',
@@ -68,9 +68,9 @@ async function handleMessage(req, res) {
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
+        msg: `${firstWord}\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
       });
-      UserStates.updateOne(
+      UserState.updateOne(
         {
           phone: fromNumber,
         },
@@ -86,7 +86,7 @@ async function handleMessage(req, res) {
     shopifyApi.retireveCollections().then((
       response,
     ) => {
-      const collections = `Select Catalogue:\n${
+      const collections = `Select Collection:\n${
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
           .join('\n')}`;
@@ -94,8 +94,7 @@ async function handleMessage(req, res) {
         fromNumber,
         msg: collections,
       });
-      console.log(UserStates);
-      UserStates.updateOne(
+      UserState.updateOne(
         {
           phone: fromNumber,
         },
@@ -131,7 +130,7 @@ async function handleMessage(req, res) {
         msg: 'UH037386106US',
       });
     }, 3000);
-    UserStates.updateOne(
+    UserState.updateOne(
       {
         phone: fromNumber,
       },
@@ -148,7 +147,7 @@ async function handleMessage(req, res) {
       fromNumber,
       msg: 'Would you like to leave us a review for 5 points?\n1. Yes\n2. No',
     });
-    UserStates.updateOne(
+    UserState.updateOne(
       {
         phone: fromNumber,
       },
@@ -165,7 +164,7 @@ async function handleMessage(req, res) {
       fromNumber,
       msg: 'Would you like to refer your friends to earn loyalty points?\n1. Yes\n2. No',
     });
-    UserStates.updateOne(
+    UserState.updateOne(
       {
         phone: fromNumber,
       },
@@ -190,13 +189,14 @@ async function handleMessage(req, res) {
           .create({
             discountCode: discountSlug,
             phone: fromNumber,
+            notifiedCount: 0,
           })
           .then(() => {
             msgCtrl.sendMsg({
               fromNumber,
               msg: `Here is your promocode(click this link): ${discountedUrl}\nPlease click this link to proceed or click '5' to return`,
             });
-            UserStates.updateOne(
+            UserState.updateOne(
               {
                 phone: fromNumber,
               },
@@ -285,7 +285,7 @@ async function handleMessage(req, res) {
             fromNumber,
             msg: 'Please type your review:',
           });
-          UserStates.updateOne(
+          UserState.updateOne(
             {
               phone: fromNumber,
             },
@@ -358,7 +358,7 @@ async function handleMessage(req, res) {
             fromNumber,
             msg: txt,
           });
-          UserStates.updateOne(
+          UserState.updateOne(
             {
               phone: fromNumber,
             },
@@ -402,7 +402,7 @@ async function handleMessage(req, res) {
                   fromNumber,
                   msg: txt,
                 });
-                UserStates.updateOne(
+                UserState.updateOne(
                   {
                     phone: fromNumber,
                   },
@@ -441,7 +441,7 @@ async function handleMessage(req, res) {
         fromNumber,
         msg: txt,
       });
-      UserStates.updateOne(
+      UserState.updateOne(
         {
           phone: fromNumber,
         },
@@ -471,7 +471,7 @@ async function handleMessage(req, res) {
               fromNumber,
               msg: txt,
             });
-            UserStates.updateOne(
+            UserState.updateOne(
               {
                 phone: fromNumber,
               },
@@ -498,7 +498,7 @@ async function handleMessage(req, res) {
                 msg: txt,
               });
               sendMainMenu(5000);
-              UserStates.updateOne({
+              UserState.updateOne({
                 phone: fromNumber,
               },
               {
@@ -534,7 +534,7 @@ async function handleMessage(req, res) {
                 msg: txt,
               });
               sendMainMenu(5000);
-              UserStates.updateOne({
+              UserState.updateOne({
                 phone: fromNumber,
               },
               {
@@ -557,7 +557,7 @@ async function handleMessage(req, res) {
             fromNumber,
             msg: txt,
           });
-          UserStates.updateOne({
+          UserState.updateOne({
             phone: fromNumber,
           }, {
             $set: {
@@ -591,7 +591,7 @@ async function handleMessage(req, res) {
         fromNumber,
         msg: txt,
       });
-      UserStates.updateOne(
+      UserState.updateOne(
         {
           phone: fromNumber,
         },
@@ -617,7 +617,7 @@ async function handleMessage(req, res) {
     }
   }
 
-  UserStates
+  UserState
     .findOne({
       phone: fromNumber,
     },
