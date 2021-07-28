@@ -402,7 +402,7 @@ async function handleMessage(req, res) {
             msgCtrl.sendMediaList({
               fromNumber,
               msg: 'Select variants',
-              mediaUrl: mediaUrlList,
+              mediaUrlList,
             }).then(() => {
               let txt = variants
                 .map((v, idx) => `${idx + 1}. ${v.node.title}`)
