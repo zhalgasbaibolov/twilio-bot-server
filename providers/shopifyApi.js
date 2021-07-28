@@ -110,6 +110,8 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
               node {
                 id
                 handle
+                title
+                description
               }
             }
           }
