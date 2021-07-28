@@ -11,7 +11,7 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => {
     }) => {
       if (fromNumber === 'whatsapp:+14155238886') {
         console.log(msg);
-        return;
+        return null;
       }
 
       return mediaUrl ? client.messages
@@ -36,6 +36,25 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => {
           console.log(err);
         })
         .done();
+    },
+    sendMediaList: ({
+      fromNumber,
+      mediaUrlList,
+    }) => {
+      if (fromNumber === 'whatsapp:+14155238886') {
+        return null;
+      }
+
+      return client.messages
+        .create({
+          from: 'whatsapp:+14155238886',
+          to: fromNumber,
+          mediaUrl: mediaUrlList,
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.log(err);
+        });
     },
   };
 };

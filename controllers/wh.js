@@ -395,39 +395,31 @@ async function handleMessage(req, res) {
             const v = variants[i];
             v.productTitle = productTitle;
           }
-          const variantsSize = variants.length;
-          variants.forEach((item, indx) => {
-            const { title } = item.node;
-            const imgUrl = item.node.image.originalSrc;
+          const mediaUrlList = variants.map((item) => item.node.image.originalSrc);
+          msgCtrl.sendMediaList({
+            fromNumber,
+            mediaUrl: mediaUrlList,
+          }).then(() => {
+            let txt = variants
+              .map((v, idx) => `${idx + 1}. ${v.productTitle}, ${v.node.title}`)
+              .join('\n');
+            txt = `Select Variants:\n${txt}\n--------------\n0. Back to main menu`;
             msgCtrl.sendMsg({
               fromNumber,
-              msg: `${indx + 1}. ${title}`,
-              mediaUrl: imgUrl,
+              msg: txt,
             });
-            if (indx === variantsSize - 1) {
-              setTimeout(() => {
-                let txt = variants
-                  .map((v, idx) => `${idx + 1}. ${v.node.title}`)
-                  .join('\n');
-                txt = `Select Variants:\n${txt}\n--------------\n0. Back to main menu`;
-                msgCtrl.sendMsg({
-                  fromNumber,
-                  msg: txt,
-                });
-                UserState.updateOne(
-                  {
-                    phone: fromNumber,
-                  },
-                  {
-                    $set: {
-                      last: 'variants',
-                      variants,
-                    },
-                  },
-                ).exec();
-              }, 3000);
-            }
           });
+          UserState.updateOne(
+            {
+              phone: fromNumber,
+            },
+            {
+              $set: {
+                last: 'variants',
+                variants,
+              },
+            },
+          ).exec();
         },
       ).catch(errorHandler);
     } else if (state.last === 'variants') {
