@@ -53,7 +53,7 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => {
         })
         .catch((err) => {
           // eslint-disable-next-line no-console
-          console.log(err);
+          console.log(err, mediaUrlList);
         });
     },
   };
