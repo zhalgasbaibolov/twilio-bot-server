@@ -444,6 +444,7 @@ async function handleMessage(req, res) {
         return;
       }
       const { id: variantID, title } = state.variants[msg - 1].node;
+      const { productTitle } = state.variants[msg - 1];
       const storedLineItems = state.storedLineItems || [];
       const existsVariant = storedLineItems.find(
         (x) => x.variantId === variantID,
@@ -454,6 +455,7 @@ async function handleMessage(req, res) {
           variantId: variantID,
           quantity: 1,
           title,
+          productTitle,
         });
       }
       const txt = 'Your item is placed in cart. What do you want next ?\n1. Continue shopping.\n2. See my cart.\n3. Proceed to payment.\n--------------\n0. Back to main menu';
@@ -483,7 +485,7 @@ async function handleMessage(req, res) {
             const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
-                ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
+                ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}: *${quantity}*`,
               )
               .join('\n');
             const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
@@ -603,7 +605,7 @@ async function handleMessage(req, res) {
       const storedLineItemsText = state.storedLineItems
         .filter((x) => x.title && x.quantity)
         .map(
-          ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
+          ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}: *${quantity}*`,
         )
         .join('\n');
       const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
