@@ -50,7 +50,6 @@ module.exports.tracker = () => {
             console.log('phone:discount pairs not found');
             return;
           }
-          let foundOneAsLeast = false;
           allCarts.forEach((cart) => {
             for (let i = 0; i < cart.discount_codes.length; i += 1) {
               const { code } = cart.discount_codes[i];
@@ -58,8 +57,10 @@ module.exports.tracker = () => {
               if (!findedPair) {
                 return;
               }
-              foundOneAsLeast = true;
-              console.log(`found pairs: ${findedPair.phone}: ${findedPair.discountCode}: ${findedPair.notifiedCount}`);
+              console.log('******************************');
+              console.log(`found pairs: ${findedPair.phone}: ${findedPair.discountCode}: ${findedPair.notifiedCount}`,
+                cart.abandoned_checkout_url);
+              console.log('******************************');
 
               msgCtrl.sendMsg({
                 fromNumber: findedPair.phone,
