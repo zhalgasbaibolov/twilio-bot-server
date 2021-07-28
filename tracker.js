@@ -49,7 +49,7 @@ module.exports.tracker = () => {
             console.log('phone:discount pairs not found');
             return;
           }
-          const foundOneAsLeast = false;
+          let foundOneAsLeast = false;
           allCarts.forEach((cart) => {
             for (let i = 0; i < cart.discount_codes.length; i += 1) {
               const { code } = cart.discount_codes[i];

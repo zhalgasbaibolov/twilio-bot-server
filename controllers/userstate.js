@@ -1,4 +1,4 @@
-const Userstate = require('../db/models/Userstate');
+const Userstate = require('../db/models/UserState');
 
 exports.create = (req, res) => {
   if (!req.body.From) {
