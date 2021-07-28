@@ -88,7 +88,7 @@ async function handleMessage(req, res) {
     ) => {
       const collections = `Select Collection:\n${
         response.collections.edges
-          .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
+          .map((val, idx) => `${idx + 1}. ${val.node.title}`)
           .join('\n')}\n--------------\n0. Back to main menu`;
       msgCtrl.sendMsg({
         fromNumber,
