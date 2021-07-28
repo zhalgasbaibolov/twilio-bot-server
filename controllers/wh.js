@@ -59,7 +59,7 @@ async function handleMessage(req, res) {
       .then(() => {
         msgCtrl.sendMsg({
           fromNumber,
-          msg: 'Hello! Are your here to receive a discount for Banasari Outfits ?\n1. Yes\n2. No',
+          msg: 'Hello! Are you here to receive a discount for Banasari Outfits ?\n1. Yes\n2. No',
         });
       }).catch(errorHandler);
   }
@@ -89,7 +89,7 @@ async function handleMessage(req, res) {
       const collections = `Select Collection:\n${
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.handle}`)
-          .join('\n')}`;
+          .join('\n')}\n--------------\n0. Back to main menu`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: collections,
@@ -324,13 +324,13 @@ async function handleMessage(req, res) {
             msgCtrl.sendMsg({
               fromNumber,
               msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/QkDXv9mr2bGzYaeRKE',
-            }).then(()=>{
+            });
+            setTimeout(() => {
               msgCtrl.sendMsg({
                 fromNumber,
                 msg: 'Congratulations! You\'ve earned 5 points!!!',
               });
-              sendMainMenu(5000);
-            })
+            }, sendMainMenu(5000));
           }, 3000);
           break;
         }
@@ -357,7 +357,7 @@ async function handleMessage(req, res) {
           let txt = products
             .map((pr, idx) => `${idx + 1}. ${pr.node.handle}`)
             .join('\n');
-          txt = `Select Product:\n${txt.split('-').join(' ')}`;
+          txt = `Select Product:\n${txt.split('-').join(' ')}\n--------------\n0. Back to main menu`;
 
           msgCtrl.sendMsg({
             fromNumber,
@@ -402,7 +402,7 @@ async function handleMessage(req, res) {
                 let txt = variants
                   .map((v, idx) => `${idx + 1}. ${v.node.title}`)
                   .join('\n');
-                txt = `Select Variants:\n${txt}`;
+                txt = `Select Variants:\n${txt}\n--------------\n0. Back to main menu`;
                 msgCtrl.sendMsg({
                   fromNumber,
                   msg: txt,
@@ -441,7 +441,7 @@ async function handleMessage(req, res) {
           title,
         });
       }
-      const txt = 'Your item is placed in cart. What do you want next ?\n1. Continue shopping.\n2. See my cart.\n3. Proceed to payment.';
+      const txt = 'Your item is placed in cart. What do you want next ?\n1. Continue shopping.\n2. See my cart.\n3. Proceed to payment.\n--------------\n0. Back to main menu';
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
@@ -471,7 +471,7 @@ async function handleMessage(req, res) {
                 ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
               )
               .join('\n');
-            const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
+            const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
