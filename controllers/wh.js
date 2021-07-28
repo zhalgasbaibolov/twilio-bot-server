@@ -324,13 +324,13 @@ async function handleMessage(req, res) {
             msgCtrl.sendMsg({
               fromNumber,
               msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/QkDXv9mr2bGzYaeRKE',
-            }).then(()=>{
+            });
+            setTimeout(() => {
               msgCtrl.sendMsg({
                 fromNumber,
                 msg: 'Congratulations! You\'ve earned 5 points!!!',
               });
-              sendMainMenu(5000);
-            })
+            }, sendMainMenu(5000));
           }, 3000);
           break;
         }
@@ -441,7 +441,7 @@ async function handleMessage(req, res) {
           title,
         });
       }
-      const txt = `Your item is placed in cart. What do you want next ?\n1. Continue shopping.\n2. See my cart.\n3. Proceed to payment.\n--------------\n0. Back to main menu`;
+      const txt = 'Your item is placed in cart. What do you want next ?\n1. Continue shopping.\n2. See my cart.\n3. Proceed to payment.\n--------------\n0. Back to main menu';
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
