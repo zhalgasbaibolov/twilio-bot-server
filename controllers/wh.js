@@ -634,7 +634,6 @@ async function handleMessage(req, res) {
     });
 }
 function handleStatus(req, res) {
-  console.log('status:', req.body);
   res.send('status');
 }
 module.exports = {
