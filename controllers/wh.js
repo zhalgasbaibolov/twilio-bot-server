@@ -485,10 +485,11 @@ async function handleMessage(req, res) {
             const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
-                ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}: *${quantity}*`,
+                ({ title, quantity }, idx) => `${idx + 1}. ${title}: *${quantity}*`,
               )
               .join('\n');
-            const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
+            
+            const txt = `Your cart is:\n${storedLineItemsText}\n\What do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -605,7 +606,7 @@ async function handleMessage(req, res) {
       const storedLineItemsText = state.storedLineItems
         .filter((x) => x.title && x.quantity)
         .map(
-          ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}: *${quantity}*`,
+          ({ title, quantity }, idx) => `${idx + 1}. ${title}: *${quantity}*`,
         )
         .join('\n');
       const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
