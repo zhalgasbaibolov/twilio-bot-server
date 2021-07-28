@@ -331,8 +331,8 @@ async function handleMessage(req, res) {
                 msg: 'Congratulations! You\'ve earned 5 points!!!',
               });
               setTimeout(() => {
-                sendMainMenu()
-              }, 5000)
+                sendMainMenu();
+              }, 5000);
             }, 3000);
           }, 3000);
           break;
@@ -358,9 +358,9 @@ async function handleMessage(req, res) {
         (response) => {
           const products = response.collectionByHandle.products.edges;
           let txt = products
-            .map((pr, idx) => `${idx + 1}. ${pr.node.handle}`)
+            .map((pr, idx) => `${idx + 1}. ${pr.node.title}`)
             .join('\n');
-          txt = `Select Product:\n${txt.split('-').join(' ')}\n--------------\n0. Back to main menu`;
+          txt = `Select Product:\n${txt}\n--------------\n0. Back to main menu`;
 
           msgCtrl.sendMsg({
             fromNumber,
