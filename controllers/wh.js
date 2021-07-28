@@ -404,14 +404,16 @@ async function handleMessage(req, res) {
               msg: 'Select variants',
               mediaUrlList,
             }).then(() => {
-              let txt = variants
-                .map((v, idx) => `${idx + 1}. ${v.node.title}`)
-                .join('\n');
-              txt = `${variants[0].productTitle}:\n${txt}\n--------------\n0. Back to main menu`;
-              msgCtrl.sendMsg({
-                fromNumber,
-                msg: txt,
-              });
+              setTimeout(() => {
+                let txt = variants
+                  .map((v, idx) => `${idx + 1}. ${v.node.title}`)
+                  .join('\n');
+                txt = `${variants[0].productTitle}:\n${txt}\n--------------\n0. Back to main menu`;
+                msgCtrl.sendMsg({
+                  fromNumber,
+                  msg: txt,
+                });
+              }, 3000);
             });
           } else {
             let txt = variants
