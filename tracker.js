@@ -75,12 +75,12 @@ module.exports.tracker = () => {
                     setTimeout(() => {
                       const txt = cart.line_items.map(({title, variant_title, quantity}, idx) => `${idx + 1}. ${title}, ${variant_title}, quantity: ${quantity}.`).join('\n');
                       msgCtrl.sendMsg({
-                        fromNumber,
+                        fromNumber: findedPair.phone,
                         msg: `Your cart is:\n${txt}`,
                       });
                         setTimeout(() => {
                           msgCtrl.sendMsg({
-                            fromNumber,
+                            fromNumber: findedPair.phone,
                             msg: `Is there anything else that you want?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
                           });
                       }, 8000);
