@@ -116,7 +116,6 @@ async function handleMessage(req, res) {
       fromNumber,
       msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
     });
-    sendMainMenu(5000);
   };
 
   const getOrderStatus = () => {
