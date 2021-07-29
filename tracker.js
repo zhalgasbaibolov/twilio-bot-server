@@ -69,16 +69,11 @@ module.exports.tracker = () => {
 
                     msgCtrl.sendMsg({
                       fromNumber: findedPair.phone,
-                      msg:
-                `Hi! Come back & finish your purchase! Here's the link:\n${
-                  cart.abandoned_checkout_url}`,
+                      msg:`Hi! Come back & finish your purchase! Here's the link:\n${
+                      cart.abandoned_checkout_url}`,
                     });
                     setTimeout(() => {
-                      const txt = cart.line_items
-                          .map(
-                            ({title, variant_title, quantity}, idx) => `${idx + 1}. ${title}, ${variant_title} quantity: ${quantity}.`,
-                          ) 
-                          .join('\n');
+                      const txt = cart.line_items.map(({title, variant_title, quantity}, idx) => `${idx + 1}. ${title}, ${variant_title}, quantity: ${quantity}.`).join('\n');
                       msgCtrl.sendMsg({
                         fromNumber,
                         msg: `Your cart is:\n${txt}`,
