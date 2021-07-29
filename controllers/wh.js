@@ -6,6 +6,7 @@ const UserState = require('../db/models/UserState');
 const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
+const UserGetSupport = require('../db/models/UserGetSupport');
 const { WhatsapSender } = require('../providers/WhatsapSender');
 
 const {
@@ -108,7 +109,7 @@ async function handleMessage(req, res) {
   function resendCommand() {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Please, send right command\nOr type *main* to redirect to main menu',
+      msg: 'Please, send right command\nOr type *0* to redirect to main menu',
     });
   }
   const getSupport = () => {
@@ -116,7 +117,16 @@ async function handleMessage(req, res) {
       fromNumber,
       msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
     });
-    sendMainMenu(5000);
+    UserState.updateOne(
+      {
+        phone: fromNumber,
+      },
+      {
+        $set: {
+          last: 'support',
+        },
+      },
+    ).exec();
   };
 
   const getOrderStatus = () => {
@@ -194,7 +204,7 @@ async function handleMessage(req, res) {
           .then(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: `Here is your promocode(click this link): ${discountedUrl}\nPlease click this link to proceed or click '5' to return`,
+              msg: `Here is your promocode: ${discountedUrl}\nPlease click this link to proceed or click '5' to return`,
             });
             UserState.updateOne(
               {
@@ -278,6 +288,13 @@ async function handleMessage(req, res) {
         });
         sendMainMenu(5000);
       }
+    } else if (state.last === 'support') {
+      UserGetSupport
+        .create({
+          phone: fromNumber,
+          text: msg,
+        })
+        .then(sendMainMenu).catch(errorHandler);
     } else if (state.last === 'marketing') {
       switch (msg) {
         case '1': {
@@ -301,7 +318,7 @@ async function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please, send right command',
+            msg: 'Please, send right command\nOr type *0* to redirect to main menu',
           });
           break;
         }
@@ -343,7 +360,7 @@ async function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please, send right command',
+            msg: 'Please, send right command\nOr type *0* to redirect to main menu',
           });
           break;
         }
@@ -449,8 +466,10 @@ async function handleMessage(req, res) {
       const existsVariant = storedLineItems.find(
         (x) => x.variantId === variantID,
       );
-      if (existsVariant) existsVariant.quantity += 1;
-      else {
+      if (existsVariant) {
+        existsVariant.quantity += 1;
+        existsVariant.productTitle = productTitle;
+      } else {
         storedLineItems.push({
           variantId: variantID,
           quantity: 1,
@@ -485,7 +504,7 @@ async function handleMessage(req, res) {
             const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
-                ({ title, quantity }, idx) => `${idx + 1}. ${title}: *${quantity}*`,
+                ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
               )
               .join('\n');
             
@@ -535,7 +554,7 @@ async function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please, send right command',
+            msg: 'Please, send right command\nOr type *0* to redirect to main menu',
           });
           break;
         }
@@ -570,11 +589,11 @@ async function handleMessage(req, res) {
         }
         case '3': {
           const storedLineItemsText = state.storedLineItems
-            .filter((x) => x.title && x.quantity)
-            .map(
-              ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
-            )
-            .join('\n');
+              .filter((x) => x.title && x.quantity)
+              .map(
+                ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
+              )
+              .join('\n');
           const txt = `${storedLineItemsText}\nSelect item that you are gonna delete`;
           msgCtrl.sendMsg({
             fromNumber,
@@ -596,7 +615,7 @@ async function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please, send right command',
+            msg: 'Please, send right command\nOr type *0* to redirect to main menu',
           });
           break;
         }
@@ -606,7 +625,7 @@ async function handleMessage(req, res) {
       const storedLineItemsText = state.storedLineItems
         .filter((x) => x.title && x.quantity)
         .map(
-          ({ title, quantity }, idx) => `${idx + 1}. ${title}: *${quantity}*`,
+          ({ title, quantity }, idx) => `${idx + 1}. ${title}, quantity: *${quantity}*`,
         )
         .join('\n');
       const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
