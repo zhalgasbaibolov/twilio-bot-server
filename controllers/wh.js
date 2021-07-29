@@ -466,8 +466,10 @@ async function handleMessage(req, res) {
       const existsVariant = storedLineItems.find(
         (x) => x.variantId === variantID,
       );
-      if (existsVariant) existsVariant.quantity += 1;
-      else {
+      if (existsVariant) {
+        existsVariant.quantity += 1;
+        existsVariant.productTitle = productTitle;
+      } else {
         storedLineItems.push({
           variantId: variantID,
           quantity: 1,
@@ -502,7 +504,7 @@ async function handleMessage(req, res) {
             const storedLineItemsText = state.storedLineItems
               .filter((x) => x.title && x.quantity)
               .map(
-                ({ title, quantity }, idx) => `${idx + 1}. ${title}, quantity: *${quantity}*`,
+                ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
               )
               .join('\n');
             
@@ -587,11 +589,11 @@ async function handleMessage(req, res) {
         }
         case '3': {
           const storedLineItemsText = state.storedLineItems
-            .filter((x) => x.title && x.quantity)
-            .map(
-              ({ title, quantity }, idx) => `${idx + 1}. ${title}: ${quantity}`,
-            )
-            .join('\n');
+              .filter((x) => x.title && x.quantity)
+              .map(
+                ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
+              )
+              .join('\n');
           const txt = `${storedLineItemsText}\nSelect item that you are gonna delete`;
           msgCtrl.sendMsg({
             fromNumber,
