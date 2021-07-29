@@ -73,7 +73,12 @@ module.exports.tracker = () => {
                 `Hi! Come back & finish your purchase! Here's the link:\n${
                   cart.abandoned_checkout_url}`,
                     });
-
+                    setTimeout(() => {
+                      msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: `Is there anything else that you want?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
+                      });
+                    }, 8000);
                     UserDiscount.updateOne({
                       discountCode: findedPair.discountCode,
                       phone: findedPair.phone,
