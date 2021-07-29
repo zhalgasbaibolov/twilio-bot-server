@@ -204,7 +204,7 @@ async function handleMessage(req, res) {
           .then(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: `Here is your promocode(click this link): ${discountedUrl}\nPlease click this link to proceed or click '5' to return`,
+              msg: `Here is your promocode: ${discountedUrl}\nPlease click this link to proceed or click '5' to return`,
             });
             UserState.updateOne(
               {
