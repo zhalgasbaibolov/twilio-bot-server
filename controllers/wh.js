@@ -508,7 +508,7 @@ async function handleMessage(req, res) {
               )
               .join('\n');
             
-            const txt = `Your cart is:\n${storedLineItemsText}\n\What do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
+            const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -628,7 +628,7 @@ async function handleMessage(req, res) {
           ({ title, quantity }, idx) => `${idx + 1}. ${title}, quantity: *${quantity}*`,
         )
         .join('\n');
-      const txt = `Your cart is:\n${storedLineItemsText}\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
+      const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
