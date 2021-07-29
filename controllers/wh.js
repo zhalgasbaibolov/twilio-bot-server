@@ -15,7 +15,7 @@ const {
 
 const {
   getAllOrders,
-} = require('./getAllOrders');
+} = require('../getAllOrders');
 
 async function handleMessage(req, res) {
   res.status(200).send('');
@@ -253,7 +253,7 @@ async function handleMessage(req, res) {
       }
     } else if (state.last === 'tracking') {
       if (/@/.test(msg)) {
-        getAllOrders()
+        getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
           .then((response) => {
             const trackNumbers = response.data.orders
               .filter((ord) => ord.email === msg)
@@ -507,7 +507,7 @@ async function handleMessage(req, res) {
                 ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
               )
               .join('\n');
-            
+
             const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
             msgCtrl.sendMsg({
               fromNumber,
@@ -589,11 +589,11 @@ async function handleMessage(req, res) {
         }
         case '3': {
           const storedLineItemsText = state.storedLineItems
-              .filter((x) => x.title && x.quantity)
-              .map(
-                ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
-              )
-              .join('\n');
+            .filter((x) => x.title && x.quantity)
+            .map(
+              ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
+            )
+            .join('\n');
           const txt = `Select item that you are gonna delete\n\n${storedLineItemsText}\n--------------\n0. Back to main menu`;
           msgCtrl.sendMsg({
             fromNumber,
