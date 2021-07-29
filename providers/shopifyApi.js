@@ -178,7 +178,6 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
                   id
                   title
                   quantity
-                  productTitle
                 }
               }
             }
@@ -222,7 +221,6 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
                 id
                 title
                 quantity
-                productTitle
               }
             }
           }
@@ -266,7 +264,6 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
                   id
                   title
                   quantity
-                  productTitle
                 }
               }
             }
