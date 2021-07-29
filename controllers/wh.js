@@ -6,6 +6,7 @@ const UserState = require('../db/models/UserState');
 const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
+const UserGetSupport = require('../db/models/UserGetSupport');
 const { WhatsapSender } = require('../providers/WhatsapSender');
 
 const {
@@ -116,6 +117,16 @@ async function handleMessage(req, res) {
       fromNumber,
       msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
     });
+    UserState.updateOne(
+      {
+        phone: fromNumber,
+      },
+      {
+        $set: {
+          last: 'support',
+        },
+      },
+    ).exec();
   };
 
   const getOrderStatus = () => {
@@ -277,6 +288,13 @@ async function handleMessage(req, res) {
         });
         sendMainMenu(5000);
       }
+    } else if (state.last === 'support') {
+      UserGetSupport
+        .create({
+          phone: fromNumber,
+          text: msg,
+        })
+        .then(sendMainMenu).catch(errorHandler);
     } else if (state.last === 'marketing') {
       switch (msg) {
         case '1': {
