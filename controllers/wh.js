@@ -594,7 +594,7 @@ async function handleMessage(req, res) {
                 ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
               )
               .join('\n');
-          const txt = `Select item that you are gonna delete\n\n${storedLineItemsText}`;
+          const txt = `Select item that you are gonna delete\n\n${storedLineItemsText}\n--------------\n0. Back to main menu`;
           msgCtrl.sendMsg({
             fromNumber,
             msg: txt,
