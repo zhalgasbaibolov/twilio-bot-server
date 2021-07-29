@@ -15,7 +15,7 @@ const {
 
 const {
   getAllOrders,
-} = require('../getAllOrders');
+} = require('./getAllOrders');
 
 async function handleMessage(req, res) {
   res.status(200).send('');
