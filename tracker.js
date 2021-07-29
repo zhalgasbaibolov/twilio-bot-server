@@ -74,11 +74,23 @@ module.exports.tracker = () => {
                   cart.abandoned_checkout_url}`,
                     });
                     setTimeout(() => {
+                      const txt = cart.line_items
+                          .map(
+                            ({title, variant_title, quantity}, idx) => `${idx + 1}. ${title}, ${variant_title} quantity: ${quantity}.`,
+                          ) 
+                          .join('\n');
                       msgCtrl.sendMsg({
                         fromNumber,
-                        msg: `Is there anything else that you want?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
+                        msg: `Your cart is:\n${txt}`,
                       });
-                    }, 8000);
+                        setTimeout(() => {
+                          msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: `Is there anything else that you want?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
+                          });
+                      }, 8000);
+                    }, 3000)
+                    
                     UserDiscount.updateOne({
                       discountCode: findedPair.discountCode,
                       phone: findedPair.phone,
