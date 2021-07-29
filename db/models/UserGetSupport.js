@@ -11,7 +11,7 @@ const userGetSupport = new Schema({
   phone: { type: String, required: true },
   text: { type: String },
 }, {
-  collection: 'userGetSupport',
+  collection: 'userGetSupports',
   timestamps: true,
 });
 
