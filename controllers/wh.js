@@ -430,7 +430,7 @@ async function handleMessage(req, res) {
                   fromNumber,
                   msg: txt,
                 });
-              }, 3000);
+              }, 5000);
             });
           } else {
             let txt = variants
