@@ -241,6 +241,17 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     return graphQLClient.request(mutation, variables);
   };
 
+  const getAllOrders = async ({
+    enterDate = new Date(),
+  }) => {
+    enterDate.setDate(enterDate.getDate() - 5);
+    let newDate = enterDate.toISOString();
+    newDate = newDate.substring(0, newDate.length - 5);
+    const urlLastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json?updated_at_min=${newDate}`;
+
+    return urlLastOrders;
+  };
+
   const updateCheckout = async ({
     checkoutId,
     lineItems,
@@ -291,6 +302,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     createCheckout,
     createCheckoutList,
     updateCheckout,
+    getAllOrders,
     shopifyDiscountCreate,
   };
   return shopifyApi;

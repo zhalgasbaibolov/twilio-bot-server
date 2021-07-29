@@ -13,10 +13,6 @@ const {
   ShopifyApi,
 } = require('../providers/shopifyApi');
 
-const {
-  getAllOrders,
-} = require('../getAllOrders');
-
 async function handleMessage(req, res) {
   res.status(200).send('');
   const accountSid = req.body.AccountSid;
@@ -253,7 +249,7 @@ async function handleMessage(req, res) {
       }
     } else if (state.last === 'tracking') {
       if (/@/.test(msg)) {
-        getAllOrders(storeMyShopify, apiVersion, storeAPIkey, storePassword)
+        shopifyApi.getAllOrders()
           .then((response) => {
             const trackNumbers = response.data.orders
               .filter((ord) => ord.email === msg)
