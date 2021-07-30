@@ -186,17 +186,29 @@ async function handleMessage(req, res) {
     ).exec();
   };
 
-  const sendViewCart = () => {
-    UserState.updateOne(
-      {
-        phone: fromNumber,
-      },
-      {
-        $set: {
-          last: 'cartView',
+  const sendViewCart = (state) => {
+    const storedLineItemsText = state.storedLineItems
+        .filter((x) => x.title && x.quantity)
+        .map(
+          ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
+        )
+        .join('\n');
+
+      const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n${backToMenu}\n\n\n${typeRecomendation}`;
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: txt,
+      });
+      UserState.updateOne(
+        {
+          phone: fromNumber,
         },
-      },
-    ).exec();
+        {
+          $set: {
+            last: 'cart',
+          },
+        },
+      ).exec();
   };
 
   function sendDiscount() {
@@ -260,7 +272,7 @@ async function handleMessage(req, res) {
           break;
         }
         case '6': {
-          sendViewCart();
+          sendViewCart(state);
           break;
         }
         default: {
@@ -576,29 +588,6 @@ async function handleMessage(req, res) {
           break;
         }
       }
-    } else if (state.last === 'cartView') {
-      const storedLineItemsText = state.storedLineItems
-        .filter((x) => x.title && x.quantity)
-        .map(
-          ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
-        )
-        .join('\n');
-
-      const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n${backToMenu}\n\n\n${typeRecomendation}`;
-      msgCtrl.sendMsg({
-        fromNumber,
-        msg: txt,
-      });
-      UserState.updateOne(
-        {
-          phone: fromNumber,
-        },
-        {
-          $set: {
-            last: 'cart',
-          },
-        },
-      ).exec();
     } else if (state.last === 'cart') {
       switch (msg) {
         case '2': {

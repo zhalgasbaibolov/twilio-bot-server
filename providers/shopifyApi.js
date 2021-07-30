@@ -249,7 +249,21 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     newDate = newDate.substring(0, newDate.length - 5);
     const urlLastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json?updated_at_min=${newDate}`;
 
-    return urlLastOrders;
+    return axios
+    .get(urlLastOrders, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => {
+      console.log(response);
+      return response;
+    })
+    .catch((error) => {
+      // handle error
+      console.log('error', error);
+      return false;
+    });
   };
 
   const updateCheckout = async ({
