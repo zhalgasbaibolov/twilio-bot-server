@@ -84,7 +84,7 @@ module.exports.tracker = () => {
                           msg: 'Is there anything else that you want?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)',
                         });
                       }, 8000);
-                    }, 3000);
+                    }, 4000);
 
                     UserDiscount.updateOne({
                       discountCode: findedPair.discountCode,
