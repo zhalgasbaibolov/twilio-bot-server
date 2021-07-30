@@ -2,6 +2,7 @@
 const UserDiscount = require('./db/models/UserDiscount');
 const UserSetting = require('./db/models/UserSettings');
 const { WhatsapSender } = require('./providers/WhatsapSender');
+const { handleMessage } = require('./controllers/wh');
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
@@ -81,7 +82,7 @@ module.exports.tracker = () => {
                       setTimeout(() => {
                         msgCtrl.sendMsg({
                           fromNumber: findedPair.phone,
-                          msg: 'Is there anything else that you want?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)',
+                          msg: `${handleMessage.sendMainMenu(0, true)}`,
                         });
                       }, 8000);
                     }, 4000);
