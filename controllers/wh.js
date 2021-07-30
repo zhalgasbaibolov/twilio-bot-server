@@ -47,6 +47,9 @@ async function handleMessage(req, res) {
       msg: JSON.stringify(err),
     });
   };
+  const backToMenu = '--------------\n0. Back to main menu';
+  const typeRecomendation = '(Please, type the number corresponding to your choice)';
+
   function createNewDialog() {
     UserState
       .create({
@@ -56,7 +59,7 @@ async function handleMessage(req, res) {
       .then(() => {
         msgCtrl.sendMsg({
           fromNumber,
-          msg: 'Hello! Are you here to receive a discount for Banasari Outfits ?\n1. Yes\n2. No',
+          msg: `Hello! Are you here to receive a discount for Banasari Outfits ?\n1. Yes\n2. No\n\n\n${typeRecomendation}`,
         });
       }).catch(errorHandler);
   }
@@ -66,7 +69,7 @@ async function handleMessage(req, res) {
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `${firstWord}\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n${viewCart}`,
+        msg: `${firstWord}\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
       });
       UserState.updateOne(
         {
@@ -87,7 +90,7 @@ async function handleMessage(req, res) {
       const collections = `Select Collection:\n${
         response.collections.edges
           .map((val, idx) => `${idx + 1}. ${val.node.title}`)
-          .join('\n')}\n--------------\n0. Back to main menu`;
+          .join('\n')}\n${backToMenu}\n\n\n${typeRecomendation}`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: collections,
@@ -391,7 +394,7 @@ async function handleMessage(req, res) {
           let txt = products
             .map((pr, idx) => `${idx + 1}. ${pr.node.title}`)
             .join('\n');
-          txt = `Select Product:\n${txt}\n--------------\n0. Back to main menu`;
+          txt = `Select Product:\n${txt}\n${backToMenu}\n\n\n${typeRecomendation}`;
 
           msgCtrl.sendMsg({
             fromNumber,
@@ -439,7 +442,7 @@ async function handleMessage(req, res) {
                 let txt = variants
                   .map((v, idx) => `${idx + 1}. ${v.node.title}`)
                   .join('\n');
-                txt = `${variants[0].productTitle}:\n${txt}\n--------------\n0. Back to main menu`;
+                txt = `${variants[0].productTitle}:\n${txt}\n${backToMenu}\n\n\n${typeRecomendation}`;
                 msgCtrl.sendMsg({
                   fromNumber,
                   msg: txt,
@@ -450,7 +453,7 @@ async function handleMessage(req, res) {
             let txt = variants
               .map((v, idx) => `${idx + 1}. ${v.node.title}`)
               .join('\n');
-            txt = `Select Variants of ${variants[0].productTitle}:\n${txt}\n--------------\n0. Back to main menu`;
+            txt = `Select Variants of ${variants[0].productTitle}:\n${txt}\n${backToMenu}\n\n\n${typeRecomendation}`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -491,7 +494,7 @@ async function handleMessage(req, res) {
           productTitle,
         });
       }
-      const txt = 'Your item is placed in cart. What do you want next ?\n1. Continue shopping.\n2. See my cart.\n3. Proceed to payment.\n--------------\n0. Back to main menu';
+      const txt = `Your item is placed in cart. What do you want next ?\n1. Continue shopping.\n2. See my cart.\n3. Proceed to payment.\n${backToMenu}\n\n\n${typeRecomendation}`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
@@ -522,7 +525,7 @@ async function handleMessage(req, res) {
               )
               .join('\n');
 
-            const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
+            const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n${backToMenu}\n\n\n${typeRecomendation}`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -581,7 +584,7 @@ async function handleMessage(req, res) {
         )
         .join('\n');
 
-      const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
+      const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n${backToMenu}\n\n\n${typeRecomendation}`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
@@ -631,7 +634,7 @@ async function handleMessage(req, res) {
               ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
             )
             .join('\n');
-          const txt = `Select item that you are gonna delete\n\n${storedLineItemsText}\n--------------\n0. Back to main menu`;
+          const txt = `Select item that you are gonna delete\n\n${storedLineItemsText}\n${backToMenu}\n\n\n${typeRecomendation}`;
           msgCtrl.sendMsg({
             fromNumber,
             msg: txt,
@@ -665,7 +668,7 @@ async function handleMessage(req, res) {
           ({ title, quantity, productTitle }, idx) => `${idx + 1}. ${productTitle}, ${title}, quantity: *${quantity}*`,
         )
         .join('\n');
-      const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n--------------\n0. Back to main menu`;
+      const txt = `Your cart is:\n${storedLineItemsText}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n${backToMenu}\n\n\n${typeRecomendation}`;
       msgCtrl.sendMsg({
         fromNumber,
         msg: txt,
