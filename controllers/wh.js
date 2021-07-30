@@ -248,7 +248,7 @@ async function handleMessage(req, res) {
   }
   function continueDialog(state) {
     if (msg === '0') {
-      sendMainMenu(true);
+      sendMainMenu(0,false);
       return;
     }
 
