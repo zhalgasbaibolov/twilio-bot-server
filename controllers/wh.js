@@ -297,7 +297,7 @@ async function handleMessage(req, res) {
             if (!ordersListTxt) {
               msgCtrl.sendMsg({
                 fromNumber,
-                msg: 'There is no order with such email, please recheck your email.',
+                msg: 'There is no order with such email, please recheck your email.\n\n--------------\nOR type 0 to redirect to main menu',
               });
               return;
             }
@@ -313,7 +313,7 @@ async function handleMessage(req, res) {
         const trackingUrl = `https://t.17track.net/en#nums=${msg}`;
         msgCtrl.sendMsg({
           fromNumber,
-          msg: `Please open this link to track your order!\n${trackingUrl}`,
+          msg: `Please open this link to track your order!\n${trackingUrl}\n\n--------------\nOR type 0 to redirect to main menu`,
         });
         sendMainMenu(5000);
       }
