@@ -114,7 +114,9 @@ async function handleMessage(req, res) {
     });
   }
   const getSupport = () => {
-    axios.post('http://saletastic-admin-server.herokuapp.com/support', { accountSid, msg, whatsappNumber: fromNumber });
+    axios
+      .post('http://saletastic-admin-server.herokuapp.com/support', { accountSid, msg, whatsappNumber: fromNumber })
+      .catch(console.log);
     msgCtrl.sendMsg({
       fromNumber,
       msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
