@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+const axios = require('axios');
 const {
   generateSlug,
 } = require('random-word-slugs');
@@ -112,6 +113,7 @@ async function handleMessage(req, res) {
     });
   }
   const getSupport = () => {
+    axios.post('http://saletastic-admin-server.herokuapp.com/support', { accountSid, msg, whatsappNumber: fromNumber });
     msgCtrl.sendMsg({
       fromNumber,
       msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
