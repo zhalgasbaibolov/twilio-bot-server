@@ -250,20 +250,20 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     const urlLastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json?updated_at_min=${newDate}`;
 
     return axios
-    .get(urlLastOrders, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => {
-      console.log(response);
-      return response;
-    })
-    .catch((error) => {
+      .get(urlLastOrders, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        return response;
+      })
+      .catch((error) => {
       // handle error
-      console.log('error', error);
-      return false;
-    });
+        console.log('error', error);
+        return false;
+      });
   };
 
   const updateCheckout = async ({
