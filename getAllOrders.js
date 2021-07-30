@@ -2,7 +2,6 @@
 const axios = require('axios');
 
 async function getAllOrders(
-
   storeMyShopify,
   apiVersion,
   storeAPIkey,

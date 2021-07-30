@@ -2,6 +2,7 @@
 const UserDiscount = require('./db/models/UserDiscount');
 const UserSetting = require('./db/models/UserSettings');
 const { WhatsapSender } = require('./providers/WhatsapSender');
+const { handleMessage } = require('./controllers/wh');
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
@@ -69,23 +70,23 @@ module.exports.tracker = () => {
 
                     msgCtrl.sendMsg({
                       fromNumber: findedPair.phone,
-                      msg:`Hi! Come back & finish your purchase! Here's the link:\n${
-                      cart.abandoned_checkout_url}`,
+                      msg: `Hi! Come back & finish your purchase! Here's the link:\n${
+                        cart.abandoned_checkout_url}`,
                     });
                     setTimeout(() => {
-                      const txt = cart.line_items.map(({title, variant_title, quantity}, idx) => `${idx + 1}. ${title}, ${variant_title}, quantity: ${quantity}.`).join('\n');
+                      const txt = cart.line_items.map(({ title, variant_title, quantity }, idx) => `${idx + 1}. ${title}, ${variant_title}, quantity: ${quantity}.`).join('\n');
                       msgCtrl.sendMsg({
                         fromNumber: findedPair.phone,
                         msg: `Your cart is:\n${txt}`,
                       });
-                        setTimeout(() => {
-                          msgCtrl.sendMsg({
-                            fromNumber: findedPair.phone,
-                            msg: `Is there anything else that you want?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)`,
-                          });
+                      setTimeout(() => {
+                        msgCtrl.sendMsg({
+                          fromNumber: findedPair.phone,
+                          msg: `${handleMessage.sendMainMenu(0, true)}`,
+                        });
                       }, 8000);
-                    }, 3000)
-                    
+                    }, 4000);
+
                     UserDiscount.updateOne({
                       discountCode: findedPair.discountCode,
                       phone: findedPair.phone,
