@@ -70,7 +70,7 @@ module.exports.tracker = () => {
 
                     msgCtrl.sendMsg({
                       fromNumber: findedPair.phone,
-                      msg: `Hi! Come back & finish your purchase! Here's the link:\n${
+                      msg: `Hi! We noticed that you left a few items in your shopping cart.\nPlease check it:\n${
                         cart.abandoned_checkout_url}`,
                     });
                     setTimeout(() => {
