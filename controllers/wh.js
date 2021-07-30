@@ -106,7 +106,7 @@ async function handleMessage(req, res) {
   function resendCommand() {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Please, send right command\nOr type *0* to redirect to main menu',
+      msg: 'Please, send right command\nOR type 0 to redirect to main menu',
     });
   }
   const getSupport = () => {
@@ -332,7 +332,7 @@ async function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please, send right command\nOr type *0* to redirect to main menu',
+            msg: 'Please, send right command\nOR type 0 to redirect to main menu',
           });
           break;
         }
@@ -374,7 +374,7 @@ async function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please, send right command\nOr type *0* to redirect to main menu',
+            msg: 'Please, send right command\nOR type 0 to redirect to main menu',
           });
           break;
         }
@@ -568,7 +568,7 @@ async function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please, send right command\nOr type *0* to redirect to main menu',
+            msg: 'Please, send right command\nOR type 0 to redirect to main menu',
           });
           break;
         }
@@ -652,7 +652,7 @@ async function handleMessage(req, res) {
         default: {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please, send right command\nOr type *0* to redirect to main menu',
+            msg: 'Please, send right command\nOR type 0 to redirect to main menu',
           });
           break;
         }
