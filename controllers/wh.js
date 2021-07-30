@@ -19,6 +19,7 @@ async function handleMessage(req, res) {
   const accountSid = req.body.AccountSid;
   const fromNumber = req.body.From;
   const msg = req.body.Body;
+  const profileName = req.body.ProfileName;
   console.log('wh controller', fromNumber, msg, req.body);
   if (fromNumber === 'whatsapp:+14155238886') {
     return;
@@ -320,7 +321,12 @@ async function handleMessage(req, res) {
       }
     } else if (state.last === 'support') {
       axios
-        .post('http://saletastic-admin-server.herokuapp.com/support', { accountSid, msg, whatsappNumber: fromNumber })
+        .post('http://saletastic-admin-server.herokuapp.com/support', {
+          accountSid,
+          msg,
+          whatsappNumber: fromNumber,
+          profileName,
+        })
         .then(console.log)
         .catch(console.log);
     } else if (state.last === 'marketing') {
