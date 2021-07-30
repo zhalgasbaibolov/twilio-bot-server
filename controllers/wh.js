@@ -64,7 +64,7 @@ async function handleMessage(req, res) {
       }).catch(errorHandler);
   }
   function sendMainMenu(ms = 0, firstTime = false) {
-    const firstWord = firstTime ? 'Hello! What do you want?' : 'Is there anything else that you want?';
+    const firstWord = firstTime ? 'Hello! What do you want?' : 'What would you like to do now?';
     const viewCart = firstTime ? '' : '6. View cart';
     setTimeout(() => {
       msgCtrl.sendMsg({
