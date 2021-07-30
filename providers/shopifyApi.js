@@ -241,9 +241,8 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     return graphQLClient.request(mutation, variables);
   };
 
-  const getAllOrders = async ({
-    enterDate = new Date(),
-  }) => {
+  const getAllOrders = async () => {
+    const enterDate = new Date();
     enterDate.setDate(enterDate.getDate() - 5);
     let newDate = enterDate.toISOString();
     newDate = newDate.substring(0, newDate.length - 5);
