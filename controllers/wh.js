@@ -247,7 +247,7 @@ async function handleMessage(req, res) {
       .catch(errorHandler);
   }
   function continueDialog(state) {
-    if (msg === '0') {
+    if (msg === '0' || Object.keys(msg).length !== 0) {
       sendMainMenu(0, true);
       return;
     }
