@@ -59,7 +59,7 @@ async function handleMessage(req, res) {
       .then(() => {
         msgCtrl.sendMsg({
           fromNumber,
-          msg: `Hello! Are you here to receive a discount for Banasari Outfits ?\n1. Yes\n2. No\n\n\n${typeRecomendation}`,
+          msg: `Hello! Are you here to receive a discount for Banarasi Outfits ?\n1. Yes\n2. No\n\n\n${typeRecomendation}`,
         });
       }).catch(errorHandler);
   }
