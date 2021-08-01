@@ -321,13 +321,15 @@ async function handleMessage(req, res) {
       }
     } else if (state.last === 'support') {
       axios
-        .post('http://saletastic-admin-server.herokuapp.com/support', {
+        .post('https://saletastic-admin-server.herokuapp.com/support', {
           accountSid,
           msg,
           whatsappNumber: fromNumber,
           profileName,
         })
-        .then(console.log)
+        .then((chatResponse) => {
+          console.log(`\n\n\n\nchatResponse\n${chatResponse}\n\n\n\n`);
+        })
         .catch(console.log);
     } else if (state.last === 'marketing') {
       switch (msg) {
