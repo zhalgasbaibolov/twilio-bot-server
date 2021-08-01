@@ -328,7 +328,7 @@ async function handleMessage(req, res) {
           profileName,
         })
         .then((chatResponse) => {
-          console.log(`\n\n\n\nchatResponse\n${chatResponse.statusCode}\n${chatResponse.data}\n\n\n\n`);
+          console.log(`\n\n\n\nchatResponse:\n${chatResponse.status}\n${chatResponse.data}\n\n\n\n`);
         })
         .catch(console.log);
     } else if (state.last === 'marketing') {
