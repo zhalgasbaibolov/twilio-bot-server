@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-console */
 const UserDiscount = require('./db/models/UserDiscount');
 const UserSetting = require('./db/models/UserSettings');
@@ -83,7 +84,7 @@ module.exports.tracker = () => {
                         msgCtrl.sendMsg({
                           fromNumber: findedPair.phone,
                           // msg: `${handleMessage.sendMainMenu(0, true)}`,
-                          msg: 'What would you like to do now?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n\n\n(Please, type the number corresponding to your choice)'
+                          msg: 'What would you like to do now?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n\n\n(Please, type the number corresponding to your choice)',
 
                         });
                       }, 8000);
