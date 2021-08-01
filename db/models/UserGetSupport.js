@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userGetSupport = new Schema({
+  profileName: { type: String, requried: false },
   accountSid: { type: String, required: true },
   phone: { type: String, required: true },
   text: { type: String },
