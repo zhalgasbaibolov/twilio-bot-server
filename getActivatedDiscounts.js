@@ -6,7 +6,7 @@ async function getActivatedDiscounts(
   storeAPIkey,
   storePassword,
 ) {
-  const urlLastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json?status=any`;
+  const urlLastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json`;
 
   return axios
     .get(urlLastOrders, {
