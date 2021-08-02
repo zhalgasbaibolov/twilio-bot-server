@@ -214,7 +214,7 @@ async function handleMessage(req, res) {
   };
 
   function sendDiscount() {
-    const discountSlug = generateSlug;
+    const discountSlug = generateSlug();
     shopifyApi.shopifyDiscountCreate(
       discountSlug,
     )
