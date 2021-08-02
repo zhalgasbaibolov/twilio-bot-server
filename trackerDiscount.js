@@ -18,6 +18,7 @@ const {
 } = require('./getActivatedDiscounts');
 
 module.exports.trackerDiscount = () => {
+    const dayInMilliseconds = 1000 * 60 * 60 * 24;
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
@@ -113,5 +114,5 @@ module.exports.trackerDiscount = () => {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 86400000); //24 hours
+  }, dayInMilliseconds); //24 hours
 };
