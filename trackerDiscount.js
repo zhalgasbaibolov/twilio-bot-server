@@ -38,11 +38,11 @@ module.exports.trackerDiscount = () => {
           )
             .then((response) => {
               let allOrders = response.data && response.data.orders;
-              if (!allCarts || !allCarts.length) {
-                console.log('abandoned carts not found');
+              if (!allOrders || !allOrders.length) {
+                console.log('orders not found');
                 return;
               }
-              allCarts = allCarts.filter((cart) => cart.discount_codes
+              allOrders = allOrders.filter((cart) => cart.discount_codes
          && cart.discount_codes.length);
               // console.log(allCarts);
               UserDiscount.find({
@@ -55,52 +55,19 @@ module.exports.trackerDiscount = () => {
                   return;
                 }
                 if (!pairs || !pairs.length) {
-                  console.log('phone:discount pairs not found');
+                  console.log('discount not found');
                   return;
                 }
                 allCarts.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
-                    const { code } = cart.discount_codes[i];
-                    const findedPair = pairs.find((p) => p.discountCode === code);
+                    const phoneNumbers = discount_codes.filter((x) => x.code).map(({ code }) => `whatsapp:+${code}`)
                     if (!findedPair) {
                       return;
                     }
-                    console.log('******************************');
-                    console.log(`found pairs: ${findedPair.phone}: ${findedPair.discountCode}: ${findedPair.notifiedCount}`,
-                      cart.abandoned_checkout_url);
-                    console.log('******************************');
 
                     msgCtrl.sendMsg({
-                      fromNumber: findedPair.phone,
-                      msg: `Hi! We noticed that you left a few items in your shopping cart.\nPlease check it:\n${
-                        cart.abandoned_checkout_url}`,
-                    });
-                    setTimeout(() => {
-                      const txt = cart.line_items.map(({ title, variant_title, quantity }, idx) => `${idx + 1}. ${title}, ${variant_title}, quantity: ${quantity}.`).join('\n');
-                      msgCtrl.sendMsg({
-                        fromNumber: findedPair.phone,
-                        msg: `Your cart is:\n${txt}`,
-                      });
-                      setTimeout(() => {
-                        msgCtrl.sendMsg({
-                          fromNumber: findedPair.phone,
-                          // msg: `${handleMessage.sendMainMenu(0, true)}`,
-                          msg: 'What would you like to do now?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n\n\n(Please, type the number corresponding to your choice)',
-
-                        });
-                      }, 8000);
-                    }, 4000);
-
-                    UserDiscount.updateOne({
-                      discountCode: findedPair.discountCode,
-                      phone: findedPair.phone,
-                    }, {
-                      notifiedCount: 2,
-                    }, {}, (err2, upd) => {
-                      if (err2) {
-                        console.log(err2);
-                      }
-                      if (upd.ok) console.log(upd.ok === 1);
+                      fromNumber: phoneNumbers,
+                      msg: `Congratulations!  You\'ve earned 5% discount!!! `,
                     });
                     return;
                   }
