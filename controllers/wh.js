@@ -9,6 +9,7 @@ const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
 // const UserGetSupport = require('../db/models/UserGetSupport');
 const { WhatsapSender } = require('../providers/WhatsapSender');
+
 const {
   ShopifyApi,
 } = require('../providers/shopifyApi');
@@ -17,7 +18,6 @@ async function handleMessage(req, res) {
   res.status(200).send('');
   const accountSid = req.body.AccountSid;
   const fromNumber = req.body.From;
-
   const msg = req.body.Body;
   const profileName = req.body.ProfileName;
   console.log('wh controller', fromNumber, msg, req.body);
