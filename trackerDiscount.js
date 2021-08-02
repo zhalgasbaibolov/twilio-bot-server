@@ -63,24 +63,23 @@ module.exports.trackerDiscount = () => {
                 }
                 allOrders.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
-                    const phoneNumber = cart.discount_codes.filter((x) => x.code).map(({ code }) => `whatsapp:+${code}`);
+                    const { code } = cart.discount_codes[i];
+                    const findedPair = pairs.find((p) => p.discountCode === code);
                     const discountSlug = generateSlug();
-                    if (!phoneNumber) {
+                    if (!findedPair) {
                       return;
                     }
-                    console.log('******************************');
-                    console.log(`discount code: ${phoneNumber.code}`);
-                    console.log('******************************');
+                    console.log(`\n\n\n\ndiscount code: ${findedPair.code}\n\n\n\n`);
 
                     msgCtrl.sendMsg({
-                      fromNumber: phoneNumber,
+                      fromNumber: findedPair.phone,
                       msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount - ${discountSlug}${backToMenu}`,
                     });
 
                     UserDiscount
                       .create({
                         discountCode: discountSlug,
-                        phone: phoneNumber,
+                        phone: findedPair.phone,
                         notifiedCount: 0,
                       })
                       .then(() => {
