@@ -16,9 +16,11 @@ const msgCtrl = WhatsapSender({
 const {
   getActivatedDiscounts,
 } = require('./getActivatedDiscounts');
+const dayInMilliseconds = 1000 * 60 * 60 * 24;
+const backToMenu = '--------------\n\n0. Back to main menu';
 
-module.exports.trackerDiscount = () => {
-    const dayInMilliseconds = 1000 * 60 * 60 * 24;
+
+module.exports.trackerDiscount = () => {    
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
@@ -67,7 +69,7 @@ module.exports.trackerDiscount = () => {
 
                     msgCtrl.sendMsg({
                       fromNumber: phoneNumbers,
-                      msg: `Congratulations!  Your referral was successful and you earned 5% discount!!! `,
+                      msg: `Congratulations!  Your referral was successful and you earned 5% discount!!!${backToMenu}`,
                     });
                     return;
                   }
