@@ -60,14 +60,14 @@ module.exports.trackerDiscount = () => {
                 }
                 allCarts.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
-                    const phoneNumbers = discount_codes.filter((x) => x.code).map(({ code }) => `whatsapp:+${code}`)
+                    const phoneNumbers = discount_codes.filter((x) => x.code).map(({ code }) => `whatsapp:+${code}`);
                     if (!findedPair) {
                       return;
                     }
 
                     msgCtrl.sendMsg({
                       fromNumber: phoneNumbers,
-                      msg: `Congratulations!  You\'ve earned 5% discount!!! `,
+                      msg: `Congratulations!  Your referral was successful and you earned 5% discount!!! `,
                     });
                     return;
                   }
