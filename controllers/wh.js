@@ -9,7 +9,6 @@ const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
 // const UserGetSupport = require('../db/models/UserGetSupport');
 const { WhatsapSender } = require('../providers/WhatsapSender');
-
 const {
   ShopifyApi,
 } = require('../providers/shopifyApi');
@@ -18,6 +17,7 @@ async function handleMessage(req, res) {
   res.status(200).send('');
   const accountSid = req.body.AccountSid;
   const fromNumber = req.body.From;
+
   const msg = req.body.Body;
   const profileName = req.body.ProfileName;
   console.log('wh controller', fromNumber, msg, req.body);
@@ -214,7 +214,7 @@ async function handleMessage(req, res) {
   };
 
   function sendDiscount() {
-    const discountSlug = fromNumber.slice(10);
+    const discountSlug = JSON.stringify(fromNumber).slice(10);
     shopifyApi.shopifyDiscountCreate(
       discountSlug,
     )
@@ -379,9 +379,9 @@ async function handleMessage(req, res) {
               fromNumber,
               msg: `Hey! I'm invite you check out Banarasi Outfits :)\nPlease click this link, we'll both get a discount.\nhttp://banarasioutfit.in/discount/${discountSlug}`,
             });
-              setTimeout(() => {
-                sendMainMenu();
-              },3000);
+            setTimeout(() => {
+              sendMainMenu();
+            }, 3000);
           }, 3000);
           break;
         }
