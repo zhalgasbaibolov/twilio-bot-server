@@ -19,7 +19,7 @@ const {
 } = require('./getActivatedDiscounts');
 
 const dayInMilliseconds = 1000 * 60 * 15; // every 15  minutes
-const backToMenu = '--------------\n\n0. Back to main menu';
+const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 
 module.exports.trackerDiscount = () => {
   setInterval(() => {
