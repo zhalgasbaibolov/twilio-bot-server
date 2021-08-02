@@ -17,7 +17,7 @@ const {
   getActivatedDiscounts,
 } = require('./getActivatedDiscounts');
 
-module.exports.tracker = () => {
+module.exports.trackerDiscount = () => {
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
@@ -113,5 +113,5 @@ module.exports.tracker = () => {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 5000);
+  }, 86400000); //24 hours
 };
