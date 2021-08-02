@@ -30,14 +30,14 @@ module.exports.trackerDiscount = () => {
             storeAPIkey,
             storePassword,
           } = sett.shopify;
-          getAbandonedCart(
+          getActivatedDiscounts(
             storeMyShopify,
             apiVersion,
             storeAPIkey,
             storePassword,
           )
             .then((response) => {
-              let allCarts = response.data && response.data.checkouts;
+              let allOrders = response.data && response.data.orders;
               if (!allCarts || !allCarts.length) {
                 console.log('abandoned carts not found');
                 return;
