@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 const axios = require('axios');
-// const {
-//   generateSlug,
-// } = require('random-word-slugs');
+const {
+  generateSlug,
+} = require('random-word-slugs');
 const UserState = require('../db/models/UserState');
 const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
@@ -214,7 +214,7 @@ async function handleMessage(req, res) {
   };
 
   function sendDiscount() {
-    const discountSlug = fromNumber.slice(10);
+    const discountSlug = generateSlug();
     shopifyApi.shopifyDiscountCreate(
       discountSlug,
     )
