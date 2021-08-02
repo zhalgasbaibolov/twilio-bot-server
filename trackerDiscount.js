@@ -74,7 +74,7 @@ module.exports.trackerDiscount = () => {
 
                     msgCtrl.sendMsg({
                       fromNumber: phoneNumber,
-                      msg: `Congratulations!  Your referral was successful and you earned 5% discount!!! Your referral code for discount - ${discountSlug}${backToMenu}`,
+                      msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount - ${discountSlug}${backToMenu}`,
                     });
 
                     UserDiscount
@@ -84,7 +84,7 @@ module.exports.trackerDiscount = () => {
                         notifiedCount: 0,
                       })
                       .then(() => {
-                        console.log('success!')
+                        console.log('success!');
                       })
                       .catch((error) => {
                         console.log(error);
