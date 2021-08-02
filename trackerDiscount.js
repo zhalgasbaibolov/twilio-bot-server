@@ -3,6 +3,7 @@
 const UserDiscount = require('./db/models/UserDiscount');
 const UserSetting = require('./db/models/UserSettings');
 const { WhatsapSender } = require('./providers/WhatsapSender');
+const { generateSlug } = require('random-word-slugs');
 // const { handleMessage } = require('./controllers/wh');
 
 const a = '370a717f';
@@ -62,28 +63,28 @@ module.exports.trackerDiscount = () => {
                 }
                 allOrders.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
-                    const phoneNumbers = cart.discount_codes.filter((x) => x.code).map(({ code }) => `whatsapp:+${code}`);
-                    if (!phoneNumbers) {
+                    const phoneNumber = cart.discount_codes.filter((x) => x.code).map(({ code }) => `whatsapp:+${code}`);
+                    const discountSlug = generateSlug();
+                    if (!phoneNumber) {
                       return;
                     }
 
-                    msgCtrl.sendMsg({
-                      fromNumber: phoneNumbers,
-                      msg: `Congratulations!  Your referral was successful and you earned 5% discount!!!${backToMenu}`,
-                    });
-
-                    UserDiscount.updateOne({
-                      discountCode: cart.discount_codes.code,
-                      phone: phoneNumbers,
-                    }, {
-                      notifiedCount: 2,
-                    }, {}, (err2, upd) => {
-                      if (err2) {
-                        console.log(err2);
-                      }
-                      if (upd.ok) console.log(upd.ok === 1);
-                    });
-                    return;
+                    UserDiscount
+                        .create({
+                            discountCode: discountSlug,
+                            phone: phoneNumber,
+                            notifiedCount: 0,
+                        })
+                        .then(() => {
+                            msgCtrl.sendMsg({
+                            fromNumber,
+                            msg: `Congratulations!  Your referral was successful and you earned 5% discount!!! Your referral code for discount - ${discountSlug}${backToMenu}`
+                            })
+                            .exec();
+                        })
+                    .catch((err) => {
+                        console.log(err);
+                    }); 
                   }
                 });
                 // eslint-disable-next-line consistent-return
