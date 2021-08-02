@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
+const { generateSlug } = require('random-word-slugs');
 const UserDiscount = require('./db/models/UserDiscount');
 const UserSetting = require('./db/models/UserSettings');
 const { WhatsapSender } = require('./providers/WhatsapSender');
-const { generateSlug } = require('random-word-slugs');
 // const { handleMessage } = require('./controllers/wh');
 
 const a = '370a717f';
@@ -68,23 +68,27 @@ module.exports.trackerDiscount = () => {
                     if (!phoneNumber) {
                       return;
                     }
+                    console.log('******************************');
+                    console.log(`discount code: ${phoneNumber.code}`);
+                    console.log('******************************');
+
+                    msgCtrl.sendMsg({
+                      fromNumber: phoneNumber,
+                      msg: `Congratulations!  Your referral was successful and you earned 5% discount!!! Your referral code for discount - ${discountSlug}${backToMenu}`,
+                    });
 
                     UserDiscount
-                        .create({
-                            discountCode: discountSlug,
-                            phone: phoneNumber,
-                            notifiedCount: 0,
-                        })
-                        .then(() => {
-                            msgCtrl.sendMsg({
-                            fromNumber,
-                            msg: `Congratulations!  Your referral was successful and you earned 5% discount!!! Your referral code for discount - ${discountSlug}${backToMenu}`
-                            })
-                            .exec();
-                        })
-                    .catch((err) => {
-                        console.log(err);
-                    }); 
+                      .create({
+                        discountCode: discountSlug,
+                        phone: phoneNumber,
+                        notifiedCount: 0,
+                      })
+                      .then(() => {
+                        console.log('success!')
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
                   }
                 });
                 // eslint-disable-next-line consistent-return
