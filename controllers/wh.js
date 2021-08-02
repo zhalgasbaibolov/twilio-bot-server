@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+const axios = require('axios');
 const {
   generateSlug,
 } = require('random-word-slugs');
@@ -6,7 +7,7 @@ const UserState = require('../db/models/UserState');
 const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
-const UserGetSupport = require('../db/models/UserGetSupport');
+// const UserGetSupport = require('../db/models/UserGetSupport');
 const { WhatsapSender } = require('../providers/WhatsapSender');
 
 const {
@@ -18,6 +19,7 @@ async function handleMessage(req, res) {
   const accountSid = req.body.AccountSid;
   const fromNumber = req.body.From;
   const msg = req.body.Body;
+  const profileName = req.body.ProfileName;
   console.log('wh controller', fromNumber, msg, req.body);
   if (fromNumber === 'whatsapp:+14155238886') {
     return;
@@ -115,7 +117,7 @@ async function handleMessage(req, res) {
   const getSupport = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem, we will be contact with you within 10 minutes.',
+      msg: 'Hi there! Welcome to Customer Support Service! Please describe your problem OR type 0 to redirect to main menu',
     });
     UserState.updateOne(
       {
@@ -247,8 +249,8 @@ async function handleMessage(req, res) {
       .catch(errorHandler);
   }
   function continueDialog(state) {
-    if (msg) {
-      sendMainMenu(0,false);
+    if (msg === '0') {
+      sendMainMenu(0, false);
       return;
     }
 
@@ -318,12 +320,17 @@ async function handleMessage(req, res) {
         sendMainMenu(5000);
       }
     } else if (state.last === 'support') {
-      UserGetSupport
-        .create({
-          phone: fromNumber,
-          text: msg,
+      axios
+        .post('https://saletastic-admin-server.herokuapp.com/support', {
+          accountSid,
+          msg,
+          whatsappNumber: fromNumber,
+          profileName,
         })
-        .then(sendMainMenu).catch(errorHandler);
+        .then((chatResponse) => {
+          console.log(`\n\n\n\nchatResponse:\n${chatResponse.status}\n${chatResponse.data}\n\n\n\n`);
+        })
+        .catch(console.log);
     } else if (state.last === 'marketing') {
       switch (msg) {
         case '1': {
