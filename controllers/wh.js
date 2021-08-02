@@ -379,9 +379,9 @@ async function handleMessage(req, res) {
               fromNumber,
               msg: `Hey! I'm invite you check out Banarasi Outfits :)\nPlease click this link, we'll both get a discount.\nhttp://banarasioutfit.in/discount/${discountSlug}`,
             });
-              setTimeout(() => {
-                sendMainMenu();
-              },3000);
+            setTimeout(() => {
+              sendMainMenu();
+            }, 3000);
           }, 3000);
           break;
         }
