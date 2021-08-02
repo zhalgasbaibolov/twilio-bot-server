@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 const axios = require('axios');
-const {
-  generateSlug,
-} = require('random-word-slugs');
+// const {
+//   generateSlug,
+// } = require('random-word-slugs');
 const UserState = require('../db/models/UserState');
 const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
@@ -214,7 +214,7 @@ async function handleMessage(req, res) {
   };
 
   function sendDiscount() {
-    const discountSlug = generateSlug();
+    const discountSlug = fromNumber.slice(10);
     shopifyApi.shopifyDiscountCreate(
       discountSlug,
     )
@@ -369,6 +369,7 @@ async function handleMessage(req, res) {
     } else if (state.last === 'refer') {
       switch (msg) {
         case '1': {
+          const discountSlug = fromNumber.slice(10);
           msgCtrl.sendMsg({
             fromNumber,
             msg: 'Please forward below message.',
@@ -376,17 +377,11 @@ async function handleMessage(req, res) {
           setTimeout(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: 'Hey! I\'m invite you check out Banarasi Outfits :)\nPlease click this link, we\'ll both get a discount.\nhttps://banarasioutfit.in/QkDXv9mr2bGzYaeRKE',
+              msg: `Hey! I'm invite you check out Banarasi Outfits :)\nPlease click this link, we'll both get a discount.\nhttp://banarasioutfit.in/discount/${discountSlug}`,
             });
-            setTimeout(() => {
-              msgCtrl.sendMsg({
-                fromNumber,
-                msg: 'Congratulations! You\'ve earned 5 points!!!',
-              });
               setTimeout(() => {
                 sendMainMenu();
-              }, 5000);
-            }, 3000);
+              },3000);
           }, 3000);
           break;
         }

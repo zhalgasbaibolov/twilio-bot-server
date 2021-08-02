@@ -16,6 +16,8 @@ const msgCtrl = WhatsapSender({
 const {
   getAbandonedCart,
 } = require('./cartAbandonment');
+const backToMenu = '--------------\n\nType 0 to redirect to main menu';
+
 
 module.exports.tracker = () => {
   setInterval(() => {
@@ -78,16 +80,8 @@ module.exports.tracker = () => {
                       const txt = cart.line_items.map(({ title, variant_title, quantity }, idx) => `${idx + 1}. ${title}, ${variant_title}, quantity: ${quantity}.`).join('\n');
                       msgCtrl.sendMsg({
                         fromNumber: findedPair.phone,
-                        msg: `Your cart is:\n${txt}`,
+                        msg: `Your cart is:\n${txt}\n${backToMenu}`,
                       });
-                      setTimeout(() => {
-                        msgCtrl.sendMsg({
-                          fromNumber: findedPair.phone,
-                          // msg: `${handleMessage.sendMainMenu(0, true)}`,
-                          msg: 'What would you like to do now?\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n\n\n(Please, type the number corresponding to your choice)',
-
-                        });
-                      }, 8000);
                     }, 4000);
 
                     UserDiscount.updateOne({

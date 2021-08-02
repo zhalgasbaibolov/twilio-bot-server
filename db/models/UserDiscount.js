@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 const userDiscountSchema = new Schema({
   phone: { type: String, required: true },
   discountCode: { type: String, required: true },
+  memberStackID: { type: String, required: true },
   notifiedCount: { type: Number, default: 0 },
 }, {
   collection: 'userDiscount',
