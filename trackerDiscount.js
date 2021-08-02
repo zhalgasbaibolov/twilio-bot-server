@@ -16,11 +16,11 @@ const msgCtrl = WhatsapSender({
 const {
   getActivatedDiscounts,
 } = require('./getActivatedDiscounts');
-const dayInMilliseconds = 1000 * 60 * 60 * 24;
+
+const dayInMilliseconds = 1000 * 60 * 15; // every 15  minutes
 const backToMenu = '--------------\n\n0. Back to main menu';
 
-
-module.exports.trackerDiscount = () => {    
+module.exports.trackerDiscount = () => {
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
@@ -46,7 +46,7 @@ module.exports.trackerDiscount = () => {
               }
               allOrders = allOrders.filter((cart) => cart.discount_codes
          && cart.discount_codes.length);
-              // console.log(allCarts);
+              // console.log(allOrders);
               UserDiscount.find({
                 notifiedCount: {
                   $lt: 1,
@@ -60,16 +60,28 @@ module.exports.trackerDiscount = () => {
                   console.log('discount not found');
                   return;
                 }
-                allCarts.forEach((cart) => {
+                allOrders.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
-                    const phoneNumbers = discount_codes.filter((x) => x.code).map(({ code }) => `whatsapp:+${code}`);
-                    if (!findedPair) {
+                    const phoneNumbers = cart.discount_codes.filter((x) => x.code).map(({ code }) => `whatsapp:+${code}`);
+                    if (!phoneNumbers) {
                       return;
                     }
 
                     msgCtrl.sendMsg({
                       fromNumber: phoneNumbers,
                       msg: `Congratulations!  Your referral was successful and you earned 5% discount!!!${backToMenu}`,
+                    });
+
+                    UserDiscount.updateOne({
+                      discountCode: cart.discount_codes.code,
+                      phone: phoneNumbers,
+                    }, {
+                      notifiedCount: 2,
+                    }, {}, (err2, upd) => {
+                      if (err2) {
+                        console.log(err2);
+                      }
+                      if (upd.ok) console.log(upd.ok === 1);
                     });
                     return;
                   }
@@ -83,5 +95,5 @@ module.exports.trackerDiscount = () => {
         });
       })
       .catch((err) => { console.log(err); });
-  }, dayInMilliseconds); //24 hours
+  }, dayInMilliseconds);
 };
