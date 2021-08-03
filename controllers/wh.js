@@ -11,7 +11,7 @@ const UserReview = require('../db/models/UserReview');
 const { getProviders } = require('../providers');
 
 async function handleMessage(req, res) {
-  const { msgCtrl, shopifyApi, userSettings } = getProviders(req);
+  const { msgCtrl, shopifyApi, userSettings } = await getProviders(req);
   const { accountSid } = userSettings.twilio;
   res.status(200).send('');
   const fromNumber = req.body.From;
