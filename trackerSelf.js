@@ -18,7 +18,7 @@ const {
 
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 
-module.exports.tracker = () => {
+module.exports.trackerSelf = () => {
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
