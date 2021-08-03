@@ -18,7 +18,7 @@ const {
   getActivatedDiscounts,
 } = require('./getActivatedDiscounts');
 
-const dayInMilliseconds = 1000 * 60 * 15; // every 15  minutes
+const dayInMilliseconds = 1000 * 15; // 15 sec
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 
 module.exports.trackerDiscount = () => {
@@ -64,22 +64,22 @@ module.exports.trackerDiscount = () => {
                 allOrders.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
                     const { code } = cart.discount_codes[i];
-                    const findedPair = pairs.find((p) => p.discountCode === code);
+                    const foundPair = pairs.find((p) => p.discountCode === code);
                     const discountSlug = generateSlug();
-                    if (!findedPair) {
+                    if (!foundPair) {
                       return;
                     }
-                    console.log(`\n\n\n\ndiscount code: ${findedPair.code}\n\n\n\n`);
+                    console.log(`\n\n\n\ndiscount code: ${foundPair.code}\n\n\n\n`);
 
                     msgCtrl.sendMsg({
-                      fromNumber: findedPair.phone,
+                      fromNumber: foundPair.phone,
                       msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}${backToMenu}`,
                     });
 
                     UserDiscount
                       .create({
                         discountCode: discountSlug,
-                        phone: findedPair.phone,
+                        phone: foundPair.phone,
                         notifiedCount: 0,
                       })
                       .then(() => {
