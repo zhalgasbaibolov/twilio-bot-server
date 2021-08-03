@@ -11,7 +11,8 @@ const UserReview = require('../db/models/UserReview');
 const { getProviders } = require('../providers');
 
 async function handleMessage(req, res) {
-  const getProviderResult = await getProviders(req, res);
+  res.send('OK');
+  const getProviderResult = await getProviders(req);
   if (!getProviderResult) {
     return;
   }
