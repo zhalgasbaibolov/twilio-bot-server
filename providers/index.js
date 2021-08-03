@@ -30,6 +30,8 @@ const getProviders = async (req) => {
   }
   const msgCtrl = WhatsapSender(userSettings.twilio);
   const shopifyApi = ShopifyApi(userSettings.shopify);
-  return { msgCtrl, shopifyApi, accountSid };
+  return {
+    msgCtrl, shopifyApi, accountSid, userSettings,
+  };
 };
 module.exports = { getProviders };
