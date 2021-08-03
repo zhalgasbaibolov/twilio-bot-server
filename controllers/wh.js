@@ -11,7 +11,12 @@ const UserReview = require('../db/models/UserReview');
 const { getProviders } = require('../providers');
 
 async function handleMessage(req, res) {
-  const { msgCtrl, shopifyApi, userSettings } = await getProviders(req);
+  const getProviderResult = await getProviders(req);
+  if (!getProviderResult) {
+    res.status(200).send({ action: 'error', text: 'provider not found' });
+    return;
+  }
+  const { msgCtrl, shopifyApi, userSettings } = getProviderResult;
   const { accountSid } = userSettings.twilio;
   res.status(200).send('');
   const fromNumber = req.body.From;
