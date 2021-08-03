@@ -20,7 +20,7 @@ const getProviders = async (req) => {
   let shopifyApi = null;
   let msgCtrl = null;
   if (!accountSid) {
-    msgCtrl = DesktopSender({ url: 'https://ad92a0aba1db.ngrok.io' });
+    msgCtrl = DesktopSender({ url: 'https://34b06d2395aa.ngrok.io' });
     console.log('accountSid not found in request', fromNumber, msg);
     if (msg.startsWith('join ')) {
       const shopExternalUrl = msg.substring(4).trim();
