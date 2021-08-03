@@ -135,7 +135,7 @@ async function handleMessage(req, res) {
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`
+      msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
     });
     UserState.updateOne(
       {
@@ -388,11 +388,11 @@ async function handleMessage(req, res) {
         .then(() => {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: `Thank you so much for your review!!!`,
+            msg: 'Thank you so much for your review!!!',
           });
           setTimeout(() => {
-            referToFriend()
-          },3000)
+            referToFriend();
+          }, 3000);
         }).catch(errorHandler);
     } else if (state.last === 'refer') {
       switch (msg) {

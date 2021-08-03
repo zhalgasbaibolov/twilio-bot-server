@@ -76,5 +76,5 @@ module.exports.tracker = () => {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 0);
+  }, 5000);
 };
