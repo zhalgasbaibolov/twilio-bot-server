@@ -51,7 +51,7 @@ const getProviders = async (req) => {
       msgCtrl, shopifyApi, accountSid, userSettings,
     };
   }
-  userSettings = await UserSetting.find({ 'twilio.accountSid': accountSid }).exec();
+  userSettings = await UserSetting.findOne({ 'twilio.accountSid': accountSid }).exec();
   if (!userSettings || !userSettings.twilio || !userSettings.shopify) {
     console.log('wrong user settings:', userSettings);
     return null;
