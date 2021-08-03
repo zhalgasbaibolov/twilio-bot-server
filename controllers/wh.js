@@ -135,14 +135,8 @@ async function handleMessage(req, res) {
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Type your tracking number OR email.\n(Demo: copy paste below tracking number)',
+      msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`
     });
-    setTimeout(() => {
-      msgCtrl.sendMsg({
-        fromNumber,
-        msg: 'UH037386106US',
-      });
-    }, 3000);
     UserState.updateOne(
       {
         phone: fromNumber,
