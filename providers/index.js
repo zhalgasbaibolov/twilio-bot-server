@@ -27,7 +27,12 @@ const getProviders = async (req) => {
       }).exec();
       console.log('\n\n\nsandBoxUserUpdating INFO', sandboxUser, '\n\n\n');
     } else {
-      return null;
+      const temporarySandboxUser = await TemporarySandboxUser.findOne({ phone: fromNumber }).exec();
+      if (!temporarySandboxUser) {
+        console.log('if (!temporarySandboxUser) return null');
+        return null;
+      }
+      userSettings = await UserSetting.findById(temporarySandboxUser.settingsId);
     }
   }
   if (fromNumber === 'whatsapp:+14155238886') {
