@@ -12,6 +12,7 @@ const getProviders = async (req, res) => {
 
   console.log('wh controller', fromNumber, msg, req.body);
   let userSettings = null;
+  let sandboxUser = null;
 
   if (!accountSid) {
     console.log('accountSid not found in request', fromNumber, msg);
@@ -25,21 +26,28 @@ const getProviders = async (req, res) => {
         return null;
       }
 
-      const sandboxUser = await TemporarySandboxUser.updateOne({ phone: fromNumber }, {
+      sandboxUser = await TemporarySandboxUser.updateOne({ phone: fromNumber }, {
         settingsId: userSettings.id,
       }, {
         upsert: true,
       }).exec();
-      console.log('\n\n\nsandBoxUserUpdating INFO', sandboxUser, '\n\n\n');
-    } else {
-      const temporarySandboxUser = await TemporarySandboxUser.findOne({ phone: fromNumber }).exec();
-      if (!temporarySandboxUser) {
-        console.log('if (!temporarySandboxUser) return null');
-        res.status(200).send({ action: 'send', text: 'wrong join link or store not found' });
+    }
+    console.log('sandboxUser:', sandboxUser);
+    if (!sandboxUser) {
+      sandboxUser = await TemporarySandboxUser.findOne({ phone: fromNumber }).exec();
+      if (!sandboxUser) {
+        res.status(200).send({ action: 'send', text: 'join to store before' });
         return null;
       }
-      userSettings = await UserSetting.findById(temporarySandboxUser.settingsId);
     }
+
+    const temporarySandboxUser = await TemporarySandboxUser.findOne({ phone: fromNumber }).exec();
+    if (!temporarySandboxUser) {
+      console.log('if (!temporarySandboxUser) return null');
+      res.status(200).send({ action: 'send', text: 'wrong join link or store not found' });
+      return null;
+    }
+    userSettings = await UserSetting.findById(temporarySandboxUser.settingsId);
   }
   if (fromNumber === 'whatsapp:+14155238886') {
     res.send('ok1');
