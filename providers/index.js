@@ -14,17 +14,19 @@ const getProviders = async (req) => {
   let userSettings = null;
 
   if (!accountSid) {
+    console.log('accountSid not found in request');
     if (msg.startsWith('join ')) {
       const shopExternalUrl = msg.substring(4).trim();
       userSettings = await UserSetting.findOne({ 'shopify.externalUrl': shopExternalUrl }).exec();
       if (!userSettings) return null;
-    } else {
+
       const sandboxUser = await TemporarySandboxUser.updateOne({ phone: fromNumber }, {
         memberstackId: userSettings.memberstackId,
       }, {
         upsert: true,
       }).exec();
       console.log('\n\n\nsandBoxUserUpdating INFO', sandboxUser, '\n\n\n');
+    } else {
       return null;
     }
   }
