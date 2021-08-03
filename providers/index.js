@@ -42,7 +42,7 @@ const getProviders = async (req, res) => {
     }
   }
   if (fromNumber === 'whatsapp:+14155238886') {
-    res.send('ok');
+    res.send('ok1');
     return null;
   }
 
@@ -53,12 +53,12 @@ const getProviders = async (req, res) => {
     );
     if (!userSettings || !userSettings.twilio || !userSettings.shopify) {
       console.log('wrong user settings:', userSettings);
-      res.send('ok');
+      res.send('ok2');
       return null;
     }
   } catch (getSettigsErr) {
     console.log(getSettigsErr);
-    res.send('ok');
+    res.send('ok3');
     return null;
   }
   const msgCtrl = WhatsapSender(userSettings.twilio);
