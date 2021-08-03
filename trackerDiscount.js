@@ -73,7 +73,7 @@ module.exports.trackerDiscount = () => {
 
                     msgCtrl.sendMsg({
                       fromNumber: findedPair.phone,
-                      msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount - ${discountSlug}${backToMenu}`,
+                      msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}${backToMenu}`,
                     });
 
                     UserDiscount

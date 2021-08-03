@@ -135,14 +135,8 @@ async function handleMessage(req, res) {
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Type your tracking number OR email.\n(Demo: copy paste below tracking number)',
+      msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`
     });
-    setTimeout(() => {
-      msgCtrl.sendMsg({
-        fromNumber,
-        msg: 'UH037386106US',
-      });
-    }, 3000);
     UserState.updateOne(
       {
         phone: fromNumber,
@@ -175,7 +169,7 @@ async function handleMessage(req, res) {
   const referToFriend = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Would you like to refer your friends to earn loyalty points?\n1. Yes\n2. No',
+      msg: 'Would you like to refer your friends to get discount?\n1. Yes\n2. No',
     });
     UserState.updateOne(
       {
@@ -232,7 +226,7 @@ async function handleMessage(req, res) {
           .then(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: `Here is your promocode: ${discountedUrl}\nPlease click this link to proceed or type *5* to return`,
+              msg: `Here is your promocode: ${discountedUrl}\nPlease click this link to proceed or type 0 to return`,
             });
             UserState.updateOne(
               {
@@ -240,10 +234,35 @@ async function handleMessage(req, res) {
               },
               {
                 $set: {
-                  last: 'return-to-main-if-5-pressed',
+                  last: 'return-to-main-if-0-pressed',
                 },
               },
             ).exec();
+          })
+          .catch(errorHandler);
+      })
+      .catch(errorHandler);
+  }
+  function sendDiscountToFriend() {
+    const discountSlug = generateSlug();
+    shopifyApi.shopifyDiscountCreate(
+      discountSlug,
+    )
+      .then((response) => {
+        const { code } = response.data.discount_code;
+        const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
+
+        UserDiscount
+          .create({
+            discountCode: discountSlug,
+            phone: fromNumber,
+            notifiedCount: 0,
+          })
+          .then(() => {
+            msgCtrl.sendMsg({
+              fromNumber,
+              msg: `Hey! I'm invite you check out Banarasi Outfits :)\nPlease click this link, we'll both get a discount.\n\nHere is your promocode: ${discountedUrl}\n----------------\nPlease click this link to proceed`,
+            });
           })
           .catch(errorHandler);
       })
@@ -366,23 +385,27 @@ async function handleMessage(req, res) {
           phone: fromNumber,
           text: msg,
         })
-        .then(referToFriend).catch(errorHandler);
+        .then(() => {
+          msgCtrl.sendMsg({
+            fromNumber,
+            msg: `Thank you so much for your review!!!`,
+          });
+          setTimeout(() => {
+            referToFriend()
+          },3000)
+        }).catch(errorHandler);
     } else if (state.last === 'refer') {
       switch (msg) {
         case '1': {
-          const discountSlug = fromNumber.slice(10);
           msgCtrl.sendMsg({
             fromNumber,
             msg: 'Please forward below message.',
           });
           setTimeout(() => {
-            msgCtrl.sendMsg({
-              fromNumber,
-              msg: `Hey! I'm invite you check out Banarasi Outfits :)\nPlease click this link, we'll both get a discount.\nhttp://banarasioutfit.in/discount/${discountSlug}`,
-            });
+            sendDiscountToFriend();
             setTimeout(() => {
               sendMainMenu();
-            }, 3000);
+            }, 5000);
           }, 3000);
           break;
         }
@@ -682,8 +705,8 @@ async function handleMessage(req, res) {
       } else {
         sendMainMenu(0, true);
       }
-    } else if (state.last === 'return-to-main-if-5-pressed') {
-      if (msg === '5') {
+    } else if (state.last === 'return-to-main-if-0-pressed') {
+      if (msg === '0') {
         sendMainMenu();
       }
     } else {
