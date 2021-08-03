@@ -5,43 +5,18 @@ const { generateSlug } = require('random-word-slugs');
 //   generateSlug,
 // } = require('random-word-slugs');
 const UserState = require('../db/models/UserState');
-const UserSetting = require('../db/models/UserSettings');
 const UserDiscount = require('../db/models/UserDiscount');
 const UserReview = require('../db/models/UserReview');
 // const UserGetSupport = require('../db/models/UserGetSupport');
-const { WhatsapSender } = require('../providers/WhatsapSender');
-
-const {
-  ShopifyApi,
-} = require('../providers/shopifyApi');
+const { getProviders } = require('../providers');
 
 async function handleMessage(req, res) {
+  const { msgCtrl, shopifyApi, userSettings } = getProviders(req);
+  const { accountSid } = userSettings.twilio;
   res.status(200).send('');
-  const accountSid = req.body.AccountSid;
   const fromNumber = req.body.From;
   const msg = req.body.Body;
-  const profileName = req.body.ProfileName;
-  console.log('wh controller', fromNumber, msg, req.body);
-  if (fromNumber === 'whatsapp:+14155238886') {
-    return;
-  }
 
-  let userSettings = null;
-  try {
-    userSettings = await UserSetting.find({}).exec();
-    userSettings = userSettings.find(
-      (sett) => sett && sett.twilio && sett.twilio.accountSid === accountSid,
-    );
-    if (!userSettings || !userSettings.twilio || !userSettings.shopify) {
-      console.log('wrong user settings:', userSettings);
-      return;
-    }
-  } catch (getSettigsErr) {
-    console.log(getSettigsErr);
-    return;
-  }
-  const msgCtrl = WhatsapSender(userSettings.twilio);
-  const shopifyApi = ShopifyApi(userSettings.shopify);
   const errorHandler = (err) => {
     // eslint-disable-next-line no-console
     console.log(err);
@@ -135,7 +110,7 @@ async function handleMessage(req, res) {
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`
+      msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
     });
     UserState.updateOne(
       {
@@ -345,7 +320,7 @@ async function handleMessage(req, res) {
           accountSid,
           msg,
           whatsappNumber: fromNumber,
-          profileName,
+          profileName: req.body.ProfileName,
         })
         .then((chatResponse) => {
           console.log(`\n\n\n\nchatResponse:\n${chatResponse.status}\n${chatResponse.data}\n\n\n\n`);
@@ -388,11 +363,11 @@ async function handleMessage(req, res) {
         .then(() => {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: `Thank you so much for your review!!!`,
+            msg: 'Thank you so much for your review!!!',
           });
           setTimeout(() => {
-            referToFriend()
-          },3000)
+            referToFriend();
+          }, 3000);
         }).catch(errorHandler);
     } else if (state.last === 'refer') {
       switch (msg) {
