@@ -62,31 +62,31 @@ module.exports.tracker = () => {
                 allCarts.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
                     const { code } = cart.discount_codes[i];
-                    const findedPair = pairs.find((p) => p.discountCode === code);
-                    if (!findedPair) {
+                    const foundPair = pairs.find((p) => p.discountCode === code);
+                    if (!foundPair) {
                       return;
                     }
                     console.log('******************************');
-                    console.log(`found pairs: ${findedPair.phone}: ${findedPair.discountCode}: ${findedPair.notifiedCount}`,
+                    console.log(`found pairs: ${foundPair.phone}: ${foundPair.discountCode}: ${foundPair.notifiedCount}`,
                       cart.abandoned_checkout_url);
                     console.log('******************************');
 
                     msgCtrl.sendMsg({
-                      fromNumber: findedPair.phone,
+                      fromNumber: foundPair.phone,
                       msg: `Hi! We noticed that you left a few items in your shopping cart.\nPlease check it:\n${
                         cart.abandoned_checkout_url}`,
                     });
                     setTimeout(() => {
                       const txt = cart.line_items.map(({ title, variant_title, quantity }, idx) => `${idx + 1}. ${title}, ${variant_title}, quantity: ${quantity}.`).join('\n');
                       msgCtrl.sendMsg({
-                        fromNumber: findedPair.phone,
+                        fromNumber: foundPair.phone,
                         msg: `Your cart is:\n${txt}\n${backToMenu}`,
                       });
                     }, 4000);
 
                     UserDiscount.updateOne({
-                      discountCode: findedPair.discountCode,
-                      phone: findedPair.phone,
+                      discountCode: foundPair.discountCode,
+                      phone: foundPair.phone,
                     }, {
                       notifiedCount: 2,
                     }, {}, (err2, upd) => {
