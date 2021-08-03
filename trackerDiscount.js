@@ -69,7 +69,7 @@ module.exports.trackerDiscount = () => {
                     if (!foundPair) {
                       return;
                     }
-                    console.log(`\n\n\n\ndiscount code: ${foundPair.code}\n\n\n\n`);
+                    console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode}\n\n\n\n`);
 
                     msgCtrl.sendMsg({
                       fromNumber: foundPair.phone,
