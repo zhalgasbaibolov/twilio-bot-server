@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const { tracker } = require('./tracker');
-const { trackerDiscount } = require('./trackerDiscount');
+// const { trackerDiscount } = require('./trackerDiscount');
 // const { trackerSelf } = require('./trackerSelf');
 
 // Set up default mongoose connection
@@ -20,7 +20,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.on('open', () => {
   tracker();
-  trackerDiscount();
+  // trackerDiscount();
   // trackerSelf();
 });
 
