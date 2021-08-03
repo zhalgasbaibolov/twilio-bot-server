@@ -52,8 +52,9 @@ module.exports.tracker = () => {
               allCarts.forEach((cart) => {
                 for (let i = 0; i < cart.abandoned_checkout_url.length; i += 1) {
                   const abandonedCheckoutUrl = cart.abandoned_checkout_url[i];
+                  const phoneNumber = `whatsapp:${cart.phone}`;
                   msgCtrl.sendMsg({
-                    fromNumber: cart.phone,
+                    fromNumber: phoneNumber,
                     msg: `Hi! We noticed that you left a few items in your shopping cart.\nPlease check it:\n${
                       abandonedCheckoutUrl}`,
                   });
