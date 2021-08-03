@@ -169,7 +169,7 @@ async function handleMessage(req, res) {
   const referToFriend = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Would you like to refer your friends to earn loyalty points?\n1. Yes\n2. No',
+      msg: 'Would you like to refer your friends to get discount?\n1. Yes\n2. No',
     });
     UserState.updateOne(
       {
@@ -385,7 +385,15 @@ async function handleMessage(req, res) {
           phone: fromNumber,
           text: msg,
         })
-        .then(referToFriend).catch(errorHandler);
+        .then(() => {
+          msgCtrl.sendMsg({
+            fromNumber,
+            msg: `Thank you so much for your review!!!`,
+          });
+          setTimeout(() => {
+            referToFriend()
+          },3000)
+        }).catch(errorHandler);
     } else if (state.last === 'refer') {
       switch (msg) {
         case '1': {
