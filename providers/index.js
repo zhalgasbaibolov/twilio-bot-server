@@ -17,8 +17,12 @@ const getProviders = async (req) => {
     console.log('accountSid not found in request');
     if (msg.startsWith('join ')) {
       const shopExternalUrl = msg.substring(4).trim();
+      console.log('msg from whatsap:', msg);
       userSettings = await UserSetting.findOne({ 'shopify.externalUrl': shopExternalUrl }).exec();
-      if (!userSettings) return null;
+      if (!userSettings) {
+        console.log('not found userSettings with "shopify.externalUrl":', shopExternalUrl);
+        return null;
+      }
 
       const sandboxUser = await TemporarySandboxUser.updateOne({ phone: fromNumber }, {
         memberstackId: userSettings.memberstackId,
