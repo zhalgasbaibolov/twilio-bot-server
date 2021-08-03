@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
-const UserSetting = require('./db/models/UserSettings');
+const UserSetting = require('./db/models/UserSetting');
 const { WhatsapSender } = require('./providers/WhatsapSender');
 // const { handleMessage } = require('./controllers/wh');
 
