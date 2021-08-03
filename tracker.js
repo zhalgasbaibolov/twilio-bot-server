@@ -16,8 +16,8 @@ const msgCtrl = WhatsapSender({
 const {
   getAbandonedCart,
 } = require('./cartAbandonment');
-const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 
+const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 
 module.exports.tracker = () => {
   setInterval(() => {

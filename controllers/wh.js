@@ -395,7 +395,6 @@ async function handleMessage(req, res) {
     } else if (state.last === 'refer') {
       switch (msg) {
         case '1': {
-          const discountSlug = fromNumber.slice(10);
           msgCtrl.sendMsg({
             fromNumber,
             msg: 'Please forward below message.',
@@ -404,7 +403,7 @@ async function handleMessage(req, res) {
             sendDiscountToFriend();
             setTimeout(() => {
               sendMainMenu();
-            }, 3000);
+            }, 5000);
           }, 3000);
           break;
         }
