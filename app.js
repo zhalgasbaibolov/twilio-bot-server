@@ -7,7 +7,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const { tracker } = require('./tracker');
 const { trackerDiscount } = require('./trackerDiscount');
-const { trackerSelf } = require('./trackerSelf');
+// const { trackerSelf } = require('./trackerSelf');
 
 // Set up default mongoose connection
 const mongoDB = 'mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/test?retryWrites=true&w=majority';
@@ -21,7 +21,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.on('open', () => {
   tracker();
   trackerDiscount();
-  trackerSelf();
+  // trackerSelf();
 });
 
 const indexRouter = require('./routes/index');
