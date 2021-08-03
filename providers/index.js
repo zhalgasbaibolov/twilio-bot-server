@@ -5,7 +5,7 @@ const TemporarySandboxUser = require('../db/models/TemporarySandboxUser');
 const { WhatsapSender } = require('./WhatsapSender');
 const { ShopifyApi } = require('./shopifyApi');
 
-const getProviders = async (req) => {
+const getProviders = async (req, res) => {
   const accountSid = req.body.AccountSid;
   const fromNumber = req.body.From;
   const msg = req.body.Body;
@@ -14,18 +14,19 @@ const getProviders = async (req) => {
   let userSettings = null;
 
   if (!accountSid) {
-    console.log('accountSid not found in request');
+    console.log('accountSid not found in request', fromNumber, msg);
     if (msg.startsWith('join ')) {
       const shopExternalUrl = msg.substring(4).trim();
       console.log('msg from whatsap:', msg);
       userSettings = await UserSetting.findOne({ 'shopify.externalUrl': shopExternalUrl }).exec();
       if (!userSettings) {
         console.log('not found userSettings with "shopify.externalUrl":', shopExternalUrl);
+        res.status(200).send({ action: 'send', text: 'wrong join link' });
         return null;
       }
 
       const sandboxUser = await TemporarySandboxUser.updateOne({ phone: fromNumber }, {
-        memberstackId: userSettings.memberstackId,
+        settingsId: userSettings.id,
       }, {
         upsert: true,
       }).exec();
@@ -34,12 +35,14 @@ const getProviders = async (req) => {
       const temporarySandboxUser = await TemporarySandboxUser.findOne({ phone: fromNumber }).exec();
       if (!temporarySandboxUser) {
         console.log('if (!temporarySandboxUser) return null');
+        res.status(200).send({ action: 'send', text: 'wrong join link or store not found' });
         return null;
       }
       userSettings = await UserSetting.findById(temporarySandboxUser.settingsId);
     }
   }
   if (fromNumber === 'whatsapp:+14155238886') {
+    res.send('ok');
     return null;
   }
 
@@ -50,10 +53,12 @@ const getProviders = async (req) => {
     );
     if (!userSettings || !userSettings.twilio || !userSettings.shopify) {
       console.log('wrong user settings:', userSettings);
+      res.send('ok');
       return null;
     }
   } catch (getSettigsErr) {
     console.log(getSettigsErr);
+    res.send('ok');
     return null;
   }
   const msgCtrl = WhatsapSender(userSettings.twilio);
