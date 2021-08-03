@@ -18,7 +18,7 @@ async function handleMessage(req, res) {
   }
   const { msgCtrl, shopifyApi, userSettings } = getProviderResult;
   const { accountSid } = userSettings.twilio;
-  res.status(200).send('');
+
   const fromNumber = req.body.From;
   const msg = req.body.Body;
 
