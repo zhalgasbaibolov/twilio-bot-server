@@ -11,13 +11,14 @@ const UserReview = require('../db/models/UserReview');
 const { getProviders } = require('../providers');
 
 async function handleMessage(req, res) {
-  const getProviderResult = await getProviders(req, res);
+  res.send('OK');
+  const getProviderResult = await getProviders(req);
   if (!getProviderResult) {
     return;
   }
   const { msgCtrl, shopifyApi, userSettings } = getProviderResult;
   const { accountSid } = userSettings.twilio;
-  res.status(200).send('');
+
   const fromNumber = req.body.From;
   const msg = req.body.Body;
 
@@ -34,10 +35,11 @@ async function handleMessage(req, res) {
 
   function createNewDialog() {
     UserState
-      .create({
+      .updateOne({
         phone: fromNumber,
-        last: 'demoMain',
-      })
+      },
+      { last: 'demoMain' },
+      { upsert: true })
       .then(() => {
         msgCtrl.sendMsg({
           fromNumber,
@@ -703,9 +705,9 @@ async function handleMessage(req, res) {
       }
       if (!result) {
         createNewDialog();
-      } else {
-        continueDialog(result);
-      }
+      } else if (getProviderResult.firstlyJoined === true) {
+        sendMainMenu(0, true);
+      } else continueDialog(result);
       return result;
     });
 }
