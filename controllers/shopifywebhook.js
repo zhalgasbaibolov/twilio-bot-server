@@ -31,5 +31,3 @@ app.post('/webhooks/fulfillment_events/update', async (req, res) => {
   // const body = await getRawBody(req);
   return res.status(200);
 });
-
-app.listen(80, () => console.log('Example app listening on port 80!'));

@@ -28,7 +28,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const whRouter = require('./routes/wh');
 const settingsRouter = require('./routes/settings');
-const shopifyRouter = require('./routes/shopify')
+const shopifyRouter = require('./routes/shopify');
 
 const app = express();
 
@@ -47,7 +47,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/wh', whRouter);
 app.use('/settings', settingsRouter);
-app.use('/shopify', shopifyRouter)
+app.use('/shopify', shopifyRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
