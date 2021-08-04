@@ -48,7 +48,7 @@ const getProviders = async (req) => {
     userSettings = await UserSetting.findById(temporarySandboxUser.settingsId);
     shopifyApi = ShopifyApi(userSettings.shopify);
     return {
-      msgCtrl, shopifyApi, accountSid, userSettings,
+      msgCtrl, shopifyApi, accountSid, userSettings, firstlyJoined: true,
     };
   }
   userSettings = await UserSetting.findOne({ 'twilio.accountSid': accountSid }).exec();

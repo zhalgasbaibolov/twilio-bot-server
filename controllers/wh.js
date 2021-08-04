@@ -35,10 +35,11 @@ async function handleMessage(req, res) {
 
   function createNewDialog() {
     UserState
-      .create({
+      .updateOne({
         phone: fromNumber,
-        last: 'demoMain',
-      })
+      },
+      { last: 'demoMain' },
+      { upsert: true })
       .then(() => {
         msgCtrl.sendMsg({
           fromNumber,
@@ -704,9 +705,9 @@ async function handleMessage(req, res) {
       }
       if (!result) {
         createNewDialog();
-      } else {
-        continueDialog(result);
-      }
+      } else if (getProviderResult.firstlyJoined) {
+        createNewDialog();
+      } else continueDialog(result);
       return result;
     });
 }
