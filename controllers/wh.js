@@ -53,7 +53,7 @@ async function handleMessage(req, res) {
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `${firstWord}\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
+        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
       });
       UserState.updateOne(
         {
@@ -133,7 +133,7 @@ async function handleMessage(req, res) {
   const sendMarketing = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: 'Would you like to leave us a review for 5 points?\n1. Yes\n2. No',
+      msg: 'We\'d love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No',
     });
     UserState.updateOne(
       {
@@ -337,7 +337,7 @@ async function handleMessage(req, res) {
         case '1': {
           msgCtrl.sendMsg({
             fromNumber,
-            msg: 'Please type your review:',
+            msg: 'Please type your feedback:',
           });
           UserState.updateOne(
             {
