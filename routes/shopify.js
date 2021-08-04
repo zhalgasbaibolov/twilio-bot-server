@@ -3,10 +3,11 @@
 const express = require('express');
 
 const router = express.Router();
-const shopifyCtrl = require('../controllers/shopifywebhook');
+const shopifyTest = require('../shopifyTest');
 
 router.post('/webhooks/fulfillments/create', async (req, res) => {
-  console.log('🎉 We got a fulfillment create!');
+  shopifyTest();
+  // console.log('🎉 We got a fulfillment create!');
   // const hmac = req.get('X-Shopify-Hmac-Sha256');
   // const body = await getRawBody(req);
   return res.status(200);
