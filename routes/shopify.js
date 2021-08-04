@@ -6,7 +6,7 @@ const router = express.Router();
 const shopifyTest = require('../shopifyTest');
 
 router.post('/webhooks/fulfillments/create', async (req, res) => {
-  res.status(200);
+  res.send('OK');
   shopifyTest();
   // console.log('🎉 We got a fulfillment create!');
   // const hmac = req.get('X-Shopify-Hmac-Sha256');
