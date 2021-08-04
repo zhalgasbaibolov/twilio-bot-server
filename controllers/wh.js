@@ -53,7 +53,7 @@ async function handleMessage(req, res) {
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `${firstWord}\n1. Catalog\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
+        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
       });
       UserState.updateOne(
         {
