@@ -13,12 +13,10 @@ const msgCtrl = WhatsapSender({
 });
 
 const shopifyTest = () => {
-  setTimeout(() => {
     msgCtrl.sendMsg({
       fromNumber: 'whatsapp:+77075002029',
       msg: 'Hi! We noticed that you left a few items in your shopping cart.',
-    });
-  }, 5000);
+    })
 };
 
 module.exports = shopifyTest;
