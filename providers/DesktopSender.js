@@ -2,8 +2,9 @@
 const axios = require('axios');
 
 const convertToDesktopFormat = (num) => ((num.startsWith('whatsapp:+')) ? `${num.susbstring(10)}@c.us` : num);
+const getUrl = () => process.env.desktop_url;
 
-module.exports.DesktopSender = ({ url }) => ({
+module.exports.DesktopSender = () => ({
   sendMsg: ({
     fromNumber,
     msg = 'msg is null',
@@ -21,7 +22,7 @@ module.exports.DesktopSender = ({ url }) => ({
     };
     if (mediaUrl) data.mediaUrl = mediaUrl;
     return axios
-      .post(url, data, {
+      .post(getUrl(), data, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -46,7 +47,7 @@ module.exports.DesktopSender = ({ url }) => ({
     };
     if (mediaUrlList) data.mediaUrlList = mediaUrlList;
     return axios
-      .post(url, data, {
+      .post(getUrl(), data, {
         headers: {
           'Content-Type': 'application/json',
         },

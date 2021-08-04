@@ -21,7 +21,7 @@ const getProviders = async (req) => {
   let msgCtrl = null;
   let firstlyJoined = false;
   if (!accountSid) {
-    msgCtrl = DesktopSender({ url: process.env.desktop_url });
+    msgCtrl = DesktopSender();
     console.log('accountSid not found in request', fromNumber, msg);
     if (msg.startsWith('join ')) {
       const shopExternalUrl = msg.substring(4).trim();
