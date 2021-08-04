@@ -19,6 +19,7 @@ const getProviders = async (req) => {
   let userSettings = null;
   let shopifyApi = null;
   let msgCtrl = null;
+  let firstlyJoined = false;
   if (!accountSid) {
     msgCtrl = DesktopSender({ url: 'https://05b569af765f.ngrok.io/sendResponse' });
     console.log('accountSid not found in request', fromNumber, msg);
@@ -37,6 +38,7 @@ const getProviders = async (req) => {
       }, {
         upsert: true,
       }).exec();
+      firstlyJoined = true;
     }
 
     const temporarySandboxUser = await TemporarySandboxUser.findOne({ phone: fromNumber }).exec();
@@ -48,7 +50,7 @@ const getProviders = async (req) => {
     userSettings = await UserSetting.findById(temporarySandboxUser.settingsId);
     shopifyApi = ShopifyApi(userSettings.shopify);
     return {
-      msgCtrl, shopifyApi, accountSid, userSettings, firstlyJoined: true,
+      msgCtrl, shopifyApi, accountSid, userSettings, firstlyJoined,
     };
   }
   userSettings = await UserSetting.findOne({ 'twilio.accountSid': accountSid }).exec();
