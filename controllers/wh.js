@@ -706,7 +706,7 @@ async function handleMessage(req, res) {
       if (!result) {
         createNewDialog();
       } else if (getProviderResult.firstlyJoined === true) {
-        createNewDialog();
+        sendMainMenu(0, true);
       } else continueDialog(result);
       return result;
     });
