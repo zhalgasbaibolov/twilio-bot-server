@@ -76,10 +76,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
   const shopifyDiscountCreate = async (
     randomString,
   ) => {
-    if (!priceRuleId) {
-      priceRuleId = await shopifyStoreDiscountsInitialize();
-    }
-
+    const ruleId = priceRuleId || await shopifyStoreDiscountsInitialize();
     /* eslint-disable no-use-before-define */
     discountCreate();
 
@@ -90,7 +87,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
         },
       };
 
-      const sessionUrlDiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${priceRuleId}/discount_codes.json`;
+      const sessionUrlDiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${ruleId}/discount_codes.json`;
       console.log(sessionUrlDiscount);
       return axios
         .post(sessionUrlDiscount, JSON.stringify(dataDiscount), {
