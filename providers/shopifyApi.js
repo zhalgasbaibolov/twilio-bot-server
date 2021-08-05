@@ -4,6 +4,8 @@ const {
   GraphQLClient,
 } = require('graphql-request');
 const axios = require('axios');
+const shopifyStoreDiscountsInitialize = require('../controllers/discountRestAPI');
+const shopifyDiscountCreating = require('../controllers/discountRestAPI');
 
 module.exports.ShopifyApi = function ShopifyApi(settings) {
   const {
@@ -38,6 +40,12 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
   const shopifyDiscountCreate = async (
     randomString,
   ) => {
+    if (!priceRuleId) {
+      shopifyStoreDiscountsInitialize().then(() => {
+        shopifyDiscountCreating();
+      });
+    }
+
     const dataDiscount = {
       discount_code: {
         code: randomString,
