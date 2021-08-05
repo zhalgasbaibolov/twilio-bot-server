@@ -4,12 +4,10 @@ const {
   GraphQLClient,
 } = require('graphql-request');
 const axios = require('axios');
-const shopifyStoreDiscountsInitialize = require('../controllers/discountRestAPI');
-const shopifyDiscountCreating = require('../controllers/discountRestAPI');
 
 module.exports.ShopifyApi = function ShopifyApi(settings) {
   const {
-    storeMyShopify, accessToken, apiVersion, priceRuleId, storeAPIkey, storePassword,
+    storeMyShopify, accessToken, apiVersion,  storeAPIkey, storePassword,
   } = settings;
   console.log(settings);
   const retireveCollections = async () => {
@@ -37,25 +35,26 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     `;
     return graphQLClient.request(query);
   };
-  const shopifyDiscountCreate = async (
-    randomString,
-  ) => {
-    if (!priceRuleId) {
-      shopifyStoreDiscountsInitialize().then(() => {
-        shopifyDiscountCreating();
-      });
-    }
 
-    const dataDiscount = {
-      discount_code: {
-        code: randomString,
+  const shopifyStoreDiscountsInitialize = async (discountPercent) => {
+    const dataPriceRule = {
+      price_rule: {
+        title: 'saletastic-cart-abd-discount',
+        target_type: 'line_item',
+        target_selection: 'all',
+        allocation_method: 'across',
+        value_type: 'percentage',
+        value: discountPercent,
+        customer_selection: 'all',
+        once_per_customer: true,
+        starts_at: '2021-07-09',
+        usage_limit: '1',
       },
     };
+    const sessionUrlPriceRule = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules.json`;
 
-    const sessionUrlDiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${priceRuleId}/discount_codes.json`;
-    console.log(sessionUrlDiscount);
     return axios
-      .post(sessionUrlDiscount, JSON.stringify(dataDiscount), {
+      .post(sessionUrlPriceRule, JSON.stringify(dataPriceRule), {
         auth: {
           username: storeAPIkey,
           password: storePassword,
@@ -65,15 +64,54 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
         },
       })
       .then((response) => {
-        const discountedUrl = `http://${storeMyShopify}/discount/${randomString}`;
-        console.log('test link is: ', discountedUrl);
+        console.log('response is (price rule create):   ', response);
         return response;
       })
       .catch((error) => {
-        // handle error
-        console.log('@@@@@@@@@@ERROR AT DISCOUNT CREATE:   ', error);
+        console.log('@@@@@@@@@@ERROR AT PRICE RULE CREATE:   ', error);
         return false;
       });
+  };
+
+  const shopifyDiscountCreate = async (
+    randomString,
+  ) => {
+    if (!priceRuleId) {
+      priceRuleId =   await shopifyStoreDiscountsInitialize()
+    } 
+      discountCreate();
+    
+
+    function discountCreate(priceRuleId) {
+      const dataDiscount = {
+        discount_code: {
+          code: randomString,
+        },
+      };
+
+      const sessionUrlDiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${priceRuleId}/discount_codes.json`;
+      console.log(sessionUrlDiscount);
+      return axios
+        .post(sessionUrlDiscount, JSON.stringify(dataDiscount), {
+          auth: {
+            username: storeAPIkey,
+            password: storePassword,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => {
+          const discountedUrl = `http://${storeMyShopify}/discount/${randomString}`;
+          console.log('test link is: ', discountedUrl);
+          return response;
+        })
+        .catch((error) => {
+        // handle error
+          console.log('@@@@@@@@@@ERROR AT DISCOUNT CREATE:   ', error);
+          return false;
+        });
+    }
   };
   const retireveProducts = async () => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
