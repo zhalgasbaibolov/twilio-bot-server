@@ -45,7 +45,7 @@ async function shopifyStoreDiscountsInitialize(
     });
 }
 
-async function shopifyDiscountCreating(
+async function shopifyDiscountCreate(
   storeMyShopify,
   apiVersion,
   storeAPIkey,
@@ -84,6 +84,6 @@ async function shopifyDiscountCreating(
     });
 }
 
-exports.shopifyDiscountCreating = shopifyDiscountCreating;
+exports.shopifyDiscountCreate = shopifyDiscountCreate;
 exports.shopifyStoreDiscountsInitialize = shopifyStoreDiscountsInitialize;
 module.exports = exports;

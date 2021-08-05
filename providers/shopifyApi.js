@@ -7,7 +7,7 @@ const axios = require('axios');
 
 module.exports.ShopifyApi = function ShopifyApi(settings) {
   const {
-    storeMyShopify, accessToken, apiVersion,  storeAPIkey, storePassword,
+    storeMyShopify, accessToken, apiVersion, storeAPIkey, storePassword,
   } = settings;
   console.log(settings);
   const retireveCollections = async () => {
@@ -74,13 +74,14 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
   };
 
   const shopifyDiscountCreate = async (
-    randomString,
+    randomString
   ) => {
     if (!priceRuleId) {
-      priceRuleId =   await shopifyStoreDiscountsInitialize()
-    } 
-      discountCreate();
-    
+      priceRuleId = await shopifyStoreDiscountsInitialize();
+    }
+
+    /* eslint-disable no-use-before-define */
+    discountCreate();
 
     function discountCreate(priceRuleId) {
       const dataDiscount = {
