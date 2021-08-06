@@ -19,6 +19,5 @@ const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
 };
 
 module.exports = {
-  shopifyOrderPaid,
   shopifyOrderCreated,
 };
