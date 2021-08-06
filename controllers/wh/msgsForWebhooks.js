@@ -12,7 +12,7 @@ const msgCtrl = WhatsapSender({
   token,
 });
 
-const shopifyOrderCreated = (phoneNumber, orderNumber, orderStatusUrl) => {
+const shopifyOrderCreated = (phoneNumber, orderStatusUrl, orderNumber) => {
   msgCtrl.sendMsg({
     fromNumber: `whatsapp:${phoneNumber}`,
     msg: `Your ${orderNumber} order has shipped and should be delivered on 14th of September. Details: ${orderStatusUrl}`
