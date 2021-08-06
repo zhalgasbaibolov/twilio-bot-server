@@ -2,7 +2,6 @@
 /* eslint-disable no-console */
 const UserSetting = require('./db/models/UserSetting');
 const { WhatsapSender } = require('./providers/WhatsapSender');
-// const { handleMessage } = require('./controllers/wh');
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;

@@ -28,7 +28,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const whRouter = require('./routes/wh');
 const settingsRouter = require('./routes/settings');
-const shopifyRouter = require('./routes/shopify');
+const shopifyRouter = require('./routes/shopifyWebhooks');
 
 const app = express();
 
