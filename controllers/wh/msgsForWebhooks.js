@@ -17,9 +17,6 @@ const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
     fromNumber: `whatsapp:${phoneNumber}`,
     msg: `Hello, ${userName}!\nThank you for your shopping with us!\nYour order #${orderNumber} has been received.\n\nWe'll send tracking information when order ships.`,
   });
-  setTimeout(() => {
-    whCtrl.handleMessage.sendDiscount();
-  }, 3000);
 };
 
 const shopifyFulfillmentCreated = (phoneNumber, userName, trackingNumber) => {
