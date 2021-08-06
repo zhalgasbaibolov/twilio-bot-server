@@ -12,19 +12,5 @@ router.post('/webhooks/fulfillments/create', async (req, res) => {
   // const body = await getRawBody(req);
 });
 
-router.post('/webhooks/fulfillments/create', async (req, res) => {
-  res.send('OK');
-  shopifyTest();
-  // const hmac = req.get('X-Shopify-Hmac-Sha256');
-  // const body = await getRawBody(req);
-});
-
-router.post('/webhooks/fulfillments/create', async (req, res) => {
-  res.send('OK');
-  shopifyTest();
-  // const hmac = req.get('X-Shopify-Hmac-Sha256');
-  // const body = await getRawBody(req);
-});
-
 
 module.exports = router;
