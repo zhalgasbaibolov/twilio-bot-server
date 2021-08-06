@@ -77,39 +77,35 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     randomString,
   ) => {
     const ruleId = priceRuleId || await shopifyStoreDiscountsInitialize();
-    /* eslint-disable no-use-before-define */
-    discountCreate();
 
-    function discountCreate() {
-      const dataDiscount = {
-        discount_code: {
-          code: randomString,
+    const dataDiscount = {
+      discount_code: {
+        code: randomString,
+      },
+    };
+
+    const sessionUrlDiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${ruleId}/discount_codes.json`;
+    console.log(sessionUrlDiscount);
+    return axios
+      .post(sessionUrlDiscount, JSON.stringify(dataDiscount), {
+        auth: {
+          username: storeAPIkey,
+          password: storePassword,
         },
-      };
-
-      const sessionUrlDiscount = `https://${storeMyShopify}/admin/api/${apiVersion}/price_rules/${ruleId}/discount_codes.json`;
-      console.log(sessionUrlDiscount);
-      return axios
-        .post(sessionUrlDiscount, JSON.stringify(dataDiscount), {
-          auth: {
-            username: storeAPIkey,
-            password: storePassword,
-          },
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => {
-          const discountedUrl = `http://${storeMyShopify}/discount/${randomString}`;
-          console.log('test link is: ', discountedUrl);
-          return response;
-        })
-        .catch((error) => {
-        // handle error
-          console.log('@@@@@@@@@@ERROR AT DISCOUNT CREATE:   ', error);
-          return false;
-        });
-    }
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        const discountedUrl = `http://${storeMyShopify}/discount/${randomString}`;
+        console.log('test link is: ', discountedUrl);
+        return response;
+      })
+      .catch((error) => {
+      // handle error
+        console.log('@@@@@@@@@@ERROR AT DISCOUNT CREATE:   ', error);
+        return false;
+      });
   };
   const retireveProducts = async () => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;

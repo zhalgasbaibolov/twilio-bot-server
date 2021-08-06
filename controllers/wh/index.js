@@ -1,13 +1,11 @@
 /* eslint-disable no-console */
 const axios = require('axios');
 const { generateSlug } = require('random-word-slugs');
-// const {
-//   generateSlug,
-// } = require('random-word-slugs');
+
 const UserState = require('../../db/models/UserState');
 const UserDiscount = require('../../db/models/UserDiscount');
 const UserReview = require('../../db/models/UserReview');
-// const UserGetSupport = require('../db/models/UserGetSupport');
+
 const { getProviders } = require('../../providers');
 
 async function handleMessage(req, res) {
