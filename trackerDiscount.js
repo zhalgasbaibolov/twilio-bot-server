@@ -4,7 +4,6 @@ const { generateSlug } = require('random-word-slugs');
 const UserDiscount = require('./db/models/UserDiscount');
 const UserSetting = require('./db/models/UserSetting');
 const { WhatsapSender } = require('./providers/WhatsapSender');
-// const { handleMessage } = require('./controllers/wh');
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;

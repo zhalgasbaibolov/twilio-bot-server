@@ -4,11 +4,11 @@ const { generateSlug } = require('random-word-slugs');
 // const {
 //   generateSlug,
 // } = require('random-word-slugs');
-const UserState = require('../db/models/UserState');
-const UserDiscount = require('../db/models/UserDiscount');
-const UserReview = require('../db/models/UserReview');
+const UserState = require('../../db/models/UserState');
+const UserDiscount = require('../../db/models/UserDiscount');
+const UserReview = require('../../db/models/UserReview');
 // const UserGetSupport = require('../db/models/UserGetSupport');
-const { getProviders } = require('../providers');
+const { getProviders } = require('../../providers');
 
 async function handleMessage(req, res) {
   res.send('OK');
@@ -41,10 +41,8 @@ async function handleMessage(req, res) {
       { last: 'demoMain' },
       { upsert: true })
       .then(() => {
-        msgCtrl.sendMsg({
-          fromNumber,
-          msg: `Hello! Are you here to receive a discount for Banarasi Outfits ?\n1. Yes\n2. No\n\n\n${typeRecomendation}`,
-        });
+        /* eslint-disable no-use-before-define */
+        sendDiscount();
       }).catch(errorHandler);
   }
   function sendMainMenu(ms = 0, firstTime = false) {
@@ -207,7 +205,7 @@ async function handleMessage(req, res) {
           .then(() => {
             msgCtrl.sendMsg({
               fromNumber,
-              msg: `Here is your promocode: ${discountedUrl}\nPlease click this link to proceed or type 0 to return`,
+              msg: `Hi! Here is your promocode: ${discountedUrl}\nPlease click this link to proceed or type 0 to go to Main Menu`,
             });
             UserState.updateOne(
               {
@@ -289,7 +287,7 @@ async function handleMessage(req, res) {
           .then((response) => {
             const trackNumbers = response.data.orders
               .filter((ord) => ord.email === msg)
-              .map((ord) => ord.fulfillments.tracking_nunmbers)
+              .map((ord) => ord.fulfillments.tracking_numbers)
               .flat();
             const arr = Array.from(new Set(trackNumbers));
             const ordersListTxt = arr
