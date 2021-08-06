@@ -11,21 +11,13 @@ const msgCtrl = WhatsapSender({
   token,
 });
 
-const shopifyOrderPaid = (phoneNumber, userName, orderNumber) => {
-  msgCtrl.sendMsg({
-    fromNumber: `whatsapp:${phoneNumber}`,
-    msg: `Hello, ${userName}! Thank you for your shopping with us! Your order ${orderNumber} is being processed. Your order is paid`,
-  });
-};
-
 const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
   msgCtrl.sendMsg({
     fromNumber: `whatsapp:${phoneNumber}`,
-    msg: `Hello, ${userName}! Thank you for your shopping with us! Your order ${orderNumber} is being processed. Your order is created`,
+    msg: `Hello, ${userName}! Thank you for your shopping with us! Your order ${orderNumber} is being processed.`,
   });
 };
 
 module.exports = {
-  shopifyOrderPaid,
   shopifyOrderCreated,
 };
