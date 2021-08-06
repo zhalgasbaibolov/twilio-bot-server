@@ -1,22 +1,31 @@
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 const express = require('express');
 
 const router = express.Router();
-const shopifyTest = require('../shopifyTest');
 const {
   shopifyOrderCreated,
+  shopifyFulfillmentCreated
 } = require('../controllers/wh/msgsForWebhooks');
 
+
 router.post('/webhooks/fulfillments/create', async (req, res) => {
+
   res.send('OK');
-  shopifyTest();
-  // const hmac = req.get('X-Shopify-Hmac-Sha256');
-  // const body = await getRawBody(req);
+  
+  const phoneNumber = req.body.destination.phone;
+  const userName = req.body.destination.first_name;
+  const trackingNumber = req.body.tracking_number;
+
+  if (!phoneNumber) {
+    console.log(`there is no phone number in fulfillment order ${orderNumber}!`);
+  }
+
+  shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber);
 });
 
 router.post('/webhooks/orders/create', async (req, res) => {
+
   res.send('OK');
+
   const phoneNumber = req.body.customer.phone;
   const userName = req.body.customer.first_name;
   const orderNumber = req.body.order_number;
@@ -26,9 +35,6 @@ router.post('/webhooks/orders/create', async (req, res) => {
   }
 
   shopifyOrderCreated(phoneNumber, userName, orderNumber);
-
-  // const hmac = req.get('X-Shopify-Hmac-Sha256');
-  // const body = await getRawBody(req);
 });
 
 module.exports = router;
