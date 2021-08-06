@@ -5,8 +5,7 @@ const express = require('express');
 const router = express.Router();
 const shopifyTest = require('../shopifyTest');
 const {
-  shopifyOrderPaid,
-  shopifyOrderCreated,
+  shopifyOrderCreated
 } = require('../controllers/wh/msgsForWebhooks');
 
 router.post('/webhooks/fulfillments/create', async (req, res) => {
@@ -16,18 +15,6 @@ router.post('/webhooks/fulfillments/create', async (req, res) => {
   // const body = await getRawBody(req);
 });
 
-router.post('/webhooks/orders/paid', async (req, res) => {
-  res.send('OK');
-
-  const phoneNumber = req.body.customer.phone;
-  const userName = req.body.customer.first_name;
-  const orderNumber = req.body.order_number;
-
-  shopifyOrderPaid(phoneNumber, userName, orderNumber);
-
-  // const hmac = req.get('X-Shopify-Hmac-Sha256');
-  // const body = await getRawBody(req);
-});
 
 router.post('/webhooks/orders/create', async (req, res) => {
   res.send('OK');
