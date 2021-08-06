@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
 const { WhatsapSender } = require('../../providers/WhatsapSender');
+const whCtrl = require('./index');
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
@@ -16,6 +17,9 @@ const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
     fromNumber: `whatsapp:${phoneNumber}`,
     msg: `Hello, ${userName}!\nThank you for your shopping with us!\nYour order #${orderNumber} has been received.\n\nWe'll send tracking information when order ships.`,
   });
+  setTimeout(() => {
+    whCtrl.handleMessage.sendDiscount();
+  }, 3000);
 };
 
 const shopifyFulfillmentCreated = (phoneNumber, userName, trackingNumber) => {
@@ -27,5 +31,5 @@ const shopifyFulfillmentCreated = (phoneNumber, userName, trackingNumber) => {
 
 module.exports = {
   shopifyOrderCreated,
-  shopifyFulfillmentCreated
+  shopifyFulfillmentCreated,
 };

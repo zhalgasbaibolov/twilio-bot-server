@@ -1,29 +1,27 @@
+/* eslint-disable no-console */
 const express = require('express');
 
 const router = express.Router();
 const {
   shopifyOrderCreated,
-  shopifyFulfillmentCreated
+  shopifyFulfillmentCreated,
 } = require('../controllers/wh/msgsForWebhooks');
 
-
 router.post('/webhooks/fulfillments/create', async (req, res) => {
-
   res.send('OK');
-  
+
   const phoneNumber = req.body.destination.phone;
   const userName = req.body.destination.first_name;
   const trackingNumber = req.body.tracking_number;
 
   if (!phoneNumber) {
-    console.log(`there is no phone number in fulfillment order ${orderNumber}!`);
+    console.log('there is no phone number in fulfillment order!');
   }
 
   shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber);
 });
 
 router.post('/webhooks/orders/create', async (req, res) => {
-
   res.send('OK');
 
   const phoneNumber = req.body.customer.phone;
