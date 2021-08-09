@@ -351,10 +351,7 @@ async function handleMessage(req, res) {
           referToFriend();
           break;
         default: {
-          msgCtrl.sendMsg({
-            fromNumber,
-            msg: 'Please, send right command\nOR type 0 to redirect to main menu',
-          });
+          resendCommand();
           break;
         }
       }
@@ -392,10 +389,7 @@ async function handleMessage(req, res) {
           sendMainMenu();
           break; }
         default: {
-          msgCtrl.sendMsg({
-            fromNumber,
-            msg: 'Please, send right command\nOR type 0 to redirect to main menu',
-          });
+          resendCommand();
           break;
         }
       }
@@ -586,10 +580,7 @@ async function handleMessage(req, res) {
 
           break; }
         default: {
-          msgCtrl.sendMsg({
-            fromNumber,
-            msg: 'Please, send right command\nOR type 0 to redirect to main menu',
-          });
+          resendCommand();
           break;
         }
       }
@@ -647,10 +638,7 @@ async function handleMessage(req, res) {
           break;
         }
         default: {
-          msgCtrl.sendMsg({
-            fromNumber,
-            msg: 'Please, send right command\nOR type 0 to redirect to main menu',
-          });
+          resendCommand();
           break;
         }
       }

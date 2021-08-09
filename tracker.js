@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 const UserDiscount = require('./db/models/UserDiscount');
 const UserSetting = require('./db/models/UserSetting');
+const UserState = require('./db/models/UserState');
 const { WhatsapSender } = require('./providers/WhatsapSender');
 
 const a = '370a717f';
@@ -17,6 +18,7 @@ const {
 } = require('./cartAbandonment');
 
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
+const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
 module.exports.tracker = () => {
   setInterval(() => {
@@ -79,8 +81,18 @@ module.exports.tracker = () => {
                       const txt = cart.line_items.map(({ title, variant_title, quantity }, idx) => `${idx + 1}. ${title}, ${variant_title}, quantity: ${quantity}.`).join('\n');
                       msgCtrl.sendMsg({
                         fromNumber: foundPair.phone,
-                        msg: `Your cart is:\n${txt}\n${backToMenu}`,
+                        msg: `Your cart is:\n${txt}\n\n\nWhat do you want to do next?\n1. Continue Shopping \n2. Proceed to payment \n3. Delete item\n${backToMenu}\n\n\n${typeRecomendation}`,
                       });
+                      UserState.updateOne(
+                        {
+                          phone: foundPair.phone,
+                        },
+                        {
+                          $set: {
+                            last: 'cart',
+                          },
+                        },
+                      ).exec();
                     }, 4000);
 
                     UserDiscount.updateOne({
