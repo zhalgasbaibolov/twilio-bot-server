@@ -267,6 +267,10 @@ async function handleMessage(req, res) {
           break;
         }
         case '5': {
+          sendMarketing();
+          break;
+        }
+        case '6': {
           sendViewCart(state);
           break;
         }
