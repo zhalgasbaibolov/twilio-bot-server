@@ -45,11 +45,11 @@ async function handleMessage(req, res) {
   }
   function sendMainMenu(ms = 0, firstTime = false) {
     const firstWord = firstTime ? 'Hello! What do you want?' : 'What would you like to do now?';
-    const viewCart = firstTime ? '' : '6. View cart';
+    const viewCart = firstTime ? '' : '4. View cart';
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Abandoned cart\n5. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
+        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n${viewCart}\n\n\n${typeRecomendation}`,
       });
       UserState.updateOne(
         {
@@ -126,7 +126,7 @@ async function handleMessage(req, res) {
     ).exec();
   };
 
-  const sendMarketing = () => {
+  function sendMarketing() {
     msgCtrl.sendMsg({
       fromNumber,
       msg: 'We\'d love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No',
@@ -141,7 +141,7 @@ async function handleMessage(req, res) {
         },
       },
     ).exec();
-  };
+  }
 
   const referToFriend = () => {
     msgCtrl.sendMsg({
@@ -305,7 +305,7 @@ async function handleMessage(req, res) {
               fromNumber,
               msg: txt,
             });
-            sendMainMenu(5000);
+            sendMarketing(5000);
           })
           .catch(errorHandler);
       } else {
