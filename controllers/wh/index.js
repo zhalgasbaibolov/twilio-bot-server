@@ -45,11 +45,11 @@ async function handleMessage(req, res) {
   }
   function sendMainMenu(ms = 0, firstTime = false) {
     const firstWord = firstTime ? 'Hello! What do you want?' : 'What would you like to do now?';
-    const viewCart = firstTime ? '' : '5. View cart';
+    const viewCart = firstTime ? '' : '6. View cart';
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Get discount (Abandoned cart)\n${viewCart}\n\n\n${typeRecomendation}`,
+        msg: `${firstWord}\n1. Catalogue\n2. Customer Support\n3. Order Status\n4. Get discount (Abandoned cart)\n5. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
       });
       UserState.updateOne(
         {
@@ -267,6 +267,10 @@ async function handleMessage(req, res) {
           break;
         }
         case '5': {
+          sendMarketing();
+          break;
+        }
+        case '6': {
           sendViewCart(state);
           break;
         }
