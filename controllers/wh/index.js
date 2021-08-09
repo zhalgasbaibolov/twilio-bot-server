@@ -303,7 +303,7 @@ async function handleMessage(req, res) {
             });
             setTimeout(() => {
               sendMarketing();
-            }, 5000); 
+            }, 5000);
           })
           .catch(errorHandler);
       } else {
