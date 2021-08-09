@@ -305,7 +305,9 @@ async function handleMessage(req, res) {
               fromNumber,
               msg: txt,
             });
-            sendMarketing(5000);
+            setTimeout(() => {
+              sendMarketing();
+            }, 5000); 
           })
           .catch(errorHandler);
       } else {
