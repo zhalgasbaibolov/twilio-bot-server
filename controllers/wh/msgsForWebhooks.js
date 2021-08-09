@@ -11,6 +11,9 @@ const msgCtrl = WhatsapSender({
   token,
 });
 
+const backToMenu = '--------------\n0. Back to main menu';
+  const typeRecomendation = '(Please, type the number corresponding to your choice)';
+
 const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
   msgCtrl.sendMsg({
     fromNumber: `whatsapp:${phoneNumber}`,
@@ -19,7 +22,7 @@ const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
   setTimeout(() => {
     msgCtrl.sendMsg({
       fromNumber: `whatsapp:${phoneNumber}`,
-      msg: 'We\'d love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No',
+      msg: `We'd love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No\n\n${backToMenu}\n${typeRecomendation}`,
     });
   }, 3000);
 };
@@ -27,7 +30,7 @@ const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
 const shopifyFulfillmentCreated = (phoneNumber, userName, trackingNumber) => {
   msgCtrl.sendMsg({
     fromNumber: `whatsapp:${phoneNumber}`,
-    msg: `Hello, ${userName}!\n\nWe're happy to tell you that your order has shipped!\n\nThis is your tracking number: ${trackingNumber}\n\nUse this link to track your package: https://t.17track.net/en#nums=${trackingNumber}`,
+    msg: `Hello, ${userName}!\n\nWe're happy to tell you that your order has shipped!\n\nThis is your tracking number: ${trackingNumber}\n\nUse this link to track your package: https://t.17track.net/en#nums=${trackingNumber}\n\n${backToMenu}\n${typeRecomendation}`,
   });
 };
 
