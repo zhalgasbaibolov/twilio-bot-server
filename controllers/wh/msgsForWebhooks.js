@@ -12,7 +12,7 @@ const msgCtrl = WhatsapSender({
 });
 
 const backToMenu = '--------------\n0. Back to main menu';
-  const typeRecomendation = '(Please, type the number corresponding to your choice)';
+const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
 const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
   msgCtrl.sendMsg({
