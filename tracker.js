@@ -120,7 +120,7 @@ function tracker() {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 20000);
+  }, 300000); //5 min
 }
 
 module.exports = {
