@@ -8,9 +8,8 @@ const { getProviders } = require('../../providers');
 const backToMenu = '--------------\n0. Back to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-async function shopifyOrderCreated(req, res, phoneNumber, userName, orderNumber) {
-  res.send('OK');
-  const getProviderResult = await getProviders(req);
+function shopifyOrderCreated(phoneNumber, userName, orderNumber) {
+  const getProviderResult = getProviders();
   if (!getProviderResult) {
     return;
   }
@@ -40,9 +39,8 @@ async function shopifyOrderCreated(req, res, phoneNumber, userName, orderNumber)
   }, 3000);
 }
 
-async function shopifyFulfillmentCreated(req, res, phoneNumber, userName, trackingNumber) {
-  res.send('OK');
-  const getProviderResult = await getProviders(req);
+function shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber) {
+  const getProviderResult = getProviders();
   if (!getProviderResult) {
     return;
   }
@@ -71,9 +69,8 @@ async function shopifyFulfillmentCreated(req, res, phoneNumber, userName, tracki
   }, 3000);
 }
 
-async function shopifyDiscountActivated(req, res, discountCodeFromHook) {
-  res.send('OK');
-  const getProviderResult = await getProviders(req);
+function shopifyDiscountActivated(discountCodeFromHook) {
+  const getProviderResult = getProviders();
   if (!getProviderResult) {
     return;
   }

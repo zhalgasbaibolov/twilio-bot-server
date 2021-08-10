@@ -13,9 +13,8 @@ const {
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-async function tracker(req, res) {
-  res.send('OK');
-  const getProviderResult = await getProviders(req);
+function tracker() {
+  const getProviderResult = getProviders();
   if (!getProviderResult) {
     return;
   }
