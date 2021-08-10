@@ -92,7 +92,7 @@ async function tracker(req, res) {
                           },
                         },
                       ).exec();
-                    }, 20000);
+                    }, 6000);
 
                     UserDiscount.updateOne({
                       discountCode: foundPair.discountCode,
@@ -117,7 +117,7 @@ async function tracker(req, res) {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 5000);
+  }, 20000);
 }
 
 module.exports = {
