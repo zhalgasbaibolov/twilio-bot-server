@@ -3,7 +3,7 @@
 const { generateSlug } = require('random-word-slugs');
 const UserState = require('../../db/models/UserState');
 const UserDiscount = require('../../db/models/UserDiscount');
-const { WhatsapSender } = require('./providers/WhatsapSender');
+const { WhatsapSender } = require('../../providers/WhatsapSender');
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
@@ -18,7 +18,6 @@ const backToMenu = '--------------\n0. Back to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
 function shopifyOrderCreated(phoneNumber, userName, orderNumber) {
-
   const fromNumber = `whatsapp:${phoneNumber}`;
 
   msgCtrl.sendMsg({
@@ -45,7 +44,6 @@ function shopifyOrderCreated(phoneNumber, userName, orderNumber) {
 }
 
 function shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber) {
-  
   const fromNumber = `whatsapp:${phoneNumber}`;
 
   msgCtrl.sendMsg({
@@ -71,7 +69,6 @@ function shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber) {
 }
 
 function shopifyDiscountActivated(discountCodeFromHook) {
-
   UserDiscount.find({
     notifiedCount: {
       $lt: 1,
