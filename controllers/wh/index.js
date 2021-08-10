@@ -290,8 +290,8 @@ async function handleMessage(req, res) {
           .then((response) => {
             const trackNumbers = response.data.orders
               .filter((ord) => ord.email === msg)
-              .map((ord) => ord.fulfillments.tracking_numbers)
-              .flat();
+              .map((ord) => ord.fulfillments)
+              .flat().map((ord) => ord.tracking_numbers);
             const arr = Array.from(new Set(trackNumbers));
             const ordersListTxt = arr
               .map(
