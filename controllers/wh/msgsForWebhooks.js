@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
+const { generateSlug } = require('random-word-slugs');
 const { WhatsapSender } = require('../../providers/WhatsapSender');
 const UserState = require('../../db/models/UserState');
+const UserDiscount = require('../../db/models/UserDiscount');
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
@@ -64,7 +66,58 @@ const shopifyFulfillmentCreated = (phoneNumber, userName, trackingNumber) => {
   }, 3000);
 };
 
+const shopifyDiscountActivated = (discountCodes) => {
+  const foundDiscountCodes = discountCodes;
+
+  UserDiscount.find({
+    notifiedCount: {
+      $lt: 1,
+    },
+  }, (err, pairs) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (!pairs || !pairs.length) {
+      console.log('discount not found');
+      return;
+    }
+    foundDiscountCodes.forEach((cart) => {
+      for (let i = 0; i < cart.discount_codes.length; i += 1) {
+        const { code } = cart.discount_codes[i];
+        const foundPair = pairs.find((p) => p.discountCode === code);
+        const discountSlug = generateSlug();
+        if (!foundPair) {
+          return;
+        }
+        console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode}\n\n\n\n`);
+
+        msgCtrl.sendMsg({
+          fromNumber: foundPair.phone,
+          msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}\n\n${backToMenu}`,
+        });
+
+        UserDiscount
+          .create({
+            discountCode: discountSlug,
+            phone: foundPair.phone,
+            notifiedCount: 0,
+          })
+          .then(() => {
+            console.log('success!');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
+    // eslint-disable-next-line consistent-return
+    return pairs;
+  });
+};
+
 module.exports = {
   shopifyOrderCreated,
   shopifyFulfillmentCreated,
+  shopifyDiscountActivated,
 };
