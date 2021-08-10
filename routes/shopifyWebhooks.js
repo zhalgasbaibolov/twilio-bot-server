@@ -28,7 +28,7 @@ router.post('/webhooks/orders/create', async (req, res) => {
   const phoneNumber = req.body.customer.phone;
   const userName = req.body.customer.first_name;
   const orderNumber = req.body.order_number;
-  const discountCodes = req.body.discount_codes;
+  const discountCodeFromHook = req.body.discount_codes.code;
   // const orderStatusUrl = req.body.order_status_url
 
   if (!phoneNumber) {
@@ -36,7 +36,7 @@ router.post('/webhooks/orders/create', async (req, res) => {
   }
 
   shopifyOrderCreated(phoneNumber, userName, orderNumber);
-  shopifyDiscountActivated(discountCodes);
+  shopifyDiscountActivated(discountCodeFromHook);
 });
 
 module.exports = router;
