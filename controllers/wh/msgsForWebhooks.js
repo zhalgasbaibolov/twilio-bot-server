@@ -66,9 +66,8 @@ const shopifyFulfillmentCreated = (phoneNumber, userName, trackingNumber) => {
   }, 3000);
 };
 
-const shopifyDiscountActivated = (discountCodes) => {
-  const foundDiscountCodes = discountCodes;
-
+const shopifyDiscountActivated = (discountCodeFromHook, phoneNumberFromHook) => {
+  const phoneNumber = phoneNumberFromHook;
   UserDiscount.find({
     notifiedCount: {
       $lt: 1,
@@ -82,35 +81,44 @@ const shopifyDiscountActivated = (discountCodes) => {
       console.log('discount not found');
       return;
     }
-    foundDiscountCodes.forEach((cart) => {
-      for (let i = 0; i < cart.discount_codes.length; i += 1) {
-        const { code } = cart.discount_codes[i];
-        const foundPair = pairs.find((p) => p.discountCode === code);
-        const discountSlug = generateSlug();
-        if (!foundPair) {
-          return;
-        }
-        console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode}\n\n\n\n`);
+    const foundPair = pairs.find((p) => p.discountCode === discountCodeFromHook);
+    const discountSlug = generateSlug();
+    if (!foundPair) {
+      return;
+    }
+    console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
 
-        msgCtrl.sendMsg({
-          fromNumber: foundPair.phone,
-          msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}\n\n${backToMenu}`,
-        });
-
-        UserDiscount
-          .create({
-            discountCode: discountSlug,
-            phone: foundPair.phone,
-            notifiedCount: 0,
-          })
-          .then(() => {
-            console.log('success!');
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+    msgCtrl.sendMsg({
+      fromNumber: foundPair.phone,
+      msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}\n\n${backToMenu}`,
     });
+
+    UserDiscount
+      .create({
+        discountCode: discountSlug,
+        phone: foundPair.phone,
+        notifiedCount: 0,
+      })
+      .then(() => {
+        console.log('success!');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    UserDiscount
+      .updateOne({
+        discountCode: foundPair.discountCode,
+        phone: foundPair.phone,
+      }, {
+        notifiedCount: 2,
+      }, {}, (err2, upd) => {
+        if (err2) {
+          console.log(err2);
+        }
+        if (upd.ok) console.log(upd.ok === 1);
+      });
+
     // eslint-disable-next-line consistent-return
     return pairs;
   });
