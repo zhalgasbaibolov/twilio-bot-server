@@ -13,12 +13,18 @@ const {
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-function tracker() {
-  const getProviderResult = getProviders();
+async function tracker(req, res) {
+  res.send('OK');
+  const getProviderResult = await getProviders(req);
   if (!getProviderResult) {
     return;
   }
+
   const { msgCtrl } = getProviderResult;
+  /* eslint-disable no-unused-vars */
+  const fromNumber = req.body.From;
+  const msg = req.body.Body;
+
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
