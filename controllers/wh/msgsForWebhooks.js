@@ -1,24 +1,22 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
 const { generateSlug } = require('random-word-slugs');
-const { WhatsapSender } = require('../../providers/WhatsapSender');
 const UserState = require('../../db/models/UserState');
 const UserDiscount = require('../../db/models/UserDiscount');
-
-const a = '370a717f';
-const token = `${a}84299f15e25757c7e3e627fa`;
-const msgCtrl = WhatsapSender({
-  accountSid:
-  'AC534b07c807465b936b2241514b536512',
-  authToken:
-  token,
-});
+const { getProviders } = require('../../providers');
 
 const backToMenu = '--------------\n0. Back to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
+async function shopifyOrderCreated(req, res, phoneNumber, userName, orderNumber) {
+  res.send('OK');
+  const getProviderResult = await getProviders(req);
+  if (!getProviderResult) {
+    return;
+  }
+  const { msgCtrl } = getProviderResult;
   const fromNumber = `whatsapp:${phoneNumber}`;
+
   msgCtrl.sendMsg({
     fromNumber,
     msg: `Hello, ${userName}!\nThank you for your shopping with us!\nYour order #${orderNumber} has been received.\n\nWe'll send tracking information when order ships.`,
@@ -40,10 +38,17 @@ const shopifyOrderCreated = (phoneNumber, userName, orderNumber) => {
       },
     ).exec();
   }, 3000);
-};
+}
 
-const shopifyFulfillmentCreated = (phoneNumber, userName, trackingNumber) => {
+async function shopifyFulfillmentCreated(req, res, phoneNumber, userName, trackingNumber) {
+  res.send('OK');
+  const getProviderResult = await getProviders(req);
+  if (!getProviderResult) {
+    return;
+  }
+  const { msgCtrl } = getProviderResult;
   const fromNumber = `whatsapp:${phoneNumber}`;
+
   msgCtrl.sendMsg({
     fromNumber,
     msg: `Hello, ${userName}!\n\nWe're happy to tell you that your order has shipped!\n\nThis is your tracking number: ${trackingNumber}\n\nUse this link to track your package: https://t.17track.net/en#nums=${trackingNumber}\n\n${backToMenu}\n${typeRecomendation}`,
@@ -64,10 +69,16 @@ const shopifyFulfillmentCreated = (phoneNumber, userName, trackingNumber) => {
       },
     ).exec();
   }, 3000);
-};
+}
 
-const shopifyDiscountActivated = (discountCodeFromHook, phoneNumberFromHook) => {
-  const phoneNumber = phoneNumberFromHook;
+async function shopifyDiscountActivated(req, res, discountCodeFromHook) {
+  res.send('OK');
+  const getProviderResult = await getProviders(req);
+  if (!getProviderResult) {
+    return;
+  }
+  const { msgCtrl } = getProviderResult;
+
   UserDiscount.find({
     notifiedCount: {
       $lt: 1,
@@ -122,7 +133,7 @@ const shopifyDiscountActivated = (discountCodeFromHook, phoneNumberFromHook) => 
     // eslint-disable-next-line consistent-return
     return pairs;
   });
-};
+}
 
 module.exports = {
   shopifyOrderCreated,

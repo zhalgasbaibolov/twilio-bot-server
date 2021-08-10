@@ -3,16 +3,9 @@
 const UserDiscount = require('./db/models/UserDiscount');
 const UserSetting = require('./db/models/UserSetting');
 const UserState = require('./db/models/UserState');
-const { WhatsapSender } = require('./providers/WhatsapSender');
 
-const a = '370a717f';
-const token = `${a}84299f15e25757c7e3e627fa`;
-const msgCtrl = WhatsapSender({
-  accountSid:
-  'AC534b07c807465b936b2241514b536512',
-  authToken:
-  token,
-});
+const { getProviders } = require('./providers');
+
 const {
   getAbandonedCart,
 } = require('./cartAbandonment');
@@ -20,7 +13,13 @@ const {
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-module.exports.tracker = () => {
+async function tracker(req, res) {
+  res.send('OK');
+  const getProviderResult = await getProviders(req);
+  if (!getProviderResult) {
+    return;
+  }
+  const { msgCtrl } = getProviderResult;
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
@@ -119,4 +118,8 @@ module.exports.tracker = () => {
       })
       .catch((err) => { console.log(err); });
   }, 5000);
+}
+
+module.exports = {
+  tracker,
 };
