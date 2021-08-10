@@ -93,7 +93,7 @@ module.exports.tracker = () => {
                           },
                         },
                       ).exec();
-                    }, 4000);
+                    }, 6000);
 
                     UserDiscount.updateOne({
                       discountCode: foundPair.discountCode,
