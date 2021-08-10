@@ -95,7 +95,7 @@ async function handleMessage(req, res) {
   const getSupport = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: `Hi there! Welcome to Customer Support Service!\n1. Start conversation (the Team usually replies in a few minutes)\n${backToMenu}\n\n\n${typeRecomendation}`,
+      msg: `Hi there! Welcome to Customer Support Service!\nTo start conversation please type your message\n(the Team usually replies in a few minutes)\n${backToMenu}\n\n\n${typeRecomendation}`,
     });
     UserState.updateOne(
       {
@@ -251,6 +251,11 @@ async function handleMessage(req, res) {
       return;
     }
 
+    if (msg.toLowerCase() === 'discount') {
+      sendDiscount();
+      return;
+    }
+
     if (state.last === 'main') {
       switch (msg) {
         case '1': {
@@ -319,29 +324,17 @@ async function handleMessage(req, res) {
         sendMainMenu(5000);
       }
     } else if (state.last === 'support') {
-      switch (msg) {
-        case '1': {
-          axios
-            .post('https://saletastic-admin-server.herokuapp.com/support', {
-              accountSid,
-              msg,
-              whatsappNumber: fromNumber,
-              profileName: req.body.ProfileName,
-            })
-            .then((chatResponse) => {
-              console.log(`\n\n\n\nchatResponse:\n${chatResponse.status}\n${chatResponse.data}\n\n\n\n`);
-            })
-            .catch(console.log);
-          break;
-        }
-        case '0':
-          sendMainMenu();
-          break;
-        default: {
-          resendCommand();
-          break;
-        }
-      }
+      axios
+        .post('https://saletastic-admin-server.herokuapp.com/support', {
+          accountSid,
+          msg,
+          whatsappNumber: fromNumber,
+          profileName: req.body.ProfileName,
+        })
+        .then((chatResponse) => {
+          console.log(`\n\n\n\nchatResponse:\n${chatResponse.status}\n${chatResponse.data}\n\n\n\n`);
+        })
+        .catch(console.log);
     } else if (state.last === 'marketing') {
       switch (msg) {
         case '1': {
