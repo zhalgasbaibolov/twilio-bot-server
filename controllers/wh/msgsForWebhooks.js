@@ -78,7 +78,7 @@ const shopifyDiscountActivated = (discountCodes) => {
       console.log(err);
       return;
     }
-    if (!pairs || !pairs.length) {
+    if (!pairs) {
       console.log('discount not found');
       return;
     }
