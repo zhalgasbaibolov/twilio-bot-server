@@ -96,7 +96,7 @@ const shopifyDiscountActivated = (discountCodeFromHook, phoneNumberFromHook) => 
     UserDiscount
       .create({
         discountCode: discountSlug,
-        phone: phoneNumber,
+        phone: foundPair.phone,
         notifiedCount: 0,
       })
       .then(() => {
