@@ -251,6 +251,11 @@ async function handleMessage(req, res) {
       return;
     }
 
+    if (msg.toLowerCase() === 'discount') {
+      sendDiscount();
+      return;
+    }
+
     if (state.last === 'main') {
       switch (msg) {
         case '1': {
