@@ -78,8 +78,8 @@ function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trac
 async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
     const code = discountCodeFromHook;
-    UserDiscount.find({ discountCode: `${code}` }, (error, phone) => {
-      console.log(`\n\n\n++++++++++++\n${phone}\n++++++++++++\n\n\n`);
+    UserDiscount.find({ discountCode: `${code}` }, (error, data) => {
+      console.log(`\n\n\n++++++++++++\n${data.phone}\n++++++++++++\n\n\n`);
     });
     UserDiscount.find({
       notifiedCount: {
