@@ -68,60 +68,58 @@ function shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber) {
   }, 3000);
 }
 
-function shopifyDiscountActivated(discountCodeFromHook) {
-  UserDiscount.find({
-    notifiedCount: {
-      $lt: 1,
-    },
-  }, (err, pairs) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    if (!pairs || !pairs.length) {
-      console.log('discount not found');
-      return;
-    }
-    const foundPair = pairs.find((p) => p.discountCode === discountCodeFromHook);
-    const discountSlug = generateSlug();
-    if (!foundPair) {
-      return;
-    }
-    console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
+async function shopifyDiscountActivated(discountCodeFromHook) {
+  return new Promise((resolve, reject) => {
+    UserDiscount.find({
+      notifiedCount: {
+        $lt: 1,
+      },
+    }, (err, pairs) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      if (!pairs || !pairs.length) {
+        console.log('discount not found');
+        return resolve();
+      }
+      const foundPair = pairs.find((p) => p.discountCode === discountCodeFromHook);
+      const discountSlug = generateSlug();
+      if (!foundPair) {
+        return resolve();
+      }
+      console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
 
-    msgCtrl.sendMsg({
-      fromNumber: foundPair.phone,
-      msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}\n\n${backToMenu}`,
+      msgCtrl.sendMsg({
+        fromNumber: foundPair.phone,
+        msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}\n\n${backToMenu}`,
+      });
+
+      UserDiscount
+        .create({
+          discountCode: discountSlug,
+          phone: foundPair.phone,
+          notifiedCount: 0,
+        })
+        .then(() => {
+          console.log('success!');
+          UserDiscount
+            .updateOne({
+              discountCode: foundPair.discountCode,
+              phone: foundPair.phone,
+            }, {
+              notifiedCount: 2,
+            }, {}, (err2, upd) => {
+              if (err2) {
+                return reject(err2);
+              }
+              console.log(!!upd.ok);
+              return resolve(pairs);
+            });
+        })
+        .catch((error) => reject(error));
+      return null;
     });
-
-    UserDiscount
-      .create({
-        discountCode: discountSlug,
-        phone: foundPair.phone,
-        notifiedCount: 0,
-      })
-      .then(() => {
-        console.log('success!');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    UserDiscount
-      .updateOne({
-        discountCode: foundPair.discountCode,
-        phone: foundPair.phone,
-      }, {
-        notifiedCount: 2,
-      }, {}, (err2, upd) => {
-        if (err2) {
-          console.log(err2);
-        }
-        if (upd.ok) console.log(upd.ok === 1);
-      });
-
-    // eslint-disable-next-line consistent-return
-    return pairs;
   });
 }
 
