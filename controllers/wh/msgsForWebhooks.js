@@ -79,7 +79,7 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
     const code = discountCodeFromHook;
     UserDiscount.find({ discountCode: `${code}` }, (error, data) => {
-      console.log(`\n\n\n++++++++++++\n${data}\n++++++++++++\n\n\n`);
+      console.log(`\n\n\n++++++++++++\n${data.flat().phone}\n++++++++++++\n\n\n`);
     });
     UserDiscount.find({
       notifiedCount: {
