@@ -29,7 +29,7 @@ router.post('/webhooks/orders/create', async (req, res) => {
   const phoneNumber = req.body.customer.phone;
   const userName = req.body.customer.first_name;
   const orderNumber = req.body.order_number;
-  const discountCodeFromHook = req.body.discount_codes.code;
+  const discountCodeFromHook = req.body.discount_codes.flat().code;
   // const orderStatusUrl = req.body.order_status_url
 
   if (!phoneNumber) {
