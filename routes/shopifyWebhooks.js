@@ -11,9 +11,9 @@ const {
 router.post('/webhooks/fulfillments/create', async (req, res) => {
   res.send('OK');
 
-  const phoneNumber = req.body.map((ord) => ord.destination)
+  const phoneNumber = req.body.destination
   .flat().map((ord) => ord.phone);
-  const userName = req.body.map((ord) => ord.destination)
+  const userName = req.body.destination
   .flat().map((ord) => ord.first_name);
   const trackingNumber = req.body.tracking_number;
   const trackingUrl = req.body.tracking_url;
@@ -32,7 +32,7 @@ router.post('/webhooks/orders/create', async (req, res) => {
   const phoneNumber = req.body.customer.phone;
   const userName = req.body.customer.first_name;
   const orderNumber = req.body.order_number;
-  const discountCodeFromHook = req.body.map((ord) => ord.discount_codes)
+  const discountCodeFromHook = req.body.discount_codes
     .flat().map((ord) => ord.code);
   // const orderStatusUrl = req.body.order_status_url
 
