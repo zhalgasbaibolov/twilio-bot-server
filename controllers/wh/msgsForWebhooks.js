@@ -30,7 +30,7 @@ function onShopifyOrderCreated(phoneNumber, userName, orderNumber) {
       msg: `We'd love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No\n\n${backToMenu}\n${typeRecomendation}`,
     });
 
-    UserState.updateOne(
+    return UserState.updateOne(
       {
         phone: fromNumber,
       },
