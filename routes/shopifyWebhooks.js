@@ -36,8 +36,9 @@ router.post('/webhooks/orders/create', async (req, res) => {
     console.log(`there is no phone number in order ${orderNumber}!`);
   }
 
-  shopifyOrderCreated(phoneNumber, userName, orderNumber);
-  shopifyDiscountActivated(discountCodeFromHook);
+  shopifyOrderCreated(phoneNumber, userName, orderNumber).then(() => {
+    shopifyDiscountActivated(discountCodeFromHook);
+  });
 });
 
 module.exports = router;
