@@ -92,13 +92,13 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
         console.log('discount not found');
         return resolve();
       }
-      console.log(`\n\n\n\n\*****************\ndiscount code from hook: ${code}\n${console.log(typeof (code))}\n*********************\n\n\n\n`);
+      console.log(`\n\n\n\n++++++++++++++++\ndiscount code from hook: ${code}\n${console.log(typeof (code))}\n++++++++++++++++\n\n\n\n`);
 
       const foundPair = pairs.find((p) => p.discountCode === code);
 
       const discountSlug = generateSlug();
       if (!foundPair) {
-        console.log('\n\n\n\n\*****************\npair not found\n*********************\n\n\n\n');
+        console.log('\n\n\n\n++++++++++++++++\npair not found\n++++++++++++++++\n\n\n\n');
         return resolve();
       }
 
@@ -106,7 +106,7 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
 
       msgCtrl.sendMsg({
         fromNumber: foundPair.phone,
-        msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}\n\n${backToMenu}`,
+        msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour referral code for discount: ${discountSlug}\n\n${backToMenu}`,
       });
       UserDiscount
         .create({
