@@ -18,29 +18,36 @@ const backToMenu = '--------------\n0. Back to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
 function onShopifyOrderCreated(phoneNumber, userName, orderNumber) {
-  const fromNumber = `whatsapp:${phoneNumber}`;
+  return new Promise((resolve, reject) => {
+    try {
+      const fromNumber = `whatsapp:${phoneNumber}`;
 
-  msgCtrl.sendMsg({
-    fromNumber,
-    msg: `Hello, ${userName}!\nThank you for your shopping with us!\nYour order #${orderNumber} has been received.\n\nWe'll send tracking information when order ships.`,
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: `Hello, ${userName}!\nThank you for your shopping with us!\nYour order #${orderNumber} has been received.\n\nWe'll send tracking information when order ships.`,
+      });
+      setTimeout(() => {
+        msgCtrl.sendMsg({
+          fromNumber,
+          msg: `We'd love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No\n\n${backToMenu}\n${typeRecomendation}`,
+        });
+
+        UserState.updateOne(
+          {
+            phone: fromNumber,
+          },
+          {
+            $set: {
+              last: 'marketing',
+            },
+          },
+        ).exec().then(resolve)
+          .catch(reject);
+      }, 3000);
+    } catch (err) {
+      reject(err);
+    }
   });
-  setTimeout(() => {
-    msgCtrl.sendMsg({
-      fromNumber,
-      msg: `We'd love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No\n\n${backToMenu}\n${typeRecomendation}`,
-    });
-
-    return UserState.updateOne(
-      {
-        phone: fromNumber,
-      },
-      {
-        $set: {
-          last: 'marketing',
-        },
-      },
-    ).exec();
-  }, 3000);
 }
 
 function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl) {
