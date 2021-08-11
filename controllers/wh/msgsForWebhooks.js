@@ -92,8 +92,11 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
       }
       console.log(`\n\n\n\n\*****************\ndiscount code from hook: ${discountCodeFromHook}\n*********************\n\n\n\n`);
       const foundPair = pairs.find((p) => p.discountCode === discountCodeFromHook);
+      console.log(`\n\n\n\n\*****************\ndiscount code from server: ${discountCode}\n*********************\n\n\n\n`);
+
       const discountSlug = generateSlug();
       if (!foundPair) {
+        console.log(`\n\n\n\n\*****************\npair not found\n*********************\n\n\n\n`);
         return resolve();
       }
       console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
