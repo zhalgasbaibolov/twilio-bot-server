@@ -11,13 +11,14 @@ const {
 router.post('/webhooks/fulfillments/create', async (req, res) => {
   res.send('OK');
 
-  const phoneNumber = req.body.destination.phone;
+  const phoneNumber = req.body.destination;
   const userName = req.body.destination.first_name;
   const trackingNumber = req.body.tracking_number;
   const trackingUrl = req.body.tracking_url;
 
   if (!phoneNumber) {
-    console.log('there is no phone number in fulfillment order!');
+    console.log('\n\n\n\n\************************\nthere is no phone number in fulfillment order!\n*****************************\n\n\n\n');
+    console.log(`${phoneNumber}\n\n\n\n\n\n`);
   }
 
   onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl);
