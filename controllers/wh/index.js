@@ -599,7 +599,7 @@ async function handleMessage(req, res) {
             })),
           )
             .then((createdCheckoutInfo) => {
-              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url and finish him!\n ${
+              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
                 createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
               msgCtrl.sendMsg({
                 fromNumber,
