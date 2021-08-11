@@ -94,13 +94,13 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
         console.log('discount not found');
         return resolve();
       }
-      console.log(`\n\n\n\n\*****************\ndiscount code from hook: ${discountCodeFromHook}\n*********************\n\n\n\n`);
+      console.log(`\n\n\n\n\*****************\ndiscount code from hook: ${discountCodeFromHook}\n${console.log(typeof(discountCodeFromHook))}\n*********************\n\n\n\n`);
 
-      const foundPair = pairs.find((p) => p.discountCode === discountCodeFromHook);
+      // const foundPair = pairs.find((p) => p.discountCode === discountCodeFromHook);
 
       const foundPair2 = pairs.find((p) => p.discountCode);
 
-      console.log(`\n\n\n\n\*****************\n${foundPair}\n*********************\n\n\n\n`);
+      console.log(`\n\n\n\n\*****************\n${foundPair.discountCode}\n${console.log(typeof(foundPair.discountCode))}\n*********************\n\n\n\n`);
 
       console.log(`\n\n\n\n\*****************\n${foundPair2}\n*********************\n\n\n\n`);
 
