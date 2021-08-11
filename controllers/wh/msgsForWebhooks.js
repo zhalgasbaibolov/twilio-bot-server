@@ -77,10 +77,8 @@ function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trac
 
 async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
-    const code = discountCodeFromHook;
-    UserDiscount.find({ discountCode: `${code}` }, (error, data) => {
-      console.log(`\n\n\n++++++++++++\n${data}\n++++++++++++\n\n\n`);
-    });
+    const code = discountCodeFromHook.toString();
+
     UserDiscount.find({
       notifiedCount: {
         $lt: 1,
@@ -94,21 +92,16 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
         console.log('discount not found');
         return resolve();
       }
-      console.log(`\n\n\n\n\*****************\ndiscount code from hook: ${discountCodeFromHook}\n${console.log(typeof(discountCodeFromHook))}\n*********************\n\n\n\n`);
+      console.log(`\n\n\n\n\*****************\ndiscount code from hook: ${code}\n${console.log(typeof (code))}\n*********************\n\n\n\n`);
 
-      // const foundPair = pairs.find((p) => p.discountCode === discountCodeFromHook);
-
-      const foundPair2 = pairs.find((p) => p.discountCode);
-
-      console.log(`\n\n\n\n\*****************\n${foundPair2.discountCode}\n${console.log(typeof(foundPair2.discountCode))}\n*********************\n\n\n\n`);
-
-      console.log(`\n\n\n\n\*****************\n${foundPair2}\n*********************\n\n\n\n`);
+      const foundPair = pairs.find((p) => p.discountCode === code);
 
       const discountSlug = generateSlug();
       if (!foundPair) {
         console.log('\n\n\n\n\*****************\npair not found\n*********************\n\n\n\n');
         return resolve();
       }
+
       console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
 
       msgCtrl.sendMsg({
