@@ -17,8 +17,8 @@ router.post('/webhooks/fulfillments/create', async (req, res) => {
   const trackingUrl = req.body.tracking_url;
 
   if (!phoneNumber) {
-    console.log('\n\n\n\n\************************\nthere is no phone number in fulfillment order!\n*****************************\n\n\n\n\');
-    console.log(`${phoneNumber}\n\n\n\n\n\n`)
+    console.log('\n\n\n\n\************************\nthere is no phone number in fulfillment order!\n*****************************\n\n\n\n');
+    console.log(`${phoneNumber}\n\n\n\n\n\n`);
   }
 
   onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl);
