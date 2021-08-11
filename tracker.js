@@ -65,6 +65,9 @@ function tracker() {
                 allCarts.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
                     const { code } = cart.discount_codes[i];
+
+                    console.log(`\n\n\n\n\*****************\ndiscount code from API: ${code}\n*********************\n\n\n\n`);
+
                     const foundPair = pairs.find((p) => p.discountCode === code);
                     if (!foundPair) {
                       return;
@@ -120,7 +123,7 @@ function tracker() {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 180000); // 3 min
+  }, 20000); // 3 min
 }
 
 module.exports = {
