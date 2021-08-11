@@ -3,9 +3,9 @@ const express = require('express');
 
 const router = express.Router();
 const {
-  shopifyOrderCreated,
-  shopifyFulfillmentCreated,
-  shopifyDiscountActivated,
+  onShopifyOrderCreated,
+  onShopifyFulfillmentCreated,
+  onShopifyDiscountActivated,
 } = require('../controllers/wh/msgsForWebhooks');
 
 router.post('/webhooks/fulfillments/create', async (req, res) => {
@@ -20,7 +20,7 @@ router.post('/webhooks/fulfillments/create', async (req, res) => {
     console.log('there is no phone number in fulfillment order!');
   }
 
-  shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl);
+  onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl);
 });
 
 router.post('/webhooks/orders/create', async (req, res) => {
@@ -36,8 +36,12 @@ router.post('/webhooks/orders/create', async (req, res) => {
     console.log(`there is no phone number in order ${orderNumber}!`);
   }
 
-  shopifyOrderCreated(phoneNumber, userName, orderNumber).then(() => {
-    shopifyDiscountActivated(discountCodeFromHook);
+  onShopifyOrderCreated(phoneNumber, userName, orderNumber).then(() => {
+    onShopifyDiscountActivated(discountCodeFromHook);
+  }).catch((error) => {
+    // eslint-disable-next-line no-console
+    console.log('@@@@@@@@@@ERROR at activatedDiscount:   ', error);
+    return false;
   });
 });
 

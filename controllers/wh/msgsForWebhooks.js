@@ -17,7 +17,7 @@ const msgCtrl = WhatsapSender({
 const backToMenu = '--------------\n0. Back to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-function shopifyOrderCreated(phoneNumber, userName, orderNumber) {
+function onShopifyOrderCreated(phoneNumber, userName, orderNumber) {
   const fromNumber = `whatsapp:${phoneNumber}`;
 
   msgCtrl.sendMsg({
@@ -43,7 +43,7 @@ function shopifyOrderCreated(phoneNumber, userName, orderNumber) {
   }, 3000);
 }
 
-function shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl) {
+function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl) {
   const fromNumber = `whatsapp:${phoneNumber}`;
 
   msgCtrl.sendMsg({
@@ -68,7 +68,7 @@ function shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, tracki
   }, 3000);
 }
 
-async function shopifyDiscountActivated(discountCodeFromHook) {
+async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
     UserDiscount.find({
       notifiedCount: {
@@ -124,7 +124,7 @@ async function shopifyDiscountActivated(discountCodeFromHook) {
 }
 
 module.exports = {
-  shopifyOrderCreated,
-  shopifyFulfillmentCreated,
-  shopifyDiscountActivated,
+  onShopifyOrderCreated,
+  onShopifyFulfillmentCreated,
+  onShopifyDiscountActivated,
 };
