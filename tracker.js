@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
-const UserDiscount = require('./db/models/UserDiscount');
+const UserAbandonedDiscount = require('./db/models/UserAbandonedDiscount');
 const UserSetting = require('./db/models/UserSetting');
 const UserState = require('./db/models/UserState');
 
@@ -49,7 +49,7 @@ function tracker() {
               allCarts = allCarts.filter((cart) => cart.discount_codes
          && cart.discount_codes.length);
               // console.log(allCarts);
-              UserDiscount.find({
+              UserAbandonedDiscount.find({
                 notifiedCount: {
                   $lt: 1,
                 },
@@ -97,7 +97,7 @@ function tracker() {
                       ).exec();
                     }, 6000);
 
-                    UserDiscount.updateOne({
+                    UserAbandonedDiscount.updateOne({
                       discountCode: foundPair.discountCode,
                       phone: foundPair.phone,
                     }, {

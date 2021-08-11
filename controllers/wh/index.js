@@ -4,6 +4,7 @@ const { generateSlug } = require('random-word-slugs');
 
 const UserState = require('../../db/models/UserState');
 const UserDiscount = require('../../db/models/UserDiscount');
+const UserAbandonedDiscount = require('../../db/models/UserAbandonedDiscount');
 const UserReview = require('../../db/models/UserReview');
 
 const { getProviders } = require('../../providers');
@@ -220,6 +221,41 @@ async function handleMessage(req, res) {
       })
       .catch(errorHandler);
   }
+  function sendAbandonedDiscount() {
+    const discountSlug = generateSlug();
+    shopifyApi.shopifyDiscountCreate(
+      discountSlug,
+    )
+      .then((response) => {
+        const { code } = response.data.discount_code;
+        const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
+
+        UserAbandonedDiscount
+          .create({
+            discountCode: discountSlug,
+            phone: fromNumber,
+            notifiedCount: 0,
+          })
+          .then(() => {
+            msgCtrl.sendMsg({
+              fromNumber,
+              msg: `Hi! Here is your promocode: ${discountedUrl}\nPlease click this link to proceed or type 0 to go to Main Menu`,
+            });
+            UserState.updateOne(
+              {
+                phone: fromNumber,
+              },
+              {
+                $set: {
+                  last: 'return-to-main-if-0-pressed',
+                },
+              },
+            ).exec();
+          })
+          .catch(errorHandler);
+      })
+      .catch(errorHandler);
+  }
   function sendDiscountToFriend() {
     const discountSlug = generateSlug();
     shopifyApi.shopifyDiscountCreate(
@@ -268,7 +304,7 @@ async function handleMessage(req, res) {
           getOrderStatus();
           break; }
         case '4': {
-          sendDiscount();
+          sendAbandonedDiscount();
           break;
         }
         case '5': {
