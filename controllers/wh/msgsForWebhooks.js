@@ -17,7 +17,7 @@ const msgCtrl = WhatsapSender({
 const backToMenu = '--------------\n0. Back to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-function shopifyOrderCreated(phoneNumber, userName, orderNumber) {
+function onShopifyOrderCreated(phoneNumber, userName, orderNumber) {
   const fromNumber = `whatsapp:${phoneNumber}`;
 
   msgCtrl.sendMsg({
@@ -43,12 +43,12 @@ function shopifyOrderCreated(phoneNumber, userName, orderNumber) {
   }, 3000);
 }
 
-function shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber) {
+function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl) {
   const fromNumber = `whatsapp:${phoneNumber}`;
 
   msgCtrl.sendMsg({
     fromNumber,
-    msg: `Hello, ${userName}!\n\nWe're happy to tell you that your order has shipped!\n\nThis is your tracking number: ${trackingNumber}\n\nUse this link to track your package: https://t.17track.net/en#nums=${trackingNumber}\n\n${backToMenu}\n${typeRecomendation}`,
+    msg: `Hello, ${userName}!\n\nWe're happy to tell you that your order has shipped!\n\nThis is your tracking number: ${trackingNumber}\n\nUse this link to track your package: ${trackingUrl}\n\n${backToMenu}\n${typeRecomendation}`,
   });
   setTimeout(() => {
     msgCtrl.sendMsg({
@@ -68,7 +68,7 @@ function shopifyFulfillmentCreated(phoneNumber, userName, trackingNumber) {
   }, 3000);
 }
 
-async function shopifyDiscountActivated(discountCodeFromHook) {
+async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
     UserDiscount.find({
       notifiedCount: {
@@ -124,7 +124,7 @@ async function shopifyDiscountActivated(discountCodeFromHook) {
 }
 
 module.exports = {
-  shopifyOrderCreated,
-  shopifyFulfillmentCreated,
-  shopifyDiscountActivated,
+  onShopifyOrderCreated,
+  onShopifyFulfillmentCreated,
+  onShopifyDiscountActivated,
 };
