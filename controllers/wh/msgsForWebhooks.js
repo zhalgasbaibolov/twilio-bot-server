@@ -77,6 +77,10 @@ function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trac
 
 async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
+    const code = discountCodeFromHook;
+    UserDiscount.find({ discountCode: `${code}` }, (error, phone) => {
+      console.log(`\n\n\n++++++++++++\n${phone}\n++++++++++++\n\n\n`);
+    });
     UserDiscount.find({
       notifiedCount: {
         $lt: 1,
@@ -91,47 +95,43 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
         return resolve();
       }
       console.log(`\n\n\n\n\*****************\ndiscount code from hook: ${discountCodeFromHook}\n*********************\n\n\n\n`);
-      const cart = discountCodeFromHook;
 
-      for (let i = 0; i < cart.discount_codes.length; i += 1) {
-        const { code } = cart.discount_codes[i];
-        const foundPair = pairs.find((p) => p.discountCode === code);
+      const foundPair = pairs.find((p) => p.discountCode === discountCodeFromHook);
 
-        const discountSlug = generateSlug();
-        if (!foundPair) {
-          console.log('\n\n\n\n\*****************\npair not found\n*********************\n\n\n\n');
-          return resolve();
-        }
-        console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
-
-        msgCtrl.sendMsg({
-          fromNumber: foundPair.phone,
-          msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}\n\n${backToMenu}`,
-        });
-        UserDiscount
-          .create({
-            discountCode: discountSlug,
-            phone: foundPair.phone,
-            notifiedCount: 0,
-          })
-          .then(() => {
-            console.log('success!');
-            UserDiscount
-              .updateOne({
-                discountCode: foundPair.discountCode,
-                phone: foundPair.phone,
-              }, {
-                notifiedCount: 2,
-              }, {}, (err2, upd) => {
-                if (err2) {
-                  return reject(err2);
-                }
-                console.log(!!upd.ok);
-                return resolve(pairs);
-              });
-          })
-          .catch((error) => reject(error));
+      const discountSlug = generateSlug();
+      if (!foundPair) {
+        console.log('\n\n\n\n\*****************\npair not found\n*********************\n\n\n\n');
+        return resolve();
       }
+      console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
+
+      msgCtrl.sendMsg({
+        fromNumber: foundPair.phone,
+        msg: `Hello!!!  Congratulations!  Your referral was successful and you've earned 5% discount!!! Your referral code for discount: ${discountSlug}\n\n${backToMenu}`,
+      });
+      UserDiscount
+        .create({
+          discountCode: discountSlug,
+          phone: foundPair.phone,
+          notifiedCount: 0,
+        })
+        .then(() => {
+          console.log('success!');
+          UserDiscount
+            .updateOne({
+              discountCode: foundPair.discountCode,
+              phone: foundPair.phone,
+            }, {
+              notifiedCount: 2,
+            }, {}, (err2, upd) => {
+              if (err2) {
+                return reject(err2);
+              }
+              console.log(!!upd.ok);
+              return resolve(pairs);
+            });
+        })
+        .catch((error) => reject(error));
       return null;
     });
   });
