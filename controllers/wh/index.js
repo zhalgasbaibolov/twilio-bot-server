@@ -345,7 +345,7 @@ async function handleMessage(req, res) {
               });
               return;
             }
-            const txt = `Orders for email '${msg}':\n${trackUrls}\n\n(Please open link to track your order!)`;
+            const txt = `Orders for email '${msg}':\n${trackUrls}\n\n(Please open link to track your order!)\n\n${backToMenu}\n\n\n${typeRecomendation}`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
