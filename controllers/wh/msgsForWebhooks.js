@@ -1,13 +1,12 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
-const { generateSlug } = require ('random-word-slugs');
-const { UserState } = require ('../../db/models/UserState');
-const { UserDiscount } = require ('../../db/models/UserDiscount');
-const { WhatsapSender } =  require ('../../providers/WhatsapSender');
-const { getProviders } = require ('../../providers');
+const { generateSlug } = require('random-word-slugs');
+const { UserState } = require('../../db/models/UserState');
+const { UserDiscount } = require('../../db/models/UserDiscount');
+const { WhatsapSender } = require('../../providers/WhatsapSender');
+// const { getProviders } = require('../../providers');
 
-const { shopifyApi } =   getProviders();
-;
+// const { shopifyApi } = getProviders();
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
@@ -108,12 +107,13 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
       const foundPair = pairs.find((p) => p.discountCode === code);
 
       const discountSlug = generateSlug();
-      shopifyApi.shopifyDiscountCreate(
-        discountSlug,
-      )
-        .then((response) => {
-          const { code } = response.data.discount_code;
-          const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
+      // shopifyApi.shopifyDiscountCreate(
+      //   discountSlug,
+      // )
+      //   .then((response) => {
+      //     const { code } = response.data.discount_code;
+      //     const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
+      //   }).catch((error) => { console.log(error); });
 
       if (!foundPair) {
         console.log('\n\n\n\n++++++++++++++++\npair not found\n++++++++++++++++\n\n\n\n');
@@ -124,27 +124,27 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
 
       msgCtrl.sendMsg({
         fromNumber: foundPair.phone,
-        msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour new promocode: ${discountedUrl}\nPlease click this link to proceed\n\n${backToMenu}`,
+        msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour new code for discount: ${discountSlug}\n\n\n${backToMenu}`,
       });
       UserDiscount.create({
-          discountCode: discountSlug,
-          phone: foundPair.phone,
-          notifiedCount: 0,
-        })
+        discountCode: discountSlug,
+        phone: foundPair.phone,
+        notifiedCount: 0,
+      })
         .then(() => {
           console.log('success!');
           UserDiscount.updateOne({
-              discountCode: foundPair.discountCode,
-              phone: foundPair.phone,
-            }, {
-              notifiedCount: 2,
-            }, {}, (err2, upd) => {
-              if (err2) {
-                return reject(err2);
-              }
-              console.log(!!upd.ok);
-              return resolve(pairs);
-            });
+            discountCode: foundPair.discountCode,
+            phone: foundPair.phone,
+          }, {
+            notifiedCount: 2,
+          }, {}, (err2, upd) => {
+            if (err2) {
+              return reject(err2);
+            }
+            console.log(!!upd.ok);
+            return resolve(pairs);
+          });
         })
         .catch((error) => reject(error));
       return null;
