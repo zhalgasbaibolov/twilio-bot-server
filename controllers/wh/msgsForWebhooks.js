@@ -106,7 +106,7 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
 
       msgCtrl.sendMsg({
         fromNumber: foundPair.phone,
-        msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour referral code for discount: ${discountSlug}\n\n${backToMenu}`,
+        msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour new code for discount: ${discountSlug}\n\n${backToMenu}`,
       });
       UserDiscount
         .create({
