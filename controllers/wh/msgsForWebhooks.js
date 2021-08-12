@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
 const { generateSlug } = require('random-word-slugs');
-const { UserState } = require('../../db/models/UserState');
-const { UserDiscount } = require('../../db/models/UserDiscount');
+const UserState = require('../../db/models/UserState');
+const UserDiscount = require('../../db/models/UserDiscount');
 const { WhatsapSender } = require('../../providers/WhatsapSender');
 const { getProviders } = require('../../providers');
 
