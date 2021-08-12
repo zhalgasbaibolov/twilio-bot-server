@@ -4,9 +4,9 @@ const { generateSlug } = require('random-word-slugs');
 const { UserState } = require('../../db/models/UserState');
 const { UserDiscount } = require('../../db/models/UserDiscount');
 const { WhatsapSender } = require('../../providers/WhatsapSender');
-// const { getProviders } = require('../../providers');
+const { getProviders } = require('../../providers');
 
-// const { shopifyApi } = getProviders();
+const { shopifyApi, userSettings } = getProviders();
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
@@ -88,7 +88,7 @@ function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trac
 
 async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
-    const code = discountCodeFromHook.toString();
+    const codeFromHook = discountCodeFromHook.toString();
 
     UserDiscount.find({
       notifiedCount: {
@@ -104,49 +104,49 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
         return resolve();
       }
 
-      const foundPair = pairs.find((p) => p.discountCode === code);
-
-      const discountSlug = generateSlug();
-      // shopifyApi.shopifyDiscountCreate(
-      //   discountSlug,
-      // )
-      //   .then((response) => {
-      //     const { code } = response.data.discount_code;
-      //     const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
-      //   }).catch((error) => { console.log(error); });
+      const foundPair = pairs.find((p) => p.discountCode === codeFromHook);
 
       if (!foundPair) {
         console.log('\n\n\n\n++++++++++++++++\npair not found\n++++++++++++++++\n\n\n\n');
         return resolve();
       }
 
-      console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
+      const discountSlug = generateSlug();
+      shopifyApi.shopifyDiscountCreate(
+        discountSlug,
+      )
+        .then((response) => {
+          const { code } = response.data.discount_code;
+          const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
 
-      msgCtrl.sendMsg({
-        fromNumber: foundPair.phone,
-        msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour new code for discount: ${discountSlug}\n\n\n${backToMenu}`,
-      });
-      UserDiscount.create({
-        discountCode: discountSlug,
-        phone: foundPair.phone,
-        notifiedCount: 0,
-      })
-        .then(() => {
-          console.log('success!');
-          UserDiscount.updateOne({
-            discountCode: foundPair.discountCode,
-            phone: foundPair.phone,
-          }, {
-            notifiedCount: 2,
-          }, {}, (err2, upd) => {
-            if (err2) {
-              return reject(err2);
-            }
-            console.log(!!upd.ok);
-            return resolve(pairs);
+          console.log(`\n\n\n\ndiscount code: ${foundPair.discountCode} is belonging to ${foundPair.phone}\n\n\n\n`);
+
+          msgCtrl.sendMsg({
+            fromNumber: foundPair.phone,
+            msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour new promocode: ${discountedUrl}\nPlease click this link to proceed\n\n\n${backToMenu}`,
           });
-        })
-        .catch((error) => reject(error));
+          UserDiscount.create({
+            discountCode: discountSlug,
+            phone: foundPair.phone,
+            notifiedCount: 0,
+          })
+            .then(() => {
+              console.log('success!');
+              UserDiscount.updateOne({
+                discountCode: foundPair.discountCode,
+                phone: foundPair.phone,
+              }, {
+                notifiedCount: 2,
+              }, {}, (err2, upd) => {
+                if (err2) {
+                  return reject(err2);
+                }
+                console.log(!!upd.ok);
+                return resolve(pairs);
+              });
+            })
+            .catch((error) => reject(error));
+        }).catch((error) => { console.log(error); });
       return null;
     });
   });
