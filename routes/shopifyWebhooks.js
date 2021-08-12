@@ -11,7 +11,6 @@ const {
 router.post('/webhooks/fulfillments/create', async (req, res) => {
   res.send('OK');
 
-
   const data = req.body.destination.flat();
   const allData = req.body.flat();
   const phoneNumber = req.body.destination.flat().map((ord) => ord.phone);
@@ -21,7 +20,6 @@ router.post('/webhooks/fulfillments/create', async (req, res) => {
 
   console.log(`\n\n\n\n++++++++++++++++\nthis is your destination data:\n${allData}\n++++++++++++++++\n\n\n\n`);
   console.log(`\n\n\n\n++++++++++++++++\nthis is your ALL data:\n${data}\n++++++++++++++++\n\n\n\n`);
-  
 
   if (!phoneNumber) {
     console.log('\n\n\n\n++++++++++++++++\nthere is no phone number in fulfillment order!\n++++++++++++++++\n\n\n\n');
