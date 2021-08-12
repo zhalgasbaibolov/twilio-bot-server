@@ -327,21 +327,18 @@ async function handleMessage(req, res) {
             const trackUrls = response.data.orders
               .filter((ord) => ord.email === msg)
               .map((ord) => ord.fulfillments)
-              .flat().map((ord) => ord.tracking_numbers && ord.tracking_urls);
-            const arrayTrackingUrls = Array.from(new Set(trackUrls));
-            const listOfTrackingUrls = arrayTrackingUrls
-              .map(
-                ({tracking_numbers, tracking_urls}, idx) => `${idx + 1}. Your tracking number: ${tracking_numbers} and tracking URL: ${tracking_urls}`,
+              .flat().map(
+                (tr, idx) => `${idx + 1}. Your tracking number: ${tr.tracking_numbers} and tracking URL: ${tr.tracking_urls}`,
               )
               .join('\n');
-            if (!listOfTrackingUrls) {
+            if (!trackUrls) {
               msgCtrl.sendMsg({
                 fromNumber,
                 msg: 'There is no order with such email, please recheck your email.\n\n--------------\nOR type 0 to redirect to main menu',
               });
               return;
             }
-            const txt = `Orders for email '${msg}':\n${listOfTrackingUrls}\n\n(Please open link to track your order!)`;
+            const txt = `Orders for email '${msg}':\n${trackUrls}\n\n(Please open link to track your order!)`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
