@@ -51,7 +51,7 @@ function onShopifyOrderCreated(phoneNumber, userName, orderNumber) {
 }
 
 function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl) {
-  const fromNumber = `whatsapp:${phoneNumber}`;
+  const fromNumber = `whatsapp:${phoneNumber.toString()}`;
 
   msgCtrl.sendMsg({
     fromNumber,

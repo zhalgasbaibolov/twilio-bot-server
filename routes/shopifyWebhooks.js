@@ -12,9 +12,9 @@ router.post('/webhooks/fulfillments/create', async (req, res) => {
   res.send('OK');
 
 
-  const data = req.body.destination;
-  const allData = req.body;
-  const phoneNumber = req.body.destination.phone;
+  const data = req.body.destination.flat();
+  const allData = req.body.flat();
+  const phoneNumber = req.body.destination.flat().map((ord) => ord.phone);
   const userName = req.body.destination.first_name;
   const trackingNumber = req.body.tracking_number;
   const trackingUrl = req.body.tracking_url;
