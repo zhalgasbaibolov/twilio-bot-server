@@ -328,8 +328,8 @@ async function handleMessage(req, res) {
               .filter((ord) => ord.email === msg)
               .map((ord) => ord.fulfillments)
               .flat().map((ord) => ord.tracking_numbers && ord.tracking_urls);
-            // const arrayTrackingUrls = Array.from(new Set(trackUrls));
-            const listOfTrackingUrls = trackUrls
+            const arrayTrackingUrls = Array.from(new Set(trackUrls));
+            const listOfTrackingUrls = arrayTrackingUrls
               .map(
                 ({tracking_numbers, tracking_urls}, idx) => `${idx + 1}. Your tracking number: ${tracking_numbers} and tracking URL: ${tracking_urls}`,
               )
