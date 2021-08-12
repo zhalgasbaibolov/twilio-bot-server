@@ -1,9 +1,13 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
-const { generateSlug } = require('random-word-slugs');
-const UserState = require('../../db/models/UserState');
-const UserDiscount = require('../../db/models/UserDiscount');
-const { WhatsapSender } = require('../../providers/WhatsapSender');
+import { generateSlug } from 'random-word-slugs';
+import { updateOne } from '../../db/models/UserState';
+import { find, create, updateOne as _updateOne } from '../../db/models/UserDiscount';
+import { WhatsapSender } from '../../providers/WhatsapSender';
+import { getProviders } from '../../providers';
+
+const { shopifyApi } =   getProviders();
+;
 
 const a = '370a717f';
 const token = `${a}84299f15e25757c7e3e627fa`;
@@ -32,7 +36,7 @@ function onShopifyOrderCreated(phoneNumber, userName, orderNumber) {
           msg: `We'd love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No\n\n${backToMenu}\n${typeRecomendation}`,
         });
 
-        UserState.updateOne(
+        updateOne(
           {
             phone: fromNumber,
           },
@@ -70,7 +74,7 @@ function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trac
       fromNumber,
       msg: `We'd love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No\n\n${backToMenu}\n${typeRecomendation}`,
     });
-    UserState.updateOne(
+    updateOne(
       {
         phone: fromNumber,
       },
@@ -87,7 +91,7 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
     const code = discountCodeFromHook.toString();
 
-    UserDiscount.find({
+    find({
       notifiedCount: {
         $lt: 1,
       },
@@ -104,6 +108,13 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
       const foundPair = pairs.find((p) => p.discountCode === code);
 
       const discountSlug = generateSlug();
+      shopifyApi.shopifyDiscountCreate(
+        discountSlug,
+      )
+        .then((response) => {
+          const { code } = response.data.discount_code;
+          const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
+
       if (!foundPair) {
         console.log('\n\n\n\n++++++++++++++++\npair not found\n++++++++++++++++\n\n\n\n');
         return resolve();
@@ -113,18 +124,16 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
 
       msgCtrl.sendMsg({
         fromNumber: foundPair.phone,
-        msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour new code for discount: ${discountSlug}\n\n${backToMenu}`,
+        msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour new promocode: ${discountedUrl}\nPlease click this link to proceed\n\n${backToMenu}`,
       });
-      UserDiscount
-        .create({
+      create({
           discountCode: discountSlug,
           phone: foundPair.phone,
           notifiedCount: 0,
         })
         .then(() => {
           console.log('success!');
-          UserDiscount
-            .updateOne({
+          _updateOne({
               discountCode: foundPair.discountCode,
               phone: foundPair.phone,
             }, {
