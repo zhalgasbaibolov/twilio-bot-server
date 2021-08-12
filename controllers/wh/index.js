@@ -327,11 +327,11 @@ async function handleMessage(req, res) {
             const trackUrls = response.data.orders
               .filter((ord) => ord.email === msg)
               .map((ord) => ord.fulfillments)
-              .flat().map((ord) => ord.tracking_urls);
+              .flat().map((ord) => ord.tracking_numbers && ord.tracking_urls);
             const arrayTrackingUrls = Array.from(new Set(trackUrls));
             const listOfTrackingUrls = arrayTrackingUrls
               .map(
-                (trackUrl, idx) => `${idx + 1}. Tracking URL: ${trackUrl}`,
+                ({tracking_numbers, tracking_urls}, idx) => `${idx + 1}. Your tracking number: ${tracking_numbers} and tracking URL: ${tracking_urls}`,
               )
               .join('\n');
             if (!listOfTrackingUrls) {
