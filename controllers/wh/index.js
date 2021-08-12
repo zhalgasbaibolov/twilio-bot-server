@@ -324,24 +324,24 @@ async function handleMessage(req, res) {
       if (/@/.test(msg)) {
         shopifyApi.getAllOrders()
           .then((response) => {
-            const trackNumbers = response.data.orders
+            const trackUrls = response.data.orders
               .filter((ord) => ord.email === msg)
               .map((ord) => ord.fulfillments)
-              .flat().map((ord) => ord.tracking_numbers);
-            const arr = Array.from(new Set(trackNumbers));
-            const ordersListTxt = arr
+              .flat().map((ord) => ord.tracking_urls);
+            const arrayTrackingUrls = Array.from(new Set(trackUrls));
+            const listOfTrackingUrls = arrayTrackingUrls
               .map(
-                (trackNum, idx) => `${idx + 1}. https://t.17track.net/en#nums=${trackNum}`,
+                (trackUrl, idx) => `${idx + 1}. Tracking URL: ${trackUrl}`,
               )
               .join('\n');
-            if (!ordersListTxt) {
+            if (!listOfTrackingUrls) {
               msgCtrl.sendMsg({
                 fromNumber,
                 msg: 'There is no order with such email, please recheck your email.\n\n--------------\nOR type 0 to redirect to main menu',
               });
               return;
             }
-            const txt = `Orders for email '${msg}':\n${ordersListTxt}`;
+            const txt = `Orders for email '${msg}':\n${listOfTrackingUrls}\n\n(Please open link to track your order!)`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
