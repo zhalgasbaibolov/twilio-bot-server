@@ -328,7 +328,14 @@ async function handleMessage(req, res) {
               .filter((ord) => ord.email === msg)
               .map((ord) => ord.fulfillments)
               .flat().map(
-                (tr, idx) => `${idx + 1}. Your tracking number: ${tr.tracking_numbers} and tracking URL: ${tr.tracking_urls}`,
+                (tr, idx) => {
+                  if (!tr.tracking_urls) {
+                    const txtUrl = `${idx + 1}. Your tracking number: ${tr.tracking_numbers} and tracking URL: https://t.17track.net/en#nums=${tr.tracking_numbers}`;
+                    return txtUrl;
+                  }
+                  const txtUrl = `${idx + 1}. Your tracking number: ${tr.tracking_numbers} and tracking URL: ${tr.tracking_urls}`;
+                  return txtUrl;
+                },
               )
               .join('\n');
             if (!trackUrls) {
