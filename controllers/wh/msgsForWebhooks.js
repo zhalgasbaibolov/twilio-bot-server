@@ -53,6 +53,14 @@ function onShopifyOrderCreated(phoneNumber, userName, orderNumber) {
 function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl) {
   const fromNumber = `whatsapp:${phoneNumber}`;
 
+  if (!trackingUrl) {
+    const txtUrl = `https://t.17track.net/en#nums=${trackingNumber}`;
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: `Hello, ${userName}!\n\nWe're happy to tell you that your order has shipped!\n\nThis is your tracking number: ${trackingNumber}\n\nUse this link to track your package: ${txtUrl}\n\n${backToMenu}\n${typeRecomendation}`,
+    });
+  }
+
   msgCtrl.sendMsg({
     fromNumber,
     msg: `Hello, ${userName}!\n\nWe're happy to tell you that your order has shipped!\n\nThis is your tracking number: ${trackingNumber}\n\nUse this link to track your package: ${trackingUrl}\n\n${backToMenu}\n${typeRecomendation}`,
@@ -92,7 +100,6 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
         console.log('discount not found');
         return resolve();
       }
-      console.log(`\n\n\n\n++++++++++++++++\ndiscount code from hook: ${code}\n${console.log(typeof (code))}\n++++++++++++++++\n\n\n\n`);
 
       const foundPair = pairs.find((p) => p.discountCode === code);
 
