@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
-import { generateSlug } from 'random-word-slugs';
-import { updateOne } from '../../db/models/UserState';
-import { find, create, updateOne as _updateOne } from '../../db/models/UserDiscount';
-import { WhatsapSender } from '../../providers/WhatsapSender';
-import { getProviders } from '../../providers';
+const { generateSlug } = require ('random-word-slugs');
+const { UserState } = require ('../../db/models/UserState');
+const { UserDiscount } = require ('../../db/models/UserDiscount');
+const { WhatsapSender } =  require ('../../providers/WhatsapSender');
+const { getProviders } = require ('../../providers');
 
 const { shopifyApi } =   getProviders();
 ;
@@ -36,7 +36,7 @@ function onShopifyOrderCreated(phoneNumber, userName, orderNumber) {
           msg: `We'd love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No\n\n${backToMenu}\n${typeRecomendation}`,
         });
 
-        updateOne(
+        UserState.updateOne(
           {
             phone: fromNumber,
           },
@@ -74,7 +74,7 @@ function onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trac
       fromNumber,
       msg: `We'd love to hear your review! Got a minute to share it with us?\n1. Yes\n2. No\n\n${backToMenu}\n${typeRecomendation}`,
     });
-    updateOne(
+    UserState.updateOne(
       {
         phone: fromNumber,
       },
@@ -91,7 +91,7 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
   return new Promise((resolve, reject) => {
     const code = discountCodeFromHook.toString();
 
-    find({
+    UserDiscount.find({
       notifiedCount: {
         $lt: 1,
       },
@@ -126,14 +126,14 @@ async function onShopifyDiscountActivated(discountCodeFromHook) {
         fromNumber: foundPair.phone,
         msg: `Hello!!!\n\nCongratulations!\n\nYour referral was successful and you've earned 5% discount!!!\n\n\nYour new promocode: ${discountedUrl}\nPlease click this link to proceed\n\n${backToMenu}`,
       });
-      create({
+      UserDiscount.create({
           discountCode: discountSlug,
           phone: foundPair.phone,
           notifiedCount: 0,
         })
         .then(() => {
           console.log('success!');
-          _updateOne({
+          UserDiscount.updateOne({
               discountCode: foundPair.discountCode,
               phone: foundPair.phone,
             }, {
