@@ -21,7 +21,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.on('open', () => {
   tracker();
-  ShopifyApi.webhookFulfillmentCreate();
+  ShopifyApi.webhookFulfillmentCreate;
   // trackerDiscount();
   // trackerSelf();
 });
