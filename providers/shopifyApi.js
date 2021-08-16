@@ -356,7 +356,6 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
   //       'X-Shopify-Storefront-Access-Token': accessToken,
   //     },
   //   });
-
   //   const mutation = gql`
   //   mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
   //     webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
