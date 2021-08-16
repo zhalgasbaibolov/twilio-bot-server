@@ -11,7 +11,7 @@ const {
 router.post('/webhooks/fulfillments/create', async (req, res) => {
   res.send('OK');
 
-  // console.log ('\n************\n\n\nnew webhook received!!!\n\n\n*********************\n')
+  console.log (`\n************\n\n\n${req.body}\n\n\n*********************\n`)
   const phoneNumber = '+77075002029';
   // // req.body.destination.flat().map((ord) => ord.phone);
   const userName = 'zhalgas';
