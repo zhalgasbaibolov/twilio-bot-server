@@ -66,9 +66,9 @@ function tracker() {
                   console.log('phone:discount pairs not found');
                   return;
                 }
-                allCarts.forEach((cart) => {
-                  console.log ("\n**********\n\n\nstep 3 started\n\n\n*********************\n")
+                allCarts.forEach((cart) => {                  
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
+                    console.log ("\n**********\n\n\nstep 3 started\n\n\n*********************\n")
                     const { code } = cart.discount_codes[i];
                     const foundPair = pairs.find((p) => p.discountCode === code);
                     if (!foundPair) {
