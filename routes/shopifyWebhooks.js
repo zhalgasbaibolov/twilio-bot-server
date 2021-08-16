@@ -4,26 +4,27 @@ const express = require('express');
 const router = express.Router();
 const {
   onShopifyOrderCreated,
-  onShopifyFulfillmentCreated,
+  // onShopifyFulfillmentCreated,
   onShopifyDiscountActivated,
 } = require('../controllers/wh/msgsForWebhooks');
 
 router.post('/webhooks/fulfillments/create', async (req, res) => {
   res.send('OK');
 
-  const phoneNumber = '+77075002029';
-  // req.body.destination.flat().map((ord) => ord.phone);
-  const userName = 'zhalgas';
-  // req.body.destination.first_name;
-  const trackingNumber = req.body.tracking_number;
-  const trackingUrl = req.body.tracking_url;
+  console.log ('\n************\n\n\nnew webhook received!!!\n\n\n*********************\n')
+  // const phoneNumber = '+77075002029';
+  // // req.body.destination.flat().map((ord) => ord.phone);
+  // const userName = 'zhalgas';
+  // // req.body.destination.first_name;
+  // const trackingNumber = req.body.tracking_number;
+  // const trackingUrl = req.body.tracking_url;
 
-  if (!phoneNumber) {
-    console.log('\n\n\n\n++++++++++++++++\nthere is no phone number in fulfillment order!\n++++++++++++++++\n\n\n\n');
-    console.log(`${phoneNumber}\n\n\n\n\n\n`);
-  }
+  // if (!phoneNumber) {
+  //   console.log('\n\n\n\n++++++++++++++++\nthere is no phone number in fulfillment order!\n++++++++++++++++\n\n\n\n');
+  //   console.log(`${phoneNumber}\n\n\n\n\n\n`);
+  // }
 
-  onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl);
+  // onShopifyFulfillmentCreated(phoneNumber, userName, trackingNumber, trackingUrl);
 });
 
 router.post('/webhooks/orders/create', async (req, res) => {
