@@ -23,8 +23,6 @@ const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
 function tracker() {
-
-  console.log ("\n**********\n\n\ntracker function just started\n\n\n*********************\n")
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
@@ -36,7 +34,6 @@ function tracker() {
             storeAPIkey,
             storePassword,
           } = sett.shopify;
-          console.log ("\n**********\n\n\nstep 1 started\n\n\n*********************\n")
           getAbandonedCart(
             storeMyShopify,
             apiVersion,
@@ -44,7 +41,6 @@ function tracker() {
             storePassword,
           )
             .then((response) => {
-              console.log ("\n**********\n\n\nstep 2 started\n\n\n*********************\n")
               let allCarts = response.data && response.data.checkouts;
               if (!allCarts || !allCarts.length) {
                 console.log('abandoned carts not found');
@@ -68,7 +64,6 @@ function tracker() {
                 }
                 allCarts.forEach((cart) => {                  
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
-                    console.log ("\n**********\n\n\nstep 3 started\n\n\n*********************\n")
                     const { code } = cart.discount_codes[i];
                     const foundPair = pairs.find((p) => p.discountCode === code);
                     if (!foundPair) {
