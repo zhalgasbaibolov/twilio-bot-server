@@ -36,6 +36,7 @@ function tracker() {
             storeAPIkey,
             storePassword,
           } = sett.shopify;
+          console.log ("\n**********\n\n\nstep 1 started\n\n\n*********************\n")
           getAbandonedCart(
             storeMyShopify,
             apiVersion,
@@ -43,6 +44,7 @@ function tracker() {
             storePassword,
           )
             .then((response) => {
+              console.log ("\n**********\n\n\nstep 2 started\n\n\n*********************\n")
               let allCarts = response.data && response.data.checkouts;
               if (!allCarts || !allCarts.length) {
                 console.log('abandoned carts not found');
@@ -65,6 +67,7 @@ function tracker() {
                   return;
                 }
                 allCarts.forEach((cart) => {
+                  console.log ("\n**********\n\n\nstep 3 started\n\n\n*********************\n")
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
                     const { code } = cart.discount_codes[i];
                     const foundPair = pairs.find((p) => p.discountCode === code);
