@@ -8,6 +8,14 @@ const {
   onShopifyDiscountActivated,
 } = require('../controllers/wh/msgsForWebhooks');
 
+router.post('/webhooks/products/create', async (req, res) => {
+  res.send('OK');
+
+  console.log ('\n***************\n\n\nwebhook from products create\n\n\n*********************\n')
+
+
+});
+
 router.post('/webhooks/fulfillments/create', async (req, res) => {
   res.send('OK');
 
