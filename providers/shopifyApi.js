@@ -357,11 +357,13 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
       },
     });
     const mutation = gql`
-    mutation webhookSubscriptionCreate(
-  $topic: WebhookSubscriptionTopic!,
-  $webhookSubscription: WebhookSubscriptionInput!)
-  {
-      webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+    mutation {
+      webhookSubscriptionCreate(
+        topic: FULFILLMENTS_CREATE
+        webhookSubscription: {
+          format: JSON,
+          callbackUrl: "https://saletasticdev.herokuapp.com/shopify"}
+      ) {
         userErrors {
           field
           message
@@ -373,15 +375,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
       }
     }
   `;
-    // query variables
-    const variables = {
-      topic: 'FULFILLMENTS_CREATE',
-      webhookSubscription: {
-        callbackUrl: 'https://saletasticdev.herokuapp.com/shopify',
-        format: 'JSON',
-      },
-    };
-    return graphQLClient.request(mutation, variables);
+    return graphQLClient.request(mutation);
   };
 
   const shopifyApi = {
