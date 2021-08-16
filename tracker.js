@@ -10,7 +10,7 @@ const {
   getAbandonedCart,
 } = require('./cartAbandonment');
 
-const a = 'ad8c24c'
+const a = 'ad8c24c';
 const token = `${a}e8ee4d4be7cf28dac8a5d6e1e`;
 const msgCtrl = WhatsapSender({
   accountSid:
@@ -62,7 +62,7 @@ function tracker() {
                   console.log('phone:discount pairs not found');
                   return;
                 }
-                allCarts.forEach((cart) => {                  
+                allCarts.forEach((cart) => {
                   for (let i = 0; i < cart.discount_codes.length; i += 1) {
                     const { code } = cart.discount_codes[i];
                     const foundPair = pairs.find((p) => p.discountCode === code);

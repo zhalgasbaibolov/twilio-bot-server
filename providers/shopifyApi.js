@@ -357,7 +357,10 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
   //     },
   //   });
   //   const mutation = gql`
-  //   mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
+  //   mutation webhookSubscriptionCreate(
+  // $topic: WebhookSubscriptionTopic!,
+  // $webhookSubscription: WebhookSubscriptionInput!)
+  // {
   //     webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
   //       userErrors {
   //         field
