@@ -369,18 +369,6 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
         webhookSubscription {
           id
           email
-          created_at
-          total_price
-          order_number
-          discount_codes [
-            {
-              code
-            }
-          ]
-          customer {
-            phone
-            first_name
-          }
         }
       }
     }
