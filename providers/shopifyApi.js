@@ -347,6 +347,52 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
 
     return graphQLClient.request(mutation, variables);
   };
+
+  // const webhookOrderCreate = async () => {
+  //   const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
+
+  //   const graphQLClient = new GraphQLClient(endpoint, {
+  //     headers: {
+  //       'X-Shopify-Storefront-Access-Token': accessToken,
+  //     },
+  //   });
+  //   const mutation = gql`
+  //   mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
+  //     webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+  //       userErrors {
+  //         field
+  //         message
+  //       }
+  //       webhookSubscription {
+  //         id
+  //         email
+  //         created_at
+  //         total_price
+  //         order_number
+  //         discount_codes [
+  //           {
+  //             code
+  //           }
+  //         ]
+  //         customer {
+  //           phone
+  //           first_name
+  //         }
+  //       }
+  //     }
+  //   }
+  // `;
+  //   // query variables
+  //   const variables = {
+  //     topic: 'ORDERS_CREATE',
+  //     webhookSubscription: {
+  //       callbackUrl: 'https://saletasticdev.herokuapp.com/shopify',
+  //       format: 'JSON',
+  //     },
+  //   };
+  //   return graphQLClient.request(mutation, variables);
+  // };
+
   const shopifyApi = {
     retireveCollections,
     retireveProducts,
@@ -357,6 +403,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     updateCheckout,
     getAllOrders,
     shopifyDiscountCreate,
+    // webhookOrderCreate,
   };
   return shopifyApi;
 };
