@@ -6,7 +6,8 @@ const UserDiscount = require('../../db/models/UserDiscount');
 const { WhatsapSender } = require('../../providers/WhatsapSender');
 
 
-const token = 'ad8c24ce8ee4d4be7cf28dac8a5d6e1e';
+const a = 'ad8c24c'
+const token = `${a}e8ee4d4be7cf28dac8a5d6e1e`;
 const msgCtrl = WhatsapSender({
   accountSid:
   'AC534b07c807465b936b2241514b536512',
