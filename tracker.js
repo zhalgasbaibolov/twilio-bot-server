@@ -25,7 +25,8 @@ const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
 function tracker() {
-  setInterval(() => {
+    setInterval(() => {
+      console.log('\n*****+++++++*******+++++++\n\n\ntracker function started\n\n\n*****+++++++*******+++++++\n')
     UserSetting.find({}).exec()
       .then((arr) => {
         if (!arr || !arr.length) return;
@@ -122,7 +123,7 @@ function tracker() {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 20000); // 3 min
+  }, 7000); // 3 min
 }
 
 module.exports = {
