@@ -8,7 +8,6 @@ const UserAbandonedDiscount = require('../../db/models/UserAbandonedDiscount');
 const UserReview = require('../../db/models/UserReview');
 
 const { getProviders } = require('../../providers');
-const { ShopifyApi } = require('../../providers/shopifyApi');
 
 async function handleMessage(req, res) {
   res.send('OK');
@@ -112,7 +111,7 @@ async function handleMessage(req, res) {
   };
 
   const getOrderStatus = () => {
-    ShopifyApi.addWebhookFulfillmentUpdate().then(() => {
+    shopifyApi.addWebhookFulfillmentUpdate().then(() => {
       msgCtrl.sendMsg({
         fromNumber,
         msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
