@@ -26,7 +26,6 @@ const typeRecomendation = '(Please, type the number corresponding to your choice
 
 function tracker() {
   setInterval(() => {
-    console.log('\n*****+++++++*******+++++++\n\n\ntracker function started\n\n\n*****+++++++*******+++++++\n');
     UserSetting.find({}).exec()
       .then((arr) => {
         if (!arr || !arr.length) return;

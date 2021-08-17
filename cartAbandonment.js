@@ -6,11 +6,7 @@ async function getAbandonedCart(
   storeAPIkey,
   storePassword,
 ) {
-  console.log('\n*****+++++++*******+++++++\n\n\ngetabandoned cart 1\n\n\n*****+++++++*******+++++++\n');
-
   const urlCheckouts = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/checkouts.json`;
-
-  console.log('\n*****+++++++*******+++++++\n\n\ngetabandoned cart 2\n\n\n*****+++++++*******+++++++\n');
 
   return axios
     .get(urlCheckouts,
