@@ -356,29 +356,31 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
         'X-Shopify-Storefront-Access-Token': accessToken,
       },
     });
-    const callbackUrl = 'https://saletasticdev.herokuapp.com/shopify/webhooks/fulfillments/update';
-    const topic = 'FULFILLMENTS_UPDATE';
 
-    const mutation = gql`
-    mutation {webhookSubscriptionCreate(
-        topic: ${topic},
-        webhookSubscription: {
-            callbackUrl: "${callbackUrl}",
-            format: JSON
+    const query = `mutation
+    mutation webhookSubscriptionCreate(
+      $topic: WebhookSubscriptionTopic!, 
+      $webhookSubscription: WebhookSubscriptionInput!) {
+      webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+        userErrors {
+          field
+          message
         }
-      )
-      {
-          webhookSubscription {
-              id
-            }
-            userErrors {
-              field
-              message
-            }
-          
+        webhookSubscription {
+          id
+        }
       }
     }`;
-    return graphQLClient.request(mutation);
+
+    const variables = {
+      topic: 'FULFILLMENTS_UPDATE',
+      webhookSubscription: {
+        callbackUrl: 'https://saletasticdev.herokuapp.com/shopify/webhooks/fulfillments/update',
+        format: 'JSON',
+      },
+    };
+
+    return graphQLClient.request(query, variables);
   };
 
   const shopifyApi = {
