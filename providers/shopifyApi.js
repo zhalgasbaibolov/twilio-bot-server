@@ -380,7 +380,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
       },
     };
 
-    console.log("Successfully registered FULFILLMENTS_UPDATE webhook!");
+    console.log('Successfully registered FULFILLMENTS_UPDATE webhook!');
 
     return graphQLClient.request(query, variables);
   };
