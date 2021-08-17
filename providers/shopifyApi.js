@@ -348,7 +348,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     return graphQLClient.request(mutation, variables);
   };
 
-  const webhookFulfillmentCreate = async () => {
+  const addWebhookFulfillmentUpdate = async () => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
     const graphQLClient = new GraphQLClient(endpoint, {
@@ -356,32 +356,29 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
         'X-Shopify-Storefront-Access-Token': accessToken,
       },
     });
+    const callbackUrl = 'https://saletasticdev.herokuapp.com/shopify/webhooks/fulfillments/update';
+    const topic = 'FULFILLMENTS_UPDATE';
+
     const mutation = gql`
-    mutation webhookSubscriptionCreate(
-  $topic: WebhookSubscriptionTopic!,
-  $webhookSubscription: WebhookSubscriptionInput!)
-  {
-      webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
-        userErrors {
-          field
-          message
+    mutation {webhookSubscriptionCreate(
+        topic: ${topic},
+        webhookSubscription: {
+            callbackUrl: "${callbackUrl}",
+            format: JSON
         }
-        webhookSubscription {
-          id
-          email
-        }
+      )
+      {
+          webhookSubscription {
+              id
+            }
+            userErrors {
+              field
+              message
+            }
+          
       }
-    }
-  `;
-    // query variables
-    const variables = {
-      topic: 'FULFILLMENTS_CREATE',
-      webhookSubscription: {
-        callbackUrl: 'https://saletasticdev.herokuapp.com/shopify',
-        format: 'JSON',
-      },
-    };
-    return graphQLClient.request(mutation, variables);
+    }`;
+    return graphQLClient.request(mutation);
   };
 
   const shopifyApi = {
@@ -394,7 +391,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     updateCheckout,
     getAllOrders,
     shopifyDiscountCreate,
-    webhookFulfillmentCreate,
+    addWebhookFulfillmentUpdate,
   };
   return shopifyApi;
 };

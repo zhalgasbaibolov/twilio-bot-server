@@ -111,20 +111,22 @@ async function handleMessage(req, res) {
   };
 
   const getOrderStatus = () => {
-    msgCtrl.sendMsg({
-      fromNumber,
-      msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
-    });
-    UserState.updateOne(
-      {
-        phone: fromNumber,
-      },
-      {
-        $set: {
-          last: 'tracking',
+    shopifyApi.addWebhookFulfillmentUpdate().then(() => {
+      msgCtrl.sendMsg({
+        fromNumber,
+        msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
+      });
+      UserState.updateOne(
+        {
+          phone: fromNumber,
         },
-      },
-    ).exec();
+        {
+          $set: {
+            last: 'tracking',
+          },
+        },
+      ).exec();
+    }).catch(errorHandler);
   };
 
   function sendMarketing() {
