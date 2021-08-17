@@ -357,20 +357,22 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
       },
     });
 
-    const query = `mutation
-    mutation webhookSubscriptionCreate(
-      $topic: WebhookSubscriptionTopic!, 
-      $webhookSubscription: WebhookSubscriptionInput!) {
-      webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
-        userErrors {
-          field
-          message
-        }
-        webhookSubscription {
-          id
-        }
-      }
-    }`;
+    const query = JSON.stringify({
+      query: `mutation
+        mutation webhookSubscriptionCreate(
+          $topic: WebhookSubscriptionTopic!, 
+          $webhookSubscription: WebhookSubscriptionInput!) {
+          webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+            userErrors {
+              field
+              message
+            }
+            webhookSubscription {
+              id
+            }
+          }
+        }`,
+    });
 
     const variables = {
       topic: 'FULFILLMENTS_UPDATE',
