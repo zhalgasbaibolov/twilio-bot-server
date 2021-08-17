@@ -10,11 +10,13 @@ const {
   getAbandonedCart,
 } = require('./cartAbandonment');
 
-const a = 'ad8c24c';
-const token = `${a}e8ee4d4be7cf28dac8a5d6e1e`;
+const a = 'abdc276b';
+const b = 'ca5995f447';
+const c = 'd05df1e9610526'
+const token = `${a}${b}${c}`; 
 const msgCtrl = WhatsapSender({
   accountSid:
-  'AC534b07c807465b936b2241514b536512',
+  'AC4352390b9be632aabb39a3b9282dc338',
   authToken:
   token,
 });
