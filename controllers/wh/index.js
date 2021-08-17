@@ -111,20 +111,20 @@ async function handleMessage(req, res) {
   };
 
   const getOrderStatus = () => {
-      msgCtrl.sendMsg({
-        fromNumber,
-        msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
-      });
-      UserState.updateOne(
-        {
-          phone: fromNumber,
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
+    });
+    UserState.updateOne(
+      {
+        phone: fromNumber,
+      },
+      {
+        $set: {
+          last: 'tracking',
         },
-        {
-          $set: {
-            last: 'tracking',
-          },
-        },
-      ).exec();
+      },
+    ).exec();
   };
 
   function sendMarketing() {
