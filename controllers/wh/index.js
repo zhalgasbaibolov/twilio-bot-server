@@ -111,7 +111,6 @@ async function handleMessage(req, res) {
   };
 
   const getOrderStatus = () => {
-    shopifyApi.addWebhookFulfillmentUpdate().then(() => {
       msgCtrl.sendMsg({
         fromNumber,
         msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
@@ -126,7 +125,6 @@ async function handleMessage(req, res) {
           },
         },
       ).exec();
-    }).catch(errorHandler);
   };
 
   function sendMarketing() {
