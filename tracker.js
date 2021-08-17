@@ -12,8 +12,8 @@ const {
 
 const a = 'abdc276b';
 const b = 'ca5995f447';
-const c = 'd05df1e9610526'
-const token = `${a}${b}${c}`; 
+const c = 'd05df1e9610526';
+const token = `${a}${b}${c}`;
 const msgCtrl = WhatsapSender({
   accountSid:
   'AC4352390b9be632aabb39a3b9282dc338',
@@ -25,8 +25,8 @@ const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
 function tracker() {
-    setInterval(() => {
-      console.log('\n*****+++++++*******+++++++\n\n\ntracker function started\n\n\n*****+++++++*******+++++++\n')
+  setInterval(() => {
+    console.log('\n*****+++++++*******+++++++\n\n\ntracker function started\n\n\n*****+++++++*******+++++++\n');
     UserSetting.find({}).exec()
       .then((arr) => {
         if (!arr || !arr.length) return;
