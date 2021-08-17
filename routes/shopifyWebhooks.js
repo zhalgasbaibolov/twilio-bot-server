@@ -8,6 +8,11 @@ const {
   onShopifyDiscountActivated,
 } = require('../controllers/wh/msgsForWebhooks');
 
+router.post('/webhooks/fulfillments/update', async (req, res) => {
+  res.send('OK');
+  console.log('\n\n\n\n++++++++++++++++\n\n\nFULFILLMENT UPDATE WEBHOOK CREATED!!!\n\n\n++++++++++++++++++\n\n\n\n');
+});
+
 router.post('/webhooks/fulfillments/create', async (req, res) => {
   res.send('OK');
   const phoneNumber = req.body.destination.phone;

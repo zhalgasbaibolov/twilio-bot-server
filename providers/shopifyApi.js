@@ -348,7 +348,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     return graphQLClient.request(mutation, variables);
   };
 
-  const webhookFulfillmentCreate = async () => {
+  const addWebhookFulfillmentUpdate = async () => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
     const graphQLClient = new GraphQLClient(endpoint, {
@@ -356,25 +356,28 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
         'X-Shopify-Storefront-Access-Token': accessToken,
       },
     });
+    const callbackUrl = 'https://saletasticdev.herokuapp.com/shopify/webhooks/fulfillments/update';
+    const topic = 'FULFILLMENTS_UPDATE';
+
     const mutation = gql`
-    mutation {
-      webhookSubscriptionCreate(
-        topic: FULFILLMENTS_CREATE
+    mutation {webhookSubscriptionCreate(
+        topic: ${topic},
         webhookSubscription: {
-          format: JSON,
-          callbackUrl: "https://saletasticdev.herokuapp.com/shopify"}
-      ) {
-        userErrors {
-          field
-          message
+            callbackUrl: "${callbackUrl}",
+            format: JSON
         }
-        webhookSubscription {
-          id
-          email
-        }
+      )
+      {
+          webhookSubscription {
+              id
+            }
+            userErrors {
+              field
+              message
+            }
+          
       }
-    }
-  `;
+    }`;
     return graphQLClient.request(mutation);
   };
 
@@ -388,7 +391,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     updateCheckout,
     getAllOrders,
     shopifyDiscountCreate,
-    webhookFulfillmentCreate,
+    addWebhookFulfillmentUpdate,
   };
   return shopifyApi;
 };
