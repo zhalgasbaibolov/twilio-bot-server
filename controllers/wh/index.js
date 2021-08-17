@@ -361,7 +361,6 @@ async function handleMessage(req, res) {
           fromNumber,
           msg: `Please open this link to track your order!\n${trackingUrl}\n\n--------------\nOR type 0 to redirect to main menu`,
         });
-        sendMainMenu(5000);
       }
     } else if (state.last === 'support') {
       axios
