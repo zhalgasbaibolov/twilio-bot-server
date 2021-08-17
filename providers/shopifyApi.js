@@ -357,8 +357,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
       },
     });
 
-    const query = JSON.stringify({
-      query: `mutation
+    const query = `mutation
         mutation webhookSubscriptionCreate(
           $topic: WebhookSubscriptionTopic!, 
           $webhookSubscription: WebhookSubscriptionInput!) {
@@ -371,8 +370,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
               id
             }
           }
-        }`,
-    });
+        }`;
 
     const variables = {
       topic: 'FULFILLMENTS_UPDATE',
