@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
-const UserDiscount = require('./db/models/UserDiscount');
+const UserAbandonedDiscount = require('./db/models/UserAbandonedDiscount');
 const UserSetting = require('./db/models/UserSetting');
 const UserState = require('./db/models/UserState');
 
@@ -10,11 +10,13 @@ const {
   getAbandonedCart,
 } = require('./cartAbandonment');
 
-const a = '370a717f';
-const token = `${a}84299f15e25757c7e3e627fa`;
+const a = 'abdc276b';
+const b = 'ca5995f447';
+const c = 'd05df1e9610526';
+const token = `${a}${b}${c}`;
 const msgCtrl = WhatsapSender({
   accountSid:
-  'AC534b07c807465b936b2241514b536512',
+  'AC4352390b9be632aabb39a3b9282dc338',
   authToken:
   token,
 });
@@ -49,7 +51,7 @@ function tracker() {
               allCarts = allCarts.filter((cart) => cart.discount_codes
          && cart.discount_codes.length);
               // console.log(allCarts);
-              UserDiscount.find({
+              UserAbandonedDiscount.find({
                 notifiedCount: {
                   $lt: 1,
                 },
@@ -97,7 +99,7 @@ function tracker() {
                       ).exec();
                     }, 6000);
 
-                    UserDiscount.updateOne({
+                    UserAbandonedDiscount.updateOne({
                       discountCode: foundPair.discountCode,
                       phone: foundPair.phone,
                     }, {
@@ -120,7 +122,7 @@ function tracker() {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 10000);
+  }, 20000); // 3 min
 }
 
 module.exports = {

@@ -4,6 +4,7 @@ const { generateSlug } = require('random-word-slugs');
 
 const UserState = require('../../db/models/UserState');
 const UserDiscount = require('../../db/models/UserDiscount');
+const UserAbandonedDiscount = require('../../db/models/UserAbandonedDiscount');
 const UserReview = require('../../db/models/UserReview');
 
 const { getProviders } = require('../../providers');
@@ -220,6 +221,41 @@ async function handleMessage(req, res) {
       })
       .catch(errorHandler);
   }
+  function sendAbandonedDiscount() {
+    const discountSlug = generateSlug();
+    shopifyApi.shopifyDiscountCreate(
+      discountSlug,
+    )
+      .then((response) => {
+        const { code } = response.data.discount_code;
+        const discountedUrl = `http://${userSettings.shopify.externalUrl}/discount/${code}`;
+
+        UserAbandonedDiscount
+          .create({
+            discountCode: discountSlug,
+            phone: fromNumber,
+            notifiedCount: 0,
+          })
+          .then(() => {
+            msgCtrl.sendMsg({
+              fromNumber,
+              msg: `Hi! Here is your promocode: ${discountedUrl}\nPlease click this link to proceed or type 0 to go to Main Menu`,
+            });
+            UserState.updateOne(
+              {
+                phone: fromNumber,
+              },
+              {
+                $set: {
+                  last: 'return-to-main-if-0-pressed',
+                },
+              },
+            ).exec();
+          })
+          .catch(errorHandler);
+      })
+      .catch(errorHandler);
+  }
   function sendDiscountToFriend() {
     const discountSlug = generateSlug();
     shopifyApi.shopifyDiscountCreate(
@@ -268,7 +304,7 @@ async function handleMessage(req, res) {
           getOrderStatus();
           break; }
         case '4': {
-          sendDiscount();
+          sendAbandonedDiscount();
           break;
         }
         case '5': {
@@ -288,24 +324,28 @@ async function handleMessage(req, res) {
       if (/@/.test(msg)) {
         shopifyApi.getAllOrders()
           .then((response) => {
-            const trackNumbers = response.data.orders
+            const trackUrls = response.data.orders
               .filter((ord) => ord.email === msg)
               .map((ord) => ord.fulfillments)
-              .flat().map((ord) => ord.tracking_numbers);
-            const arr = Array.from(new Set(trackNumbers));
-            const ordersListTxt = arr
-              .map(
-                (trackNum, idx) => `${idx + 1}. https://t.17track.net/en#nums=${trackNum}`,
+              .flat().map(
+                (tr, idx) => {
+                  if (!tr.tracking_url) {
+                    const txtUrl = `${idx + 1}. Your tracking number: ${tr.tracking_number} and tracking URL: https://t.17track.net/en#nums=${tr.tracking_number}`;
+                    return txtUrl;
+                  }
+                  const txtUrl = `${idx + 1}. Your tracking number: ${tr.tracking_numbers} and tracking URL: ${tr.tracking_urls}`;
+                  return txtUrl;
+                },
               )
               .join('\n');
-            if (!ordersListTxt) {
+            if (!trackUrls) {
               msgCtrl.sendMsg({
                 fromNumber,
                 msg: 'There is no order with such email, please recheck your email.\n\n--------------\nOR type 0 to redirect to main menu',
               });
               return;
             }
-            const txt = `Orders for email '${msg}':\n${ordersListTxt}`;
+            const txt = `Orders for email '${msg}':\n${trackUrls}\n\n(Please open link to track your order!)\n\n${backToMenu}\n\n\n${typeRecomendation}`;
             msgCtrl.sendMsg({
               fromNumber,
               msg: txt,
@@ -321,7 +361,6 @@ async function handleMessage(req, res) {
           fromNumber,
           msg: `Please open this link to track your order!\n${trackingUrl}\n\n--------------\nOR type 0 to redirect to main menu`,
         });
-        sendMainMenu(5000);
       }
     } else if (state.last === 'support') {
       axios
@@ -566,23 +605,38 @@ async function handleMessage(req, res) {
             })),
           )
             .then((createdCheckoutInfo) => {
-              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
-                createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
-              msgCtrl.sendMsg({
-                fromNumber,
-                msg: txt,
-              });
-              sendMainMenu(5000);
-              UserState.updateOne({
-                phone: fromNumber,
-              },
-              {
-                $set: {
-                  storedLineItems: [],
-                },
-              }).exec();
-            }).catch(errorHandler);
+              const discountSlug = generateSlug();
+              shopifyApi.shopifyDiscountCreate(
+                discountSlug,
+              )
+                .then((response) => {
+                  const { code } = response.data.discount_code;
 
+                  UserDiscount
+                    .create({
+                      discountCode: discountSlug,
+                      phone: fromNumber,
+                      notifiedCount: 0,
+                    })
+                    .then(() => {
+                      const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
+                        createdCheckoutInfo.checkoutCreate.checkout.webUrl}?discount=${code}`;
+                      msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: txt,
+                      });
+                      sendMainMenu(5000);
+                      UserState.updateOne({
+                        phone: fromNumber,
+                      },
+                      {
+                        $set: {
+                          storedLineItems: [],
+                        },
+                      }).exec();
+                    }).catch(errorHandler);
+                }).catch(errorHandler);
+            }).catch(errorHandler);
           break; }
         default: {
           resendCommand();
@@ -599,7 +653,7 @@ async function handleMessage(req, res) {
             })),
           )
             .then((createdCheckoutInfo) => {
-              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url and finish him!\n ${
+              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
                 createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
               msgCtrl.sendMsg({
                 fromNumber,

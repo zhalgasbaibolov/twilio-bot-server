@@ -347,6 +347,44 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
 
     return graphQLClient.request(mutation, variables);
   };
+
+  const addWebhookFulfillmentUpdate = async () => {
+    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
+
+    const graphQLClient = new GraphQLClient(endpoint, {
+      headers: {
+        'X-Shopify-Storefront-Access-Token': accessToken,
+      },
+    });
+
+    const query = `mutation
+        mutation webhookSubscriptionCreate(
+          $topic: WebhookSubscriptionTopic!, 
+          $webhookSubscription: WebhookSubscriptionInput!) {
+          webhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+            userErrors {
+              field
+              message
+            }
+            webhookSubscription {
+              id
+            }
+          }
+        }`;
+
+    const variables = {
+      topic: 'FULFILLMENTS_UPDATE',
+      webhookSubscription: {
+        callbackUrl: 'https://saletasticdev.herokuapp.com/shopify/webhooks/fulfillments/update',
+        format: 'JSON',
+      },
+    };
+
+    console.log('Successfully registered FULFILLMENTS_UPDATE webhook!');
+
+    return graphQLClient.request(query, variables);
+  };
+
   const shopifyApi = {
     retireveCollections,
     retireveProducts,
@@ -357,6 +395,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     updateCheckout,
     getAllOrders,
     shopifyDiscountCreate,
+    addWebhookFulfillmentUpdate,
   };
   return shopifyApi;
 };

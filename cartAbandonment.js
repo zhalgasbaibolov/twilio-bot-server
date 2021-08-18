@@ -5,15 +5,20 @@ async function getAbandonedCart(
   apiVersion,
   storeAPIkey,
   storePassword,
+  enterDate = new Date(),
 ) {
-  const urlCheckouts = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/checkouts.json`;
+  enterDate.setDate(enterDate.getDate() - 1);
+  let newDate = enterDate.toISOString();
+  newDate = newDate.substring(0, newDate.length - 5);
+  const urlCheckouts = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/checkouts.json?updated_at_min=${newDate}`;
 
   return axios
-    .get(urlCheckouts, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    .get(urlCheckouts,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
     .then((response) => response)
     .catch((error) => {
       // eslint-disable-next-line no-console
