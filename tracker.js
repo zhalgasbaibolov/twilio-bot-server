@@ -122,7 +122,7 @@ function tracker() {
         });
       })
       .catch((err) => { console.log(err); });
-  }, 7000); // 3 min
+  }, 20000); // 3 min
 }
 
 module.exports = {
