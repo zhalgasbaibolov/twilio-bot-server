@@ -309,7 +309,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
           }
         }
       `;
-
+        console.log(`\n\n\n\n****************\ndiscount code: ${discountCode}\n\n\ncheckoutId: ${checkoutId}\n\n\n\n***************\n`)
     const variables = {
       discountCode: `${discountCode}`,
       checkoutId: `${checkoutId}`,
