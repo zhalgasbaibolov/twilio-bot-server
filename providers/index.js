@@ -60,11 +60,13 @@ const getProviders = async (req) => {
   }
 
   if (accountSid === sandboxSid) {
-    msgCtrl = WhatsapSender({
+    const senderSettings = {
       accountSid: sandboxSid,
       authToken: sandboxToken,
       senderNumber: sandboxNumber,
-    });
+    };
+    console.log('senderSettings', senderSettings);
+    msgCtrl = WhatsapSender(senderSettings);
     console.log('work with approved sandbox: ', fromNumber);
     if (msg.startsWith('join ')) {
       const joinWord = msg.substring(4).trim();
