@@ -612,14 +612,14 @@ async function handleMessage(req, res) {
                 )
                   .then((response) => {
                     const { code } = response.data.discount_code;
-
+                    console.log(`\n\n+++++++++++\n${code}\n+++++++++++\n\n`);
                     UserDiscount
                       .create({
                         discountCode: discountSlug,
                         phone: fromNumber,
                         notifiedCount: 0,
                       });
-                    return code;
+                    return discountSlug;
                   }).catch(errorHandler);
               };
               const newDiscountForCheckout = createNewDiscount();
