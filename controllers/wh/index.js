@@ -642,7 +642,7 @@ async function handleMessage(req, res) {
           }
           break;
         case '3': {
-          createCheckoutWithDiscount();
+          createCheckoutWithDiscount(state);
           break; }
         default: {
           resendCommand();
@@ -652,7 +652,7 @@ async function handleMessage(req, res) {
     } else if (state.last === 'cart') {
       switch (msg) {
         case '2': {
-          createCheckoutWithDiscount();
+          createCheckoutWithDiscount(state);
           break;
         }
         case '3': {
