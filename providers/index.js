@@ -7,7 +7,7 @@ const { WhatsapSender } = require('./WhatsapSender');
 const { DesktopSender } = require('./DesktopSender');
 const { ShopifyApi } = require('./shopifyApi');
 
-const sandboxNumber = process.env.sandboxNumber || 'whatsapp:+14155238886';
+const sandboxNumber = process.env.sandboxNumber || 'whatsapp:+13019797858';
 const sandboxSid = process.env.sandboxSid || 'AC1fee2a7efa8e8b0babcbbc241bc551bd';
 const sandboxToken = process.env.sandboxToken || '143e7ee056fcf7f3c33309a17dfba628';
 

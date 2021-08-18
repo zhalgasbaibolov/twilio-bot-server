@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const twilio = require('twilio');
 
-module.exports.WhatsapSender = ({ accountSid, authToken, senderNumber = 'whatsapp:++14155238886' }) => ({
+module.exports.WhatsapSender = ({ accountSid, authToken, senderNumber = 'whatsapp:+14155238886' }) => ({
   sendMsg: ({
     fromNumber,
     msg = 'msg is null',
