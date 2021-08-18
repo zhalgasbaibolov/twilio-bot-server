@@ -69,7 +69,7 @@ const getProviders = async (req) => {
     msgCtrl = WhatsapSender(senderSettings);
     console.log('work with approved sandbox: ', fromNumber);
     if (msg.startsWith('join ')) {
-      const joinWord = msg.substring(4).trim();
+      const joinWord = msg;
       userSettings = await UserSetting.findOne({ 'twilio.joinWord': joinWord }).exec();
       if (!userSettings) {
         console.log('not found userSettings with "twilio.joinWord":', joinWord);
