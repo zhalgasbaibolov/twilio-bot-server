@@ -605,36 +605,42 @@ async function handleMessage(req, res) {
             })),
           )
             .then((createdCheckoutInfo) => {
-              const discountSlug = generateSlug();
-              shopifyApi.shopifyDiscountCreate(
-                discountSlug,
-              )
-                .then((response) => {
-                  const { code } = response.data.discount_code;
-
-                  UserDiscount
-                    .create({
-                      discountCode: discountSlug,
-                      phone: fromNumber,
-                      notifiedCount: 0,
-                    })
-                    .then(() => {
-                      const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
-                        createdCheckoutInfo.checkoutCreate.checkout.webUrl}?discount=${code}`;
-                      msgCtrl.sendMsg({
-                        fromNumber,
-                        msg: txt,
-                      });
-                      sendMainMenu(5000);
-                      UserState.updateOne({
+              const createNewDiscount = () => {
+                const discountSlug = generateSlug();
+                shopifyApi.shopifyDiscountCreate(
+                  discountSlug,
+                )
+                  .then((response) => {
+                    const { code } = response.data.discount_code;
+                    console.log(`\n\n+++++++++++\n${code}\n+++++++++++\n\n`);
+                    UserDiscount
+                      .create({
+                        discountCode: discountSlug,
                         phone: fromNumber,
-                      },
-                      {
-                        $set: {
-                          storedLineItems: [],
-                        },
-                      }).exec();
-                    }).catch(errorHandler);
+                        notifiedCount: 0,
+                      });
+                    return discountSlug;
+                  }).catch(errorHandler);
+              };
+              const newDiscountForCheckout = createNewDiscount();
+              const checkoutId = createdCheckoutInfo.checkoutCreate.checkout.id;
+              shopifyApi.createCheckoutListWithDiscount(checkoutId, newDiscountForCheckout)
+                .then((response) => {
+                  const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${response.checkoutDiscountCodeApplyV2.checkout.webUrl
+                  }`;
+                  msgCtrl.sendMsg({
+                    fromNumber,
+                    msg: txt,
+                  });
+                  sendMainMenu(5000);
+                  UserState.updateOne({
+                    phone: fromNumber,
+                  },
+                  {
+                    $set: {
+                      storedLineItems: [],
+                    },
+                  }).exec();
                 }).catch(errorHandler);
             }).catch(errorHandler);
           break; }
@@ -653,21 +659,43 @@ async function handleMessage(req, res) {
             })),
           )
             .then((createdCheckoutInfo) => {
-              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
-                createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
-              msgCtrl.sendMsg({
-                fromNumber,
-                msg: txt,
-              });
-              sendMainMenu(5000);
-              UserState.updateOne({
-                phone: fromNumber,
-              },
-              {
-                $set: {
-                  storedLineItems: [],
-                },
-              }).exec();
+              const createNewDiscount = () => {
+                const discountSlug = generateSlug();
+                shopifyApi.shopifyDiscountCreate(
+                  discountSlug,
+                )
+                  .then((response) => {
+                    const { code } = response.data.discount_code;
+
+                    UserDiscount
+                      .create({
+                        discountCode: discountSlug,
+                        phone: fromNumber,
+                        notifiedCount: 0,
+                      });
+                    return code;
+                  }).catch(errorHandler);
+              };
+              const newDiscountForCheckout = createNewDiscount();
+              const checkoutId = createdCheckoutInfo.checkoutCreate.checkout.id;
+              shopifyApi.createCheckoutListWithDiscount(checkoutId, newDiscountForCheckout)
+                .then((response) => {
+                  const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${response.checkoutDiscountCodeApplyV2.checkout.webUrl
+                  }`;
+                  msgCtrl.sendMsg({
+                    fromNumber,
+                    msg: txt,
+                  });
+                  sendMainMenu(5000);
+                  UserState.updateOne({
+                    phone: fromNumber,
+                  },
+                  {
+                    $set: {
+                      storedLineItems: [],
+                    },
+                  }).exec();
+                }).catch(errorHandler);
             }).catch(errorHandler);
           break;
         }
