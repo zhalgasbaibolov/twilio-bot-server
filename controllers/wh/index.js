@@ -605,23 +605,38 @@ async function handleMessage(req, res) {
             })),
           )
             .then((createdCheckoutInfo) => {
-              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
-                createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
-              msgCtrl.sendMsg({
-                fromNumber,
-                msg: txt,
-              });
-              sendMainMenu(5000);
-              UserState.updateOne({
-                phone: fromNumber,
-              },
-              {
-                $set: {
-                  storedLineItems: [],
-                },
-              }).exec();
-            }).catch(errorHandler);
+              const discountSlug = generateSlug();
+              shopifyApi.shopifyDiscountCreate(
+                discountSlug,
+              )
+                .then((response) => {
+                  const { code } = response.data.discount_code;
 
+                  UserDiscount
+                    .create({
+                      discountCode: discountSlug,
+                      phone: fromNumber,
+                      notifiedCount: 0,
+                    })
+                    .then(() => {
+                      const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
+                        createdCheckoutInfo.checkoutCreate.checkout.webUrl}?discount/${code}`;
+                      msgCtrl.sendMsg({
+                        fromNumber,
+                        msg: txt,
+                      });
+                      sendMainMenu(5000);
+                      UserState.updateOne({
+                        phone: fromNumber,
+                      },
+                      {
+                        $set: {
+                          storedLineItems: [],
+                        },
+                      }).exec();
+                    }).catch(errorHandler);
+                }).catch(errorHandler);
+            }).catch(errorHandler);
           break; }
         default: {
           resendCommand();
