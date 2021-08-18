@@ -45,7 +45,7 @@ function tracker() {
             .then((response) => {
               let allCarts = response.data && response.data.checkouts;
               if (!allCarts || !allCarts.length) {
-                console.log('abandoned carts not found');
+                // console.log('abandoned carts not found');
                 return;
               }
               allCarts = allCarts.filter((cart) => cart.discount_codes
