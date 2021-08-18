@@ -240,6 +240,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     };
     return graphQLClient.request(mutation, variables);
   };
+
   const createCheckoutList = async (lineItems) => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
@@ -279,6 +280,48 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
       },
     };
     return graphQLClient.request(mutation, variables);
+  };
+
+  const createCheckoutListWithDiscount = async (lineItems, discountCode) => {
+    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
+
+    const graphQLClient = new GraphQLClient(endpoint, {
+      headers: {
+        'X-Shopify-Storefront-Access-Token': accessToken,
+      },
+    });
+
+    createCheckoutList(lineItems).then((createdCheckoutInfo) => {
+      const checkoutId = createdCheckoutInfo.checkoutCreate.checkout.id;
+
+      const mutation = gql`
+        mutation checkoutDiscountCodeApplyV2($discountCode: String!, $checkoutId: ID!) {
+          checkoutDiscountCodeApplyV2(
+            discountCode: $discountCode
+            checkoutId: $checkoutId
+          ) {
+            checkout {
+              id
+              webUrl
+            }
+            checkoutUserErrors {
+              code
+              field
+              message
+            }
+          }
+        }
+      `;
+
+      const variables = {
+        discountCode: `${discountCode}`,
+        checkoutId: `${checkoutId}`,
+      };
+
+      return graphQLClient.request(mutation, variables);
+    }).catch((error) => {
+      console.log(error);
+    });
   };
 
   const getAllOrders = async () => {
@@ -391,6 +434,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     getProductsByCollectionHandle,
     retireveVariantsOfProduct,
     createCheckout,
+    createCheckoutListWithDiscount,
     createCheckoutList,
     updateCheckout,
     getAllOrders,

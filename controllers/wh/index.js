@@ -598,44 +598,46 @@ async function handleMessage(req, res) {
           }
           break;
         case '3': {
-          shopifyApi.createCheckoutList(
+          const createNewDiscount = () => {
+            const discountSlug = generateSlug();
+            shopifyApi.shopifyDiscountCreate(
+              discountSlug,
+            )
+              .then((response) => {
+                const { code } = response.data.discount_code;
+
+                UserDiscount
+                  .create({
+                    discountCode: discountSlug,
+                    phone: fromNumber,
+                    notifiedCount: 0,
+                  });
+                return code;
+              }).catch(errorHandler);
+          };
+          shopifyApi.createCheckoutListWithDiscount(
             state.storedLineItems.map((x) => ({
               variantId: x.variantId,
               quantity: x.quantity,
             })),
+            createNewDiscount(),
           )
             .then((createdCheckoutInfo) => {
-              const discountSlug = generateSlug();
-              shopifyApi.shopifyDiscountCreate(
-                discountSlug,
-              )
-                .then((response) => {
-                  const { code } = response.data.discount_code;
-
-                  UserDiscount
-                    .create({
-                      discountCode: discountSlug,
-                      phone: fromNumber,
-                      notifiedCount: 0,
-                    })
-                    .then(() => {
-                      const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
-                        createdCheckoutInfo.checkoutCreate.checkout.webUrl}?discount=${code}`;
-                      msgCtrl.sendMsg({
-                        fromNumber,
-                        msg: txt,
-                      });
-                      sendMainMenu(5000);
-                      UserState.updateOne({
-                        phone: fromNumber,
-                      },
-                      {
-                        $set: {
-                          storedLineItems: [],
-                        },
-                      }).exec();
-                    }).catch(errorHandler);
-                }).catch(errorHandler);
+              const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
+                createdCheckoutInfo.checkoutCreate.checkout.webUrl}`;
+              msgCtrl.sendMsg({
+                fromNumber,
+                msg: txt,
+              });
+              sendMainMenu(5000);
+              UserState.updateOne({
+                phone: fromNumber,
+              },
+              {
+                $set: {
+                  storedLineItems: [],
+                },
+              }).exec();
             }).catch(errorHandler);
           break; }
         default: {
@@ -646,11 +648,29 @@ async function handleMessage(req, res) {
     } else if (state.last === 'cart') {
       switch (msg) {
         case '2': {
-          shopifyApi.createCheckoutList(
+          const createNewDiscount = () => {
+            const discountSlug = generateSlug();
+            shopifyApi.shopifyDiscountCreate(
+              discountSlug,
+            )
+              .then((response) => {
+                const { code } = response.data.discount_code;
+
+                UserDiscount
+                  .create({
+                    discountCode: discountSlug,
+                    phone: fromNumber,
+                    notifiedCount: 0,
+                  });
+                return code;
+              }).catch(errorHandler);
+          };
+          shopifyApi.createCheckoutListWithDiscount(
             state.storedLineItems.map((x) => ({
               variantId: x.variantId,
               quantity: x.quantity,
             })),
+            createNewDiscount(),
           )
             .then((createdCheckoutInfo) => {
               const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${
