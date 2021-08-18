@@ -27,6 +27,7 @@ db.on('open', () => {
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const whRouter = require('./routes/wh');
+const awhRouter = require('./routes/awh');
 const settingsRouter = require('./routes/settings');
 const shopifyRouter = require('./routes/shopifyWebhooks');
 
@@ -46,6 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/wh', whRouter);
+app.use('/awh', awhRouter);
 app.use('/settings', settingsRouter);
 app.use('/shopify', shopifyRouter);
 

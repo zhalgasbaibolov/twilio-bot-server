@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 const twilio = require('twilio');
 
-module.exports.WhatsapSender = ({ accountSid, authToken }) => ({
+module.exports.WhatsapSender = ({ accountSid, authToken, senderNumber = 'whatsapp:++14155238886' }) => ({
   sendMsg: ({
     fromNumber,
     msg = 'msg is null',
     mediaUrl = null,
   }) => {
-    if (fromNumber === 'whatsapp:+14155238886') {
+    if (fromNumber === senderNumber) {
       console.log(msg);
       return null;
     }
@@ -16,7 +16,7 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => ({
     return mediaUrl ? client.messages
       .create({
         body: msg,
-        from: 'whatsapp:+14155238886',
+        from: senderNumber,
         to: fromNumber,
         mediaUrl,
       })
@@ -27,7 +27,7 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => ({
       .done() : client.messages
       .create({
         body: msg,
-        from: 'whatsapp:+14155238886',
+        from: senderNumber,
         to: fromNumber,
       })
       .catch((err) => {
@@ -41,7 +41,7 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => ({
     msg,
     mediaUrlList,
   }) => {
-    if (fromNumber === 'whatsapp:+14155238886') {
+    if (fromNumber === senderNumber) {
       return null;
     }
     console.log(mediaUrlList);
@@ -49,7 +49,7 @@ module.exports.WhatsapSender = ({ accountSid, authToken }) => ({
 
     return client.messages
       .create({
-        from: 'whatsapp:+14155238886',
+        from: senderNumber,
         body: msg,
         to: fromNumber,
         mediaUrl: mediaUrlList,
