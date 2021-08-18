@@ -68,9 +68,9 @@ const getProviders = async (req) => {
     console.log('work with approved sandbox: ', fromNumber);
     if (msg.startsWith('join ')) {
       const joinWord = msg.substring(4).trim();
-      userSettings = await UserSetting.findOne({ 'shopify.joinWord': joinWord }).exec();
+      userSettings = await UserSetting.findOne({ 'twilio.joinWord': joinWord }).exec();
       if (!userSettings) {
-        console.log('not found userSettings with "shopify.externalUrl":', joinWord);
+        console.log('not found userSettings with "twilio.joinWord":', joinWord);
         msgCtrl.sendMsg({ fromNumber, msg: 'store not found' });
         return null;
       }
