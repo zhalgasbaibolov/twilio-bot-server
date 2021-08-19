@@ -9,15 +9,11 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
   const {
     storeMyShopify, accessToken, apiVersion, priceRuleId, storeAPIkey, storePassword,
   } = settings;
-  console.log(settings);
+  // console.log(settings);
   const retireveCollections = async () => {
-    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
+    const endpoint = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/graphql.json`;
 
-    const graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        'X-Shopify-Storefront-Access-Token': accessToken,
-      },
-    });
+    const graphQLClient = new GraphQLClient(endpoint);
 
     const query = gql`
       {
@@ -134,13 +130,9 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
   const getProductsByCollectionHandle = async (
     handle,
   ) => {
-    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
+    const endpoint = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/graphql.json`;
 
-    const graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        'X-Shopify-Storefront-Access-Token': accessToken,
-      },
-    });
+    const graphQLClient = new GraphQLClient(endpoint);
 
     const query = gql`
       {
@@ -164,14 +156,9 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
   const retireveVariantsOfProduct = async (
     productID,
   ) => {
-    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
+    const endpoint = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/graphql.json`;
 
-    const graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        'X-Shopify-Storefront-Access-Token': accessToken,
-        'Content-Type': 'application/json',
-      },
-    });
+    const graphQLClient = new GraphQLClient(endpoint);
 
     const query = gql`
       {
@@ -197,127 +184,6 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     return graphQLClient.request(query);
   };
 
-  const createCheckout = async (variantId) => {
-    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
-
-    const graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        'X-Shopify-Storefront-Access-Token': accessToken,
-      },
-    });
-
-    const mutation = gql`
-      mutation checkoutCreate($input: CheckoutCreateInput!) {
-        checkoutCreate(input: $input) {
-          checkout {
-            id
-            webUrl
-            lineItems(first: 20) {
-              edges {
-                node {
-                  id
-                  title
-                  quantity
-                }
-              }
-            }
-          }
-          checkoutUserErrors {
-            code
-            field
-            message
-          }
-        }
-      }
-    `;
-    const variables = {
-      input: {
-        lineItems: [{
-          variantId,
-          quantity: 1,
-        }],
-      },
-    };
-    return graphQLClient.request(mutation, variables);
-  };
-
-  const createCheckoutList = async (lineItems) => {
-    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
-
-    const graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        'X-Shopify-Storefront-Access-Token': accessToken,
-      },
-    });
-
-    const mutation = gql`
-    mutation checkoutCreate($input: CheckoutCreateInput!) {
-      checkoutCreate(input: $input) {
-        checkout {
-          id
-          webUrl
-          lineItems(first: 20) {
-            edges {
-              node {
-                id
-                title
-                quantity
-              }
-            }
-          }
-        }
-        checkoutUserErrors {
-          code
-          field
-          message
-        }
-      }
-    }
-  `;
-    const variables = {
-      input: {
-        lineItems,
-      },
-    };
-    return graphQLClient.request(mutation, variables);
-  };
-
-  const createCheckoutListWithDiscount = async (checkoutId, discountCode) => {
-    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
-
-    const graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        'X-Shopify-Storefront-Access-Token': accessToken,
-      },
-    });
-
-    const mutation = gql`
-        mutation checkoutDiscountCodeApplyV2($discountCode: String!, $checkoutId: ID!) {
-          checkoutDiscountCodeApplyV2(
-            discountCode: $discountCode
-            checkoutId: $checkoutId
-          ) {
-            checkout {
-              id
-              webUrl
-            }
-            checkoutUserErrors {
-              code
-              field
-              message
-            }
-          }
-        }
-      `;
-    console.log(`\n\n\n\n****************\ndiscount code: ${discountCode}\n\n\ncheckoutId: ${checkoutId}\n\n\n\n***************\n`);
-    const variables = {
-      discountCode: `${discountCode}`,
-      checkoutId: `${checkoutId}`,
-    };
-
-    return graphQLClient.request(mutation, variables);
-  };
-
   const getAllOrders = async () => {
     const enterDate = new Date();
     enterDate.setDate(enterDate.getDate() - 5);
@@ -340,49 +206,6 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
         console.log('error', error);
         return false;
       });
-  };
-
-  const updateCheckout = async ({
-    checkoutId,
-    lineItems,
-  }) => {
-    const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
-
-    const graphQLClient = new GraphQLClient(endpoint, {
-      headers: {
-        'X-Shopify-Storefront-Access-Token': accessToken,
-      },
-    });
-
-    const mutation = gql`
-      mutation checkoutLineItemsReplace($lineItems: [CheckoutLineItemInput!]!, $checkoutId: ID!) {
-        checkoutLineItemsReplace(lineItems: $lineItems, checkoutId: $checkoutId) {
-          checkout {
-            id
-            lineItems(first:25){
-              edges{
-                node{
-                  id
-                  title
-                  quantity
-                }
-              }
-            }
-          }
-          userErrors {
-            code
-            field
-            message
-          }
-        }
-      }
-  `;
-    const variables = {
-      checkoutId,
-      lineItems,
-    };
-
-    return graphQLClient.request(mutation, variables);
   };
 
   const addWebhookFulfillmentUpdate = async () => {
@@ -427,10 +250,6 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     retireveProducts,
     getProductsByCollectionHandle,
     retireveVariantsOfProduct,
-    createCheckout,
-    createCheckoutListWithDiscount,
-    createCheckoutList,
-    updateCheckout,
     getAllOrders,
     shopifyDiscountCreate,
     addWebhookFulfillmentUpdate,
