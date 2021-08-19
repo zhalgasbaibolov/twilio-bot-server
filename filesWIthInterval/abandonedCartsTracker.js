@@ -7,8 +7,8 @@ const UserState = require('../db/models/UserState');
 const { WhatsapSender } = require('../providers/WhatsapSender');
 
 const {
-  getAbandonedCart,
-} = require('../cartAbandonment');
+  shopifyApi,
+} = require('../providers/shopifyApi');
 
 const a = 'abdc276b';
 const b = 'ca5995f447';
@@ -33,18 +33,7 @@ function tracker() {
           if (!sett.shopify) {
             return;
           }
-          const {
-            storeMyShopify,
-            apiVersion,
-            storeAPIkey,
-            storePassword,
-          } = sett.shopify;
-          getAbandonedCart(
-            storeMyShopify,
-            apiVersion,
-            storeAPIkey,
-            storePassword,
-          )
+          shopifyApi.getAllCheckouts()
             .then((response) => {
               let allCarts = response.data && response.data.checkouts;
               if (!allCarts || !allCarts.length) {
