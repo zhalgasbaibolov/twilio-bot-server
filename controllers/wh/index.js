@@ -94,47 +94,36 @@ async function handleMessage(req, res) {
     });
   }
   function createCheckoutWithDiscount(state) {
-    shopifyApi.createCheckoutList(
-      state.storedLineItems.map((x) => ({
-        variantId: x.variantId,
-        quantity: x.quantity,
-      })),
+    const checkoutUrl = state.storedLineItems.filter((x) => x.variantId && x.quantity).map(({ variantID, quantity }) => `http://${userSettings.shopify.externalUrl}/cart/#{${variantID}}:#{${quantity}}`).join('');
+
+    const discountSlug = generateSlug();
+    shopifyApi.shopifyDiscountCreate(
+      discountSlug,
     )
-      .then((createdCheckoutInfo) => {
-        const discountSlug = generateSlug();
-        shopifyApi.shopifyDiscountCreate(
-          discountSlug,
-        )
-          .then((response) => {
-            const { code } = response.data.discount_code;
-            console.log(`\n\n+++++++++++\n${code}\n+++++++++++\n\n`);
-            UserDiscount
-              .create({
-                discountCode: discountSlug,
-                phone: fromNumber,
-                notifiedCount: 0,
-              });
-          }).catch(errorHandler);
+      .then((response) => {
+        const { code } = response.data.discount_code;
+        console.log(`\n\n+++++++++++\n${code}\n+++++++++++\n\n`);
+        UserDiscount
+          .create({
+            discountCode: discountSlug,
+            phone: fromNumber,
+            notifiedCount: 0,
+          });
         const newDiscountForCheckout = discountSlug;
-        const checkoutId = createdCheckoutInfo.checkoutCreate.checkout.id;
-        shopifyApi.createCheckoutListWithDiscount(checkoutId, newDiscountForCheckout)
-          .then((response) => {
-            const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${response.checkoutDiscountCodeApplyV2.checkout.webUrl
-            }`;
-            msgCtrl.sendMsg({
-              fromNumber,
-              msg: txt,
-            });
-            sendMainMenu(5000);
-            UserState.updateOne({
-              phone: fromNumber,
-            },
-            {
-              $set: {
-                storedLineItems: [],
-              },
-            }).exec();
-          }).catch(errorHandler);
+        const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${checkoutUrl}?discount=${newDiscountForCheckout}`;
+        msgCtrl.sendMsg({
+          fromNumber,
+          msg: txt,
+        });
+        sendMainMenu(5000);
+        UserState.updateOne({
+          phone: fromNumber,
+        },
+        {
+          $set: {
+            storedLineItems: [],
+          },
+        }).exec();
       }).catch(errorHandler);
   }
   const getSupport = () => {

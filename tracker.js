@@ -30,8 +30,8 @@ function tracker() {
       .then((arr) => {
         if (!arr || !arr.length) return;
         arr.forEach((sett) => {
-          if(!sett.shopify){
-            return
+          if (!sett.shopify) {
+            return;
           }
           const {
             storeMyShopify,
