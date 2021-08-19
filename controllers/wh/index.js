@@ -520,11 +520,14 @@ async function handleMessage(req, res) {
           const mediaUrlList = variants.map(
             (item) => item.node.image && item.node.image.originalSrc,
           );
-          if (mediaUrlList && mediaUrlList.length) {
+          const filteredMediaUrlList = mediaUrlList.filter(function (el) {
+            return el != null;
+          });
+          if (filteredMediaUrlList && filteredMediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
               msg: 'Select variants',
-              mediaUrlList,
+              filteredMediaUrlList,
             }).then(() => {
               setTimeout(() => {
                 let txt = variants
