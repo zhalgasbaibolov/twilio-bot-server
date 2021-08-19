@@ -96,7 +96,7 @@ async function handleMessage(req, res) {
   function createCheckoutWithDiscount(state) {
     const checkoutUrl = state.storedLineItems.map(({ variantID, quantity }) => (
       console.log(`\n\n\n++++++++++\nvariantId is: ${variantID}\n++++++++++\n\n\n`)
-      `${variantID.slice(28)}:${quantity}`)).join('');
+      `${variantID}:${quantity}`)).join('');
 
     const discountSlug = generateSlug();
     shopifyApi.shopifyDiscountCreate(
