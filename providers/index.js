@@ -11,7 +11,7 @@ const getProviders = async (req) => {
   const fromNumber = req.body.From;
   const msg = req.body.Body;
 
-  console.log('wh controller', fromNumber, msg);
+  console.log('wh controller', fromNumber, msg, req.body);
   if (fromNumber === 'whatsapp:+14155238886') {
     return null;
   }
