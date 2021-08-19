@@ -94,7 +94,7 @@ async function handleMessage(req, res) {
     });
   }
   function createCheckoutWithDiscount(state) {
-    const checkoutUrl = state.storedLineItems.map(({ variantId, quantity }) => `${variantId}:${quantity}`).join('');
+    const checkoutUrl = state.storedLineItems.map(({ variantId, quantity }) => `${variantId.slice(28)}:${quantity}`).join('');
 
     const discountSlug = generateSlug();
     shopifyApi.shopifyDiscountCreate(
