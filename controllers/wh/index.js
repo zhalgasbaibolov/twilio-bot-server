@@ -6,6 +6,7 @@ const UserState = require('../../db/models/UserState');
 const UserDiscount = require('../../db/models/UserDiscount');
 const UserAbandonedDiscount = require('../../db/models/UserAbandonedDiscount');
 const UserReview = require('../../db/models/UserReview');
+const UserContact = require('../../db/models/UserContact');
 
 const { getProviders } = require('../../providers');
 
@@ -33,15 +34,21 @@ async function handleMessage(req, res) {
   const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
   function createNewDialog() {
-    UserState
-      .updateOne({
+    UserContact
+      .create({
         phone: fromNumber,
-      },
-      { last: 'demoMain' },
-      { upsert: true })
-      .then(() => {
-        /* eslint-disable no-use-before-define */
-        sendDiscount();
+        contactType: 'fromWhatsappDB',
+      }).then(() => {
+        UserState
+          .updateOne({
+            phone: fromNumber,
+          },
+          { last: 'demoMain' },
+          { upsert: true })
+          .then(() => {
+            /* eslint-disable no-use-before-define */
+            sendDiscount();
+          }).catch(errorHandler);
       }).catch(errorHandler);
   }
   function sendMainMenu(ms = 0, firstTime = false) {
