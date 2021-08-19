@@ -21,6 +21,7 @@ async function handleMessage(req, res) {
 
   const fromNumber = req.body.From;
   const msg = req.body.Body;
+  const userContact = fromNumber.slice(9);
 
   const errorHandler = (err) => {
     // eslint-disable-next-line no-console
@@ -36,7 +37,7 @@ async function handleMessage(req, res) {
   function createNewDialog() {
     UserContact
       .create({
-        phone: fromNumber,
+        phone: userContact,
         contactType: 'fromWhatsappDB',
       }).then(() => {
         UserState
