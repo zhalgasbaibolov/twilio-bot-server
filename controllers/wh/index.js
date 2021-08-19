@@ -94,7 +94,7 @@ async function handleMessage(req, res) {
     });
   }
   function createCheckoutWithDiscount(state) {
-    const checkoutUrl = state.storedLineItems.filter((x) => x.variantId && x.quantity).map(({ variantID, quantity }) => `http://${userSettings.shopify.externalUrl}/cart/#{${variantID}}:#{${quantity}}`).join('');
+    const checkoutUrl = state.storedLineItems.filter((x) => x.variantId && x.quantity).map(({ variantID, quantity }) => `#{${variantID}}:#{${quantity}}`).join('');
 
     const discountSlug = generateSlug();
     shopifyApi.shopifyDiscountCreate(
@@ -110,7 +110,7 @@ async function handleMessage(req, res) {
             notifiedCount: 0,
           });
         const newDiscountForCheckout = discountSlug;
-        const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n ${checkoutUrl}?discount=${newDiscountForCheckout}`;
+        const txt = `Congratulations!\nYour order is almost created.\nPlease, open this url to proceed to make payments!\n http://${userSettings.shopify.externalUrl}/cart/${checkoutUrl}?discount=${newDiscountForCheckout}`;
         msgCtrl.sendMsg({
           fromNumber,
           msg: txt,
