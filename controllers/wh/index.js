@@ -517,15 +517,17 @@ async function handleMessage(req, res) {
             const v = variants[i];
             v.productTitle = productTitle;
           }
-          const mediaUrlList = (item) => {
-            item.node.image.originalSrc.filter((el) => el != null);
+          const filteredMedia = (item) => {
+            const filteredImages = item.node.image.originalSrc.filter((el) => el != null);
+            return filteredImages;
           };
+          const mediaUrlList =filteredMedia();
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
               msg: 'Select variants',
-              mediaUrlList,
+              mediaUrlList
             }).then(() => {
               setTimeout(() => {
                 let txt = variants
