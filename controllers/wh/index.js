@@ -517,11 +517,10 @@ async function handleMessage(req, res) {
             const v = variants[i];
             v.productTitle = productTitle;
           }
-          const filteredMedia = (item) => {
-            const filteredImages = item.node.image.originalSrc.filter((el) => el != null);
-            return filteredImages;
-          };
-          const mediaUrlList =filteredMedia();
+          const mediaUrlList = variants.map(
+            (item) => item.node.image && item.node.image.originalSrc,
+          );
+          
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
