@@ -521,12 +521,11 @@ async function handleMessage(req, res) {
             (item) => item.node.image && item.node.image.originalSrc,
           );
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
-          const filteredMediaUrlList = mediaUrlList.filter((el) => el != null);
-          if (filteredMediaUrlList && filteredMediaUrlList.length) {
+          if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
               msg: 'Select variants',
-              filteredMediaUrlList,
+              mediaUrlList,
             }).then(() => {
               setTimeout(() => {
                 let txt = variants
