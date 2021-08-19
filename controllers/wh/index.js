@@ -517,9 +517,9 @@ async function handleMessage(req, res) {
             const v = variants[i];
             v.productTitle = productTitle;
           }
-          const mediaUrlList = variants.map(
-            (item) => item.node.image && item.node.image.originalSrc,
-          ).flat();
+          const mediaUrlList = (item) => {
+            item.node.image.originalSrc.filter((el) => el != null);
+          };
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
