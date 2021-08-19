@@ -520,9 +520,7 @@ async function handleMessage(req, res) {
           const mediaUrlList = variants.map(
             (item) => item.node.image && item.node.image.originalSrc,
           );
-          const filteredMediaUrlList = mediaUrlList.filter(function (el) {
-            return el != null;
-          });
+          const filteredMediaUrlList = mediaUrlList.filter((el) => el != null);
           if (filteredMediaUrlList && filteredMediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
