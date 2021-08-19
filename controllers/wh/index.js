@@ -517,7 +517,7 @@ async function handleMessage(req, res) {
             const v = variants[i];
             v.productTitle = productTitle;
           }
-          const mediaUrlList = variants.map(
+          const mediaUrlList = variants.filter((el) => el != null).map(
             (item) => item.node.image && item.node.image.originalSrc,
           );
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
