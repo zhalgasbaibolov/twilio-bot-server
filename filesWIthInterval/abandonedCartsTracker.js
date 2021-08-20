@@ -3,7 +3,7 @@
 const UserAbandonedDiscount = require('../db/models/UserAbandonedDiscount');
 const UserState = require('../db/models/UserState');
 
-const shopifyApi = require('../providers/shopifyApi');
+const { shopifyApi } = require('../providers/shopifyApi');
 
 const { WhatsapSender } = require('../providers/WhatsapSender');
 
