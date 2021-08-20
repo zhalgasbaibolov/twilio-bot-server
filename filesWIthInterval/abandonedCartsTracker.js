@@ -19,7 +19,7 @@ const msgCtrl = WhatsapSender({
 });
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
-function tracker() {
+function abandonedCartsTracker() {
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
@@ -121,5 +121,5 @@ function tracker() {
   }, 20000); // 3 min
 }
 module.exports = {
-  tracker,
+  abandonedCartsTracker,
 };
