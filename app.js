@@ -5,8 +5,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const { abandonedCartsTracker } = require('./filesWIthInterval/abandonedCartsTracker');
-const { newContactsTracker } = require('./filesWIthInterval/newContactsTracker');
+const abandonedCartsTracker = require('./filesWIthInterval/abandonedCartsTracker');
+const newContactsTracker = require('./filesWIthInterval/newContactsTracker');
 
 // Set up default mongoose connection
 const mongoDB = 'mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/test?retryWrites=true&w=majority';
