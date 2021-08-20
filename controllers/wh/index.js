@@ -530,6 +530,7 @@ async function handleMessage(req, res) {
           );
 
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
+          console.log(`\n\n\n*******************\nMedia list: ${typeof(mediaUrlList)}\n*******************\n\n\n`);
 
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
