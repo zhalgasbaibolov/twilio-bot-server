@@ -53,8 +53,7 @@ function newContactsTracker() {
                 allOrders.forEach((cart) => {
                   for (let i = 0; i < cart.billing_address.length; i += 1) {
                     const { phone } = cart.billing_address[i];
-                    const foundPhone = pairs.find((p) => p.phone);
-                    if (foundPhone.phone !== phone) {
+                    if (phone !== pairs.phone) {
                       UserContact
                         .create({
                           phone,
