@@ -21,9 +21,8 @@ const msgCtrl = WhatsapSender({
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-async function tracker(req, res) {
-  res.send('OK');
-  const getProviderResult = await getProviders(req);
+async function tracker() {
+  const getProviderResult = await getProviders();
   if (!getProviderResult) {
     return;
   }
