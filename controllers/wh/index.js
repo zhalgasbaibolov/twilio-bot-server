@@ -531,6 +531,8 @@ async function handleMessage(req, res) {
           const firstImage = mediaUrlList[0];
 
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
+          console.log(`\n\n\n*******************\nMedia list: ${firstImage}\n*******************\n\n\n`);
+
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
