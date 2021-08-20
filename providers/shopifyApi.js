@@ -213,10 +213,10 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     enterDate.setDate(enterDate.getDate() - 1);
     let newDate = enterDate.toISOString();
     newDate = newDate.substring(0, newDate.length - 5);
-    const urlLastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/checkouts.json?updated_at_min=${newDate}`;
+    const urlLastCheckouts = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/checkouts.json?updated_at_min=${newDate}`;
 
     return axios
-      .get(urlLastOrders, {
+      .get(urlLastCheckouts, {
         headers: {
           'Content-Type': 'application/json',
         },
