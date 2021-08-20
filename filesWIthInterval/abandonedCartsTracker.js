@@ -4,9 +4,8 @@ const UserAbandonedDiscount = require('../db/models/UserAbandonedDiscount');
 const UserSetting = require('../db/models/UserSetting');
 const UserState = require('../db/models/UserState');
 const { WhatsapSender } = require('../providers/WhatsapSender');
-const {
-  getAbandonedCart,
-} = require('../getAbandonedCart');
+
+const getAbandonedCart = require('../getAbandonedCart');
 
 const a = 'abdc276b';
 const b = 'ca5995f447';
