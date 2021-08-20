@@ -529,7 +529,7 @@ async function handleMessage(req, res) {
             (item) => item.node.image && item.node.image.originalSrc,
           );
           mediaUrlList = mediaUrlList.filter((x) => !!x);
-          
+
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
