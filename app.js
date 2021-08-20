@@ -5,7 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const { tracker } = require('./filesWIthInterval/abandonedCartsTracker');
+// const { tracker } = require('./filesWIthInterval/abandonedCartsTracker');
 // const { trackerDiscount } = require('./trackerDiscount');
 // const { trackerSelf } = require('./trackerSelf');
 
