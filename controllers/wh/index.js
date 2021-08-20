@@ -525,9 +525,10 @@ async function handleMessage(req, res) {
             const v = variants[i];
             v.productTitle = productTitle;
           }
-          const mediaUrlList = variants.flatMap(
+          let mediaUrlList = variants.map(
             (item) => item.node.image && item.node.image.originalSrc,
           );
+          mediaUrlList = mediaUrlList.filter((x) => x !== undefined && x !== null);
 
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
           console.log(`\n\n\n*******************\nMedia list: ${typeof (mediaUrlList)}\n*******************\n\n\n`);
