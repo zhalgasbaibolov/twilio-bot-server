@@ -3,7 +3,7 @@
 const { getProviders } = require('../providers');
 const UserContact = require('../db/models/UserContact');
 
-const intervalTime = 3000; // 1 hour
+const intervalTime = 3000000; // 1 hour
 
 async function newContactsTracker(req, res) {
   res.send('OK');
