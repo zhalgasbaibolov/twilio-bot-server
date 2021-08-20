@@ -6,8 +6,6 @@ const UserSetting = require('../db/models/UserSetting');
 
 const { getProviders } = require('../providers');
 
-
-
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
