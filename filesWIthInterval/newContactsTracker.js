@@ -5,7 +5,7 @@ const UserSetting = require('../db/models/UserSetting');
 
 const getAllOrders = require('../getAllOrders');
 
-const intervalTime = 3000000; // 1 hour
+const intervalTime = 30000; // 1 hour
 
 function newContactsTracker() {
   setInterval(() => {
