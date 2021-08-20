@@ -527,10 +527,12 @@ async function handleMessage(req, res) {
           }
           const mediaUrlList = variants.map(
             (item) => item.node.image && item.node.image.originalSrc,
-          );
+          ).flat();
           const firstImage = mediaUrlList[0];
 
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
+          console.log(`\n\n\n*******************\nMedia list: ${firstImage}\n*******************\n\n\n`);
+
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
               fromNumber,
