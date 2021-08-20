@@ -528,7 +528,7 @@ async function handleMessage(req, res) {
           let mediaUrlList = variants.map(
             (item) => item.node.image && item.node.image.originalSrc,
           );
-          mediaUrlList = mediaUrlList.filter((x) => x !== undefined && x !== null);
+          mediaUrlList = mediaUrlList.filter((x) => !!x);
 
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
           console.log(`\n\n\n*******************\nMedia list: ${typeof (mediaUrlList)}\n*******************\n\n\n`);
