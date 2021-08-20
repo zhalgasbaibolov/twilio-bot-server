@@ -539,11 +539,6 @@ async function handleMessage(req, res) {
               msg: 'Select variants',
               firstImage,
             }).then(() => {
-              msgCtrl.sendMediaList({
-                fromNumber,
-                msg: 'Select variantss',
-                mediaUrlList,
-              });
               setTimeout(() => {
                 let txt = variants
                   .map((v, idx) => `${idx + 1}. ${v.node.title}`)
