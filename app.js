@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const { abandonedCartsTracker } = require('./filesWIthInterval/abandonedCartsTracker');
-const { newContactsTracker } = require('./filesWIthInterval/newContactsTracker');
+// const { newContactsTracker } = require('./filesWIthInterval/newContactsTracker');
 
 // Set up default mongoose connection
 const mongoDB = 'mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/test?retryWrites=true&w=majority';
@@ -19,7 +19,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.on('open', () => {
   abandonedCartsTracker();
-  newContactsTracker();
+  // newContactsTracker();
 });
 
 const indexRouter = require('./routes/index');
