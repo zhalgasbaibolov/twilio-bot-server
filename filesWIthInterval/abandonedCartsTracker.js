@@ -3,7 +3,9 @@
 const UserAbandonedDiscount = require('../db/models/UserAbandonedDiscount');
 const UserState = require('../db/models/UserState');
 
-const { WhatsapSender } = require('../../providers/WhatsapSender');
+const shopifyApi = require('../providers/shopifyApi');
+
+const { WhatsapSender } = require('../providers/WhatsapSender');
 
 const a = 'abdc276b';
 const b = 'ca5995f447';
