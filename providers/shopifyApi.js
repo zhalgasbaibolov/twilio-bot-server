@@ -208,6 +208,30 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
       });
   };
 
+  const getAllCheckouts = async () => {
+    const enterDate = new Date();
+    enterDate.setDate(enterDate.getDate() - 1);
+    let newDate = enterDate.toISOString();
+    newDate = newDate.substring(0, newDate.length - 5);
+    const urlLastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/checkouts.json?updated_at_min=${newDate}`;
+
+    return axios
+      .get(urlLastOrders, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        return response;
+      })
+      .catch((error) => {
+      // handle error
+        console.log('error', error);
+        return false;
+      });
+  };
+
   const addWebhookFulfillmentUpdate = async () => {
     const endpoint = `https://${storeMyShopify}/api/2021-04/graphql.json`;
 
@@ -251,6 +275,7 @@ module.exports.ShopifyApi = function ShopifyApi(settings) {
     getProductsByCollectionHandle,
     retireveVariantsOfProduct,
     getAllOrders,
+    getAllCheckouts,
     shopifyDiscountCreate,
     addWebhookFulfillmentUpdate,
   };
