@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const { tracker } = require('./filesWIthInterval/abandonedCartsTracker');
-const { newContactsTracker } = require('./filesWIthInterval/newContactsTracker')
+const { newContactsTracker } = require('./filesWIthInterval/newContactsTracker');
 // const { trackerDiscount } = require('./trackerDiscount');
 // const { trackerSelf } = require('./trackerSelf');
 
@@ -33,7 +33,6 @@ const whRouter = require('./routes/wh');
 const awhRouter = require('./routes/awh');
 const settingsRouter = require('./routes/settings');
 const shopifyRouter = require('./routes/shopifyWebhooks');
-const { newContactsTracker } = require('./filesWIthInterval/newContactsTracker');
 
 const app = express();
 
