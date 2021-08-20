@@ -528,7 +528,7 @@ async function handleMessage(req, res) {
           const mediaUrlList = variants.map(
             (item) => item.node.image && item.node.image.originalSrc,
           ).flat();
-          const firstImage = 'https://cdn.shopify.com/s/files/1/0584/2190/3554/products/42_adc7e83b-941a-4b40-bbb7-138f20851c50.jpg?v=1626244332'
+          const firstImage = 'https://cdn.shopify.com/s/files/1/0584/2190/3554/products/42_adc7e83b-941a-4b40-bbb7-138f20851c50.jpg'
 
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
           console.log(`\n\n\n*******************\nMedia list: ${firstImage}\n*******************\n\n\n`);
@@ -539,11 +539,6 @@ async function handleMessage(req, res) {
               msg: 'Select variants',
               firstImage,
             }).then(() => {
-              msgCtrl.sendMediaList({
-                fromNumber,
-                msg: 'Select variantss',
-                mediaUrlList,
-              });
               setTimeout(() => {
                 let txt = variants
                   .map((v, idx) => `${idx + 1}. ${v.node.title}`)
