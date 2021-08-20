@@ -5,7 +5,7 @@ const UserSetting = require('../db/models/UserSetting');
 const UserState = require('../db/models/UserState');
 const { WhatsapSender } = require('../providers/WhatsapSender');
 
-const getAbandonedCart = require('../getAbandonedCart');
+const getAllCheckouts = require('../getAllCheckouts');
 
 const a = 'abdc276b';
 const b = 'ca5995f447';
@@ -34,7 +34,7 @@ function tracker() {
             storeAPIkey,
             storePassword,
           } = sett.shopify;
-          getAbandonedCart(
+          getAllCheckouts(
             storeMyShopify,
             apiVersion,
             storeAPIkey,

@@ -1,47 +1,79 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-console */
-const { getProviders } = require('../providers');
 const UserContact = require('../db/models/UserContact');
+const UserSetting = require('../db/models/UserSetting');
+
+const getAllOrders = require('../getAllOrders');
 
 const intervalTime = 3000000; // 1 hour
 
-async function newContactsTracker(req, res) {
-  res.send('OK');
-  const getProviderResult = await getProviders(req);
-  if (!getProviderResult) {
-    return;
-  }
-  const { shopifyApi } = getProviderResult;
+function newContactsTracker() {
   setInterval(() => {
-    shopifyApi.getAllOrders()
-      .then((response) => {
-        const phoneNumbers = response.data.orders
-          .map((ord) => ord.phone);
-        if (!phoneNumbers) {
-          return;
-        }
-        for (let i = 0; i < phoneNumbers.length; i += 1) {
-          UserContact.find({ phone: phoneNumbers[i] }, (err, pairs) => {
-            if (err) {
-              console.log(err);
-              return;
-            }
-            if (!pairs || !pairs.length) {
-              console.log('there is no phone number in orders.json');
-            }
+    UserSetting.find({}).exec()
+      .then((arr) => {
+        if (!arr || !arr.length) return;
+        arr.forEach((sett) => {
+          if (!sett.shopify) {
+            return;
+          }
+          const {
+            storeMyShopify,
+            apiVersion,
+            storeAPIkey,
+            storePassword,
+          } = sett.shopify;
+          getAllOrders(
+            storeMyShopify,
+            apiVersion,
+            storeAPIkey,
+            storePassword,
+          )
+            .then((response) => {
+              let allOrders = response.data && response.data.orders;
+              if (!allOrders || !allOrders.length) {
+                // console.log('abandoned carts not found');
+                return;
+              }
+              allOrders = allOrders.filter((cart) => cart.billing_address
+         && cart.billing_address.length);
+              // console.log(allOrders);
+              UserContact.find({
+                notifiedCount: {
+                  $lt: 1,
+                },
+              }, (err, pairs) => {
+                if (err) {
+                  console.log(err);
+                  return;
+                }
+                if (!pairs || !pairs.length) {
+                  console.log('phone:discount pairs not found');
+                  return;
+                }
+                allOrders.forEach((cart) => {
+                  for (let i = 0; i < cart.billing_address.length; i += 1) {
+                    const { phone } = cart.billing_address[i];
+                    if (phone !== pairs.phone) {
+                      UserContact
+                        .create({
+                          phone,
+                          contactType: 'fromShopifyDB',
+                        });
+                      return;
+                    }
 
-            const foundPair = pairs.find((p) => p.phone !== phoneNumbers[i]);
-            UserContact
-              .create({
-                phone: foundPair.phone,
-                contactType: 'fromShopifyDB',
+                    return;
+                  }
+                });
+                // eslint-disable-next-line consistent-return
+                return pairs;
               });
-          });
-        }
+            }).catch((err) => {
+              console.log(err);
+            });
+        });
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((err) => { console.log(err); });
   }, intervalTime);
 }
 
