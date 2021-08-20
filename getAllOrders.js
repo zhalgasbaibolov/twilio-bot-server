@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-async function getAbandonedCart(
+async function getAllOrders(
   storeMyShopify,
   apiVersion,
   storeAPIkey,
@@ -10,7 +10,7 @@ async function getAbandonedCart(
   enterDate.setDate(enterDate.getDate() - 1);
   let newDate = enterDate.toISOString();
   newDate = newDate.substring(0, newDate.length - 5);
-  const urlCheckouts = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/checkouts.json?updated_at_min=${newDate}`;
+  const urlCheckouts = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json?updated_at_min=${newDate}`;
 
   return axios
     .get(urlCheckouts,
@@ -22,9 +22,9 @@ async function getAbandonedCart(
     .then((response) => response)
     .catch((error) => {
     // eslint-disable-next-line no-console
-      console.log('@@@@@@@@@@ERROR at getAbandonedCart:   ', error);
+      console.log('@@@@@@@@@@ERROR at getAllOrders:   ', error);
       return false;
     });
 }
 
-module.exports = getAbandonedCart;
+module.exports = getAllOrders;
