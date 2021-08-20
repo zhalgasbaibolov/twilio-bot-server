@@ -29,14 +29,14 @@ function newContactsTracker() {
             storePassword,
           )
             .then((response) => {
-              let allCarts = response.data && response.data.orders;
-              if (!allCarts || !allCarts.length) {
+              let allOrders = response.data && response.data.orders;
+              if (!allOrders || !allOrders.length) {
                 // console.log('abandoned carts not found');
                 return;
               }
-              allCarts = allCarts.filter((cart) => cart.billing_address
+              allOrders = allOrders.filter((cart) => cart.billing_address
          && cart.billing_address.length);
-              // console.log(allCarts);
+              // console.log(allOrders);
               UserContact.find({
                 notifiedCount: {
                   $lt: 1,
@@ -50,19 +50,19 @@ function newContactsTracker() {
                   console.log('phone:discount pairs not found');
                   return;
                 }
-                allCarts.forEach((cart) => {
+                allOrders.forEach((cart) => {
                   for (let i = 0; i < cart.billing_address.length; i += 1) {
                     const { phone } = cart.billing_address[i];
-                    const foundPair = pairs.find((p) => p.phone === phone);
-                    if (foundPair) {
+                    const foundPhone = pairs.find((p) => p.phone);
+                    if (foundPhone.phone !== phone) {
+                      UserContact
+                        .create({
+                          phone,
+                          contactType: 'fromShopifyDB',
+                        });
                       return;
                     }
 
-                    UserContact
-                      .create({
-                        phone,
-                        contactType: 'fromShopifyDB',
-                      });
                     return;
                   }
                 });
