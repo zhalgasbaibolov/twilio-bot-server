@@ -1,15 +1,15 @@
 const axios = require('axios');
 
-async function getActivatedDiscounts(
+async function getAbandonedCarts(
   storeMyShopify,
   apiVersion,
   storeAPIkey,
   storePassword,
 ) {
-  const urlLastOrders = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json`;
+  const urlLastCheckouts = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/checkouts.json`;
 
   return axios
-    .get(urlLastOrders, {
+    .get(urlLastCheckouts, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -22,5 +22,4 @@ async function getActivatedDiscounts(
     });
 }
 
-exports.getActivatedDiscounts = getActivatedDiscounts;
-module.exports = exports;
+module.exports = getAbandonedCarts;
