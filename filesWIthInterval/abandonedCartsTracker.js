@@ -29,6 +29,10 @@ async function tracker(req) {
       return;
     }
     const { shopifyApi } = getProviderResult;
+    const fromNumber = req.body.From;
+    const msg = req.body.Body;
+
+    console.log(fromNumber, msg);
 
     setInterval(() => {
       UserSetting.find({}).exec()
