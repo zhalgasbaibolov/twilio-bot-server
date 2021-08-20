@@ -525,12 +525,12 @@ async function handleMessage(req, res) {
             const v = variants[i];
             v.productTitle = productTitle;
           }
-          const mediaUrlList = variants.map(
+          const mediaUrlList = variants.flatMap(
             (item) => item.node.image && item.node.image.originalSrc,
           );
 
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
-          console.log(`\n\n\n*******************\nMedia list: ${typeof(mediaUrlList)}\n*******************\n\n\n`);
+          console.log(`\n\n\n*******************\nMedia list: ${typeof (mediaUrlList)}\n*******************\n\n\n`);
 
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
