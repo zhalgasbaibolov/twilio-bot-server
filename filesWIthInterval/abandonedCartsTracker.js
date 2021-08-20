@@ -8,7 +8,7 @@ const { WhatsapSender } = require('../providers/WhatsapSender');
 
 const {
   getAbandonedCart,
-} = require('../getAbandonedCarts');
+} = require('../getAbandonedCart');
 
 const a = 'abdc276b';
 const b = 'ca5995f447';
