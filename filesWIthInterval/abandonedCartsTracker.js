@@ -3,9 +3,7 @@
 const UserAbandonedDiscount = require('../db/models/UserAbandonedDiscount');
 const UserSetting = require('../db/models/UserSetting');
 const UserState = require('../db/models/UserState');
-
 const { WhatsapSender } = require('../providers/WhatsapSender');
-
 const {
   getAbandonedCart,
 } = require('../getAbandonedCart');
@@ -20,19 +18,14 @@ const msgCtrl = WhatsapSender({
   authToken:
   token,
 });
-
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
-
 function tracker() {
   setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
         if (!arr || !arr.length) return;
         arr.forEach((sett) => {
-          if (!sett.shopify) {
-            return;
-          }
           const {
             storeMyShopify,
             apiVersion,
@@ -78,7 +71,6 @@ function tracker() {
                     console.log(`found pairs: ${foundPair.phone}: ${foundPair.discountCode}: ${foundPair.notifiedCount}`,
                       cart.abandoned_checkout_url);
                     console.log('******************************');
-
                     msgCtrl.sendMsg({
                       fromNumber: foundPair.phone,
                       msg: `Hi! We noticed that you left a few items in your shopping cart.\nPlease check it:\n${
@@ -101,7 +93,6 @@ function tracker() {
                         },
                       ).exec();
                     }, 6000);
-
                     UserAbandonedDiscount.updateOne({
                       discountCode: foundPair.discountCode,
                       phone: foundPair.phone,
@@ -127,7 +118,6 @@ function tracker() {
       .catch((err) => { console.log(err); });
   }, 20000); // 3 min
 }
-
 module.exports = {
   tracker,
 };
