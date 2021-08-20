@@ -3,7 +3,7 @@
 const UserAbandonedDiscount = require('../db/models/UserAbandonedDiscount');
 const UserState = require('../db/models/UserState');
 
-const { shopifyApi } = require('../providers');
+const { getProviders } = require('../providers/index');
 
 const { WhatsapSender } = require('../providers/WhatsapSender');
 
@@ -21,7 +21,14 @@ const msgCtrl = WhatsapSender({
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-function tracker() {
+async function tracker(req, res) {
+  res.sendMsg('OK');
+  const getProviderResult = await getProviders(req);
+  if (!getProviderResult) {
+    return;
+  }
+  const { shopifyApi } = getProviderResult;
+
   setInterval(() => {
     shopifyApi.getAllCheckouts()
       .then((response) => {
@@ -53,10 +60,6 @@ function tracker() {
               if (!foundPair) {
                 return;
               }
-              console.log('******************************');
-              console.log(`found pairs: ${foundPair.phone}: ${foundPair.discountCode}: ${foundPair.notifiedCount}`,
-                cart.abandoned_checkout_url);
-              console.log('******************************');
 
               msgCtrl.sendMsg({
                 fromNumber: foundPair.phone,
