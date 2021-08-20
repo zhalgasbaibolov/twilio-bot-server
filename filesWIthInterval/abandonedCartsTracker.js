@@ -4,31 +4,19 @@ const UserAbandonedDiscount = require('../db/models/UserAbandonedDiscount');
 const UserState = require('../db/models/UserState');
 const UserSetting = require('../db/models/UserSetting');
 
-const { getProviders } = require('../providers/index');
-
-const { WhatsapSender } = require('../providers/WhatsapSender');
-
-const a = 'abdc276b';
-const b = 'ca5995f447';
-const c = 'd05df1e9610526';
-const token = `${a}${b}${c}`;
-const msgCtrl = WhatsapSender({
-  accountSid:
-  'AC4352390b9be632aabb39a3b9282dc338',
-  authToken:
-  token,
-});
+const { getProviders } = require('../providers');
 
 const backToMenu = '--------------\n\nType 0 to redirect to main menu';
 const typeRecomendation = '(Please, type the number corresponding to your choice)';
 
-async function tracker(req) {
+async function tracker(req, res) {
   try {
+    res.send('OK');
     const getProviderResult = await getProviders(req);
     if (!getProviderResult) {
       return;
     }
-    const { shopifyApi } = getProviderResult;
+    const { msgCtrl, shopifyApi } = getProviderResult;
     const fromNumber = req.body.From;
     const msg = req.body.Body;
 
