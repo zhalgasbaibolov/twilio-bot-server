@@ -528,10 +528,10 @@ async function handleMessage(req, res) {
           // const mediaUrlList = variants.map(
           //   (item) => item.node.image && item.node.image.originalSrc,
           // ).flat();
-          const mediaUrlList = 'https://cdn.shopify.com/s/files/1/0584/2190/3554/products/42_adc7e83b-941a-4b40-bbb7-138f20851c50.jpg'
+          const mediaUrlList = 'https://cdn.shopify.com/s/files/1/0584/2190/3554/products/42_adc7e83b-941a-4b40-bbb7-138f20851c50.jpg';
 
           console.log(`\n\n\n*******************\nMedia list: ${mediaUrlList}\n*******************\n\n\n`);
-          console.log(`\n\n\n*******************\nMedia list: ${firstImage}\n*******************\n\n\n`);
+          // console.log(`\n\n\n*******************\nMedia list: ${firstImage}\n*******************\n\n\n`);
 
           if (mediaUrlList && mediaUrlList.length) {
             msgCtrl.sendMediaList({
