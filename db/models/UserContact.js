@@ -7,6 +7,7 @@ const userContactSchema = new Schema({
     type: String,
     required: true,
   },
+  country: { type: String, required: false },
   firstName: { type: String, required: false },
   lastName: { type: String, required: false },
   phone: { type: String, required: true },
