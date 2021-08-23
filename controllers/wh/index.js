@@ -43,7 +43,7 @@ async function handleMessage(req, res) {
         if (err) {
           return console.log(err);
         }
-        if (!result) {
+        if (result.phone !== userContact) {
           UserContact
             .create({
               phone: userContact,
