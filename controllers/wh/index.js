@@ -43,7 +43,9 @@ async function handleMessage(req, res) {
         if (err) {
           return console.log(err);
         }
-        if (result.phone !== userContact) {
+        if (result.phone == userContact) {
+          console.log(`${userContact} exists in DB`)
+        } else {
           UserContact
             .create({
               phone: userContact,
