@@ -55,7 +55,7 @@ function newContactsTracker() {
                           firstName: cart.shipping_address.first_name,
                           lastName: cart.shipping_address.last_name,
                           memberstackId,
-                          phone,
+                          phone: cart.shipping_address.phone.replace(/\D/g, ''),
                           contactType: 'fromShopifyDB',
                         });
                     } else {
