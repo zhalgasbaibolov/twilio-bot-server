@@ -7,7 +7,6 @@ const UserDiscount = require('../../db/models/UserDiscount');
 const UserAbandonedDiscount = require('../../db/models/UserAbandonedDiscount');
 const UserReview = require('../../db/models/UserReview');
 const UserContact = require('../../db/models/UserContact');
-const CountryCode = require('../../db/models/CountryCode');
 
 const { getProviders } = require('../../providers');
 
