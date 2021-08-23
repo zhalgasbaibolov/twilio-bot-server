@@ -7,6 +7,8 @@ const userContactSchema = new Schema({
     type: String,
     required: true,
   },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   phone: { type: String, required: true },
   contactType: { type: String, required: true },
   // memberStackID: { type: String, required: true },
