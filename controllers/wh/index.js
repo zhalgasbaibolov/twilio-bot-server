@@ -43,19 +43,7 @@ async function handleMessage(req, res) {
         if (err) {
           return console.log(err);
         }
-        if (result.phone == userContact) {
-          console.log(`${userContact} exists in DB`)
-          UserState
-                .updateOne({
-                  phone: fromNumber,
-                },
-                { last: 'demoMain' },
-                { upsert: true })
-                .then(() => {
-                  /* eslint-disable no-use-before-define */
-                  sendDiscount();
-                }).catch(errorHandler);
-        } else {
+        if (!result) {
           UserContact
             .create({
               phone: userContact,
@@ -71,6 +59,19 @@ async function handleMessage(req, res) {
                   /* eslint-disable no-use-before-define */
                   sendDiscount();
                 }).catch(errorHandler);
+            }).catch(errorHandler);
+        }
+        if (result.phone === userContact) {
+          console.log(`${userContact} exists in DB`);
+          UserState
+            .updateOne({
+              phone: fromNumber,
+            },
+            { last: 'demoMain' },
+            { upsert: true })
+            .then(() => {
+              /* eslint-disable no-use-before-define */
+              sendDiscount();
             }).catch(errorHandler);
         }
         return result;
