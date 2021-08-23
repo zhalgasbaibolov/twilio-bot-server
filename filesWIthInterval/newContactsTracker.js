@@ -9,10 +9,13 @@ const intervalTime = 30000; // 1 hour
 
 function newContactsTracker() {
   setInterval(() => {
+    console.log('\n\n*******************\nNew contacts tracker started\n*****************\n\n');
     UserSetting.find({}).exec()
       .then((arr) => {
+        console.log('\n\n*******************\nUser settings searching started\n*****************\n\n');
         if (!arr || !arr.length) return;
         arr.forEach((sett) => {
+          console.log('\n\n*******************\nArray for each started\n*****************\n\n');
           if (!sett.shopify) {
             return;
           }
@@ -30,6 +33,7 @@ function newContactsTracker() {
             storePassword,
           )
             .then((response) => {
+              console.log('\n\n*******************\nget all orders started\n*****************\n\n');
               let allOrders = response.data && response.data.orders;
               if (!allOrders || !allOrders.length) {
                 // console.log('abandoned carts not found');
@@ -39,6 +43,7 @@ function newContactsTracker() {
          && cart.billing_address.length);
 
               allOrders.forEach((cart) => {
+                console.log('\n\n*******************\nall orders for each started\n*****************\n\n');
                 for (let i = 0; i < cart.billing_address.length; i += 1) {
                   const { phone } = cart.billing_address[i];
                   console.log(phone);
