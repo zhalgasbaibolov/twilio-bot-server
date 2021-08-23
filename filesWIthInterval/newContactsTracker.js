@@ -22,6 +22,7 @@ function newContactsTracker() {
             storeAPIkey,
             storePassword,
           } = sett.shopify;
+          const { memberstackId } = sett;
           getAllOrders(
             storeMyShopify,
             apiVersion,
@@ -36,37 +37,34 @@ function newContactsTracker() {
               }
               allOrders = allOrders.filter((cart) => cart.billing_address
          && cart.billing_address.length);
-              // console.log(allOrders);
-              UserContact.find({
-                notifiedCount: {
-                  $lt: 1,
-                },
-              }, (err, pairs) => {
-                if (err) {
-                  console.log(err);
-                  return;
-                }
-                if (!pairs || !pairs.length) {
-                  console.log('phone:discount pairs not found');
-                  return;
-                }
-                allOrders.forEach((cart) => {
-                  for (let i = 0; i < cart.billing_address.length; i += 1) {
-                    const { phone } = cart.billing_address[i];
-                    if (phone !== pairs.phone) {
-                      UserContact
-                        .create({
-                          phone,
-                          contactType: 'fromShopifyDB',
-                        });
-                      return;
-                    }
 
-                    return;
-                  }
-                });
-                // eslint-disable-next-line consistent-return
-                return pairs;
+              allOrders.forEach((cart) => {
+                for (let i = 0; i < cart.billing_address.length; i += 1) {
+                  const { phone } = cart.billing_address[i];
+                  const userContact = phone;
+                  UserContact
+                    .findOne({
+                      phone: userContact,
+                    },
+                    (err, result) => {
+                      if (err) {
+                        return console.log(err);
+                      }
+                      if (!result) {
+                        UserContact
+                          .create({
+                            memberstackId,
+                            phone,
+                            contactType: 'fromShopifyDB',
+                          });
+                      } else {
+                        console.log(`${phone} exists in DB`);
+                      }
+                      return result;
+                    });
+
+                  return;
+                }
               });
             }).catch((err) => {
               console.log(err);
