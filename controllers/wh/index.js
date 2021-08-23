@@ -7,6 +7,7 @@ const UserDiscount = require('../../db/models/UserDiscount');
 const UserAbandonedDiscount = require('../../db/models/UserAbandonedDiscount');
 const UserReview = require('../../db/models/UserReview');
 const UserContact = require('../../db/models/UserContact');
+const CountryCode = require('../../db/models/CountryCode');
 
 const { getProviders } = require('../../providers');
 
@@ -185,6 +186,21 @@ async function handleMessage(req, res) {
     msgCtrl.sendMsg({
       fromNumber,
       msg: `Type your tracking number OR email.\n${backToMenu}\n\n\n${typeRecomendation}`,
+    });
+    const country = [{
+      code: 'ZW', map: '🇿🇼', phoneCode: 26, value: 'Zimbabwe',
+    }, {
+      code: 'ZfW', map: '🇿🇼', phoneCode: 826, value: 'Zimbabwsse',
+    }].flat();
+
+    country.forEach((num) => {
+      CountryCode
+        .create({
+          code: num.code,
+          map: num.map,
+          phoneCode: `+${num.phoneCode}`,
+          countryName: num.value,
+        });
     });
     UserState.updateOne(
       {
