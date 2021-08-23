@@ -9,7 +9,6 @@ const intervalTime = 30000; // 1 hour
 
 function newContactsTracker() {
   setInterval(() => {
-    console.log('\n\n*******************\nNew contacts tracker started\n*****************\n\n');
     UserSetting.find({}).exec()
       .then((arr) => {
         if (!arr || !arr.length) return;
