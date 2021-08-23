@@ -22,7 +22,7 @@ async function handleMessage(req, res) {
 
   const fromNumber = req.body.From;
   const msg = req.body.Body;
-  const userContact = fromNumber.slice(9);
+  const userContact = fromNumber.replace(/\D/g, '');
   const firstName = req.body.ProfileName;
 
   const errorHandler = (err) => {
