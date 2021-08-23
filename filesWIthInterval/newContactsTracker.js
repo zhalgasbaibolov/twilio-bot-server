@@ -5,10 +5,10 @@ const UserSetting = require('../db/models/UserSetting');
 
 const getAllOrders = require('../getAllOrders');
 
-const intervalTime = 30000; // 1 hour
+// const intervalTime = 30000; // 1 hour
 
 function newContactsTracker() {
-  setInterval(() => {
+  // setInterval(() => {
     UserSetting.find({}).exec()
       .then((arr) => {
         if (!arr || !arr.length) return;
@@ -36,7 +36,10 @@ function newContactsTracker() {
                 return;
               }
               allOrders = allOrders.filter((cart) => cart.shipping_address
-         && cart.shipping_address.length).flat();
+         && cart.shipping_address.length);
+
+              console.log(`\n\n++++++++++++\nall shipping addresses:${allOrders}\n+++++++++++++\n\n`)
+
 
               allOrders.forEach((cart) => {
                 const { phone } = cart.shipping_address;
@@ -71,7 +74,7 @@ function newContactsTracker() {
         });
       })
       .catch((err) => { console.log(err); });
-  }, intervalTime);
+  // }, intervalTime);
 }
 
 module.exports = {
