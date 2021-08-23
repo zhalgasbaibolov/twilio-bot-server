@@ -60,9 +60,7 @@ async function handleMessage(req, res) {
                   sendDiscount();
                 }).catch(errorHandler);
             }).catch(errorHandler);
-        }
-        if (result.phone === userContact) {
-          console.log(`${userContact} exists in DB`);
+        } else {
           UserState
             .updateOne({
               phone: fromNumber,
