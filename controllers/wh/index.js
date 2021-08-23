@@ -37,7 +37,7 @@ async function handleMessage(req, res) {
   function createNewDialog() {
     UserContact
       .findOne({
-        phone: fromNumber,
+        phone: userContact,
       },
       (err, result) => {
         if (err) {
