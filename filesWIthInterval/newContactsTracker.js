@@ -12,10 +12,8 @@ function newContactsTracker() {
     console.log('\n\n*******************\nNew contacts tracker started\n*****************\n\n');
     UserSetting.find({}).exec()
       .then((arr) => {
-        console.log('\n\n*******************\nUser settings searching started\n*****************\n\n');
         if (!arr || !arr.length) return;
         arr.forEach((sett) => {
-          console.log('\n\n*******************\nArray for each started\n*****************\n\n');
           if (!sett.shopify) {
             return;
           }
@@ -33,18 +31,16 @@ function newContactsTracker() {
             storePassword,
           )
             .then((response) => {
-              console.log('\n\n*******************\nget all orders started\n*****************\n\n');
               let allOrders = response.data && response.data.orders;
               if (!allOrders || !allOrders.length) {
                 // console.log('abandoned carts not found');
                 return;
               }
-              allOrders = allOrders.filter((cart) => cart.billing_address
-         && cart.billing_address.length);
+              allOrders = allOrders.filter((cart) => cart.shipping_address
+         && cart.shipping_address.length).flat();
 
               allOrders.forEach((cart) => {
-                console.log('\n\n*******************\nall orders for each started\n*****************\n\n');
-                const { phone } = cart.billing_address;
+                const { phone } = cart.shipping_address;
                 console.log(phone);
                 UserContact
                   .findOne({
@@ -57,8 +53,8 @@ function newContactsTracker() {
                     if (!result) {
                       UserContact
                         .create({
-                          firstName: cart.billing_address.first_name,
-                          lastName: cart.billing_address.last_name,
+                          firstName: cart.shipping_address.first_name,
+                          lastName: cart.shipping_address.last_name,
                           memberstackId,
                           phone,
                           contactType: 'fromShopifyDB',
