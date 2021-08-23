@@ -36,21 +36,33 @@ async function handleMessage(req, res) {
 
   function createNewDialog() {
     UserContact
-      .create({
-        phone: userContact,
-        contactType: 'fromWhatsappDB',
-      }).then(() => {
-        UserState
-          .updateOne({
-            phone: fromNumber,
-          },
-          { last: 'demoMain' },
-          { upsert: true })
-          .then(() => {
-            /* eslint-disable no-use-before-define */
-            sendDiscount();
-          }).catch(errorHandler);
-      }).catch(errorHandler);
+      .findOne({
+        phone: fromNumber,
+      },
+      (err, result) => {
+        if (err) {
+          return console.log(err);
+        }
+        if (!result) {
+          UserContact
+            .create({
+              phone: userContact,
+              contactType: 'fromWhatsappDB',
+            }).then(() => {
+              UserState
+                .updateOne({
+                  phone: fromNumber,
+                },
+                { last: 'demoMain' },
+                { upsert: true })
+                .then(() => {
+                  /* eslint-disable no-use-before-define */
+                  sendDiscount();
+                }).catch(errorHandler);
+            }).catch(errorHandler);
+        }
+        return result;
+      });
   }
   function sendMainMenu(ms = 0, firstTime = false) {
     const firstWord = firstTime ? 'Hello! What do you want?' : 'What would you like to do now?';
