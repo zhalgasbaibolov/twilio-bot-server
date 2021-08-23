@@ -23,7 +23,7 @@ async function handleMessage(req, res) {
   const fromNumber = req.body.From;
   const msg = req.body.Body;
   const userContact = fromNumber.slice(9);
-  const firstName = req.body.ProfileName
+  const firstName = req.body.ProfileName;
 
   const errorHandler = (err) => {
     // eslint-disable-next-line no-console
@@ -49,7 +49,7 @@ async function handleMessage(req, res) {
           UserContact
             .create({
               memberstackId,
-              firstName: firstName,
+              firstName,
               phone: userContact,
               contactType: 'fromWhatsappDB',
             }).then(() => {

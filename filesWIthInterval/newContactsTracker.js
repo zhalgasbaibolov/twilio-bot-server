@@ -44,33 +44,30 @@ function newContactsTracker() {
 
               allOrders.forEach((cart) => {
                 console.log('\n\n*******************\nall orders for each started\n*****************\n\n');
-                for (let i = 0; i < cart.billing_address.length; i += 1) {
-                  const { phone } = cart.billing_address[i];
-                  console.log(phone);
-                  const userContact = phone;
-                  UserContact
-                    .findOne({
-                      phone: userContact,
-                    },
-                    (err, result) => {
-                      if (err) {
-                        return console.log(err);
-                      }
-                      if (!result) {
-                        UserContact
-                          .create({
-                            memberstackId,
-                            phone,
-                            contactType: 'fromShopifyDB',
-                          });
-                      } else {
-                        console.log(`${phone} exists in DB`);
-                      }
-                      return result;
-                    });
-
-                  return;
-                }
+                const { phone } = cart.billing_address;
+                console.log(phone);
+                UserContact
+                  .findOne({
+                    phone,
+                  },
+                  (err, result) => {
+                    if (err) {
+                      return console.log(err);
+                    }
+                    if (!result) {
+                      UserContact
+                        .create({
+                          firstName: cart.billing_address.first_name,
+                          lastName: cart.billing_address.last_name,
+                          memberstackId,
+                          phone,
+                          contactType: 'fromShopifyDB',
+                        });
+                    } else {
+                      console.log(`${phone} exists in DB`);
+                    }
+                    return result;
+                  });
               });
             }).catch((err) => {
               console.log(err);
