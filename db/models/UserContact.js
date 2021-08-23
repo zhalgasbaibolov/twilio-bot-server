@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const userContactSchema = new Schema({
+  memberstackId: {
+    type: String,
+    required: true,
+  },
   phone: { type: String, required: true },
   contactType: { type: String, required: true },
   // memberStackID: { type: String, required: true },
