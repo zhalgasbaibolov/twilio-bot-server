@@ -22,7 +22,7 @@ async function getAllCheckouts(
     .then((response) => response)
     .catch((error) => {
     // eslint-disable-next-line no-console
-      console.log('@@@@@@@@@@ERROR at getAllCheckouts:   ', error);
+      console.log('@@@@@@@@@@ERROR at getAllCheckouts:   ', (error && error.config && error.config.url));
       return false;
     });
 }
