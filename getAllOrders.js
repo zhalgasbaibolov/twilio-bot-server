@@ -7,7 +7,7 @@ async function getAllOrders(
   storePassword,
   enterDate = new Date(),
 ) {
-  enterDate.setDate(enterDate.getDate() - 1);
+  enterDate.setDate(enterDate.getDate() - 10);
   let newDate = enterDate.toISOString();
   newDate = newDate.substring(0, newDate.length - 5);
   const urlCheckouts = `https://${storeAPIkey}:${storePassword}@${storeMyShopify}/admin/api/${apiVersion}/orders.json?updated_at_min=${newDate}`;
