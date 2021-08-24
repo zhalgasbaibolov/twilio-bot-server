@@ -2,10 +2,10 @@
 const axios = require('axios');
 
 const storeMyShopify = '';
-const apiVersion = '';
+const apiVersion = '2021-07';
 const storeAPIkey = '';
 const storePassword = '';
-const discountPercent = '';
+const discountPercent = '-5.0';
 
 // this initialize func to be called just once for each store when they first buy saletastic
 function shopifyStoreDiscountsInitialize() {
