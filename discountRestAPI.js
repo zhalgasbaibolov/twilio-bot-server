@@ -1,12 +1,11 @@
 /* eslint-disable no-console */
 const axios = require('axios');
 
-
-const storeMyShopify = 'www-apella-in.myshopify.com';
- const apiVersion = '2021-07';
-  const storeAPIkey = '9777dddb13881f4acd717003cd862abd';
- const  storePassword = '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';
-  const discountPercent = '-5.0';
+const storeMyShopify = '';
+const apiVersion = '';
+const storeAPIkey = '';
+const storePassword = '';
+const discountPercent = '';
 
 // this initialize func to be called just once for each store when they first buy saletastic
 function shopifyStoreDiscountsInitialize() {
@@ -42,9 +41,9 @@ function shopifyStoreDiscountsInitialize() {
       return response;
     })
     .catch((error) => {
-      console.log('@@@@@@@@@@ERROR');
+      console.log('@@@@@@@@@@ERROR', error);
       return false;
     });
 }
 
-shopifyStoreDiscountsInitialize()
+shopifyStoreDiscountsInitialize();
