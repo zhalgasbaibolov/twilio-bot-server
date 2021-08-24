@@ -81,11 +81,11 @@ async function handleMessage(req, res) {
   }
   function sendMainMenu(ms = 0, firstTime = false) {
     const firstWord = firstTime ? 'Hello! What do you want?' : 'What would you like to do now?';
-    const viewCart = firstTime ? '' : '5. View cart';
+    const viewCart = firstTime ? '' : '6. View cart';
     setTimeout(() => {
       msgCtrl.sendMsg({
         fromNumber,
-        msg: `${firstWord}\n1. Catalogue\n2. Order Status\n3. Get discount (Abandoned cart)\n4. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
+        msg: `${firstWord}\n1. Catalogue\n2.Customer support\n3. Order Status\n4. Get discount (Abandoned cart)\n5. Loyalty program (organic marketing)\n${viewCart}\n\n\n${typeRecomendation}`,
       });
       UserState.updateOne(
         {
@@ -161,25 +161,25 @@ async function handleMessage(req, res) {
         }).exec();
       }).catch(errorHandler);
   }
-  // const getSupport = () => {
-  //   msgCtrl.sendMsg({
-  //     fromNumber,
-  //     msg: `Hi there! Welcome to Customer Support Service!\nTo start
-  // conversation please type your
-  //  message\n(the Team usually replies in a few minutes)\n${backToMenu}
-  // \n\n\n${typeRecomendation}`,
-  //   });
-  //   UserState.updateOne(
-  //     {
-  //       phone: fromNumber,
-  //     },
-  //     {
-  //       $set: {
-  //         last: 'support',
-  //       },
-  //     },
-  //   ).exec();
-  // };
+  const getSupport = () => {
+    msgCtrl.sendMsg({
+      fromNumber,
+      msg: `Hi there! Welcome to Customer Support Service!\nTo start
+  conversation please type your
+   message\n(the Team usually replies in a few minutes)\n${backToMenu}
+  \n\n\n${typeRecomendation}`,
+    });
+    UserState.updateOne(
+      {
+        phone: fromNumber,
+      },
+      {
+        $set: {
+          last: 'support',
+        },
+      },
+    ).exec();
+  };
 
   const getOrderStatus = () => {
     msgCtrl.sendMsg({
@@ -368,21 +368,21 @@ async function handleMessage(req, res) {
         case '1': {
           sendCatalog();
           break; }
-        // case '2': {
-        //   getSupport();
-        //   break; }
         case '2': {
-          getOrderStatus();
+          getSupport();
           break; }
         case '3': {
+          getOrderStatus();
+          break; }
+        case '4': {
           sendAbandonedDiscount();
           break;
         }
-        case '4': {
+        case '5': {
           sendMarketing();
           break;
         }
-        case '5': {
+        case '6': {
           sendViewCart(state);
           break;
         }
