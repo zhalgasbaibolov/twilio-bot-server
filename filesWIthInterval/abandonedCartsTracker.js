@@ -25,7 +25,9 @@ function abandonedCartsTracker() {
       .then((arr) => {
         if (!arr || !arr.length) return;
         arr.forEach((sett) => {
-          if (!sett.shopify) {
+          if (!(sett.shopify || sett.shopify.storeMyShopify || sett.shopify.apiVersion
+            || sett.shopify.storeAPIkey || sett.shopify.storePassword)) {
+            console.log('\n\n\n+*+*+*+*+*+*+*+*\nError in get Abandoned Carts\nMissing data in userSettings in Shopify!!!\n+*+*+*+*+*+*+*+*\n\n\n');
             return;
           }
           const {
