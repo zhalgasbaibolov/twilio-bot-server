@@ -47,6 +47,8 @@ app.post('/send-message', async (req, res) => {
       from: twilioNumber,
       to: req.body.to,
     });
+    console.log(`\n\n\n++++++++++++++++++++++++++\n
+    \nMessage Sent To ${req.body.to}\n\n+++++++++++++++++++++++++++++\n\n\n`);
     res.status(200).json({
       response,
       message: `Message Sent To ${req.body.to}`,
