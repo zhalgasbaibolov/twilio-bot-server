@@ -15,8 +15,10 @@ router.post('/sms', async (req, res) => {
   if (!phoneNumber || !message) {
     console.log('\n\n\n\n++++++++++++++++\nthere is no phone number OR message!\n++++++++++++++++\n\n\n\n');
   }
-  console.log(`\n\n-*-*-*-*-*-*\nsmsRouter.js\nsending sms to: ${phoneNumber} with message: ${message}\n-*-*-*-*-*-*-\n\n`);
-  sendSms(phoneNumber, message);
+  console.log(`\n\n-*-*-*-*-*-*\nsmsRouter.js\nsending sms to: ${phoneNumber} with message: ${message}\n-*-*-*-*-*-*-\n\n`).then(() => { sendSms(phoneNumber, message); }).catch((error) => {
+    console.log(error);
+    return false;
+  });
 });
 
 module.exports = router;
