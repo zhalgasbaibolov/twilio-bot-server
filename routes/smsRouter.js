@@ -7,6 +7,7 @@ const {
 } = require('../controllers/wh/sendSms');
 
 router.post('/sms', async (req, res) => {
+  console.log('\n\nsmsRouter started!\n\n');
   res.send('OK');
   const phoneNumber = req.body.to;
   const { message } = req.body;
