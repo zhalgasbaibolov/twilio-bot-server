@@ -6,12 +6,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
-const a = 'abdc276bca5';
-const b = '995f447d05d';
-const c = 'f1e9610526';
-const accountSid = 'AC4352390b9be632aabb39a3b9282dc338';
-const authToken = `${a}${b}${c}`;
-const client = require('twilio')(accountSid, authToken);
 const { abandonedCartsTracker } = require('./filesWIthInterval/abandonedCartsTracker');
 const { newContactsTracker } = require('./filesWIthInterval/newContactsTracker');
 
@@ -35,31 +29,9 @@ const whRouter = require('./routes/wh');
 const awhRouter = require('./routes/awh');
 const settingsRouter = require('./routes/settings');
 const shopifyRouter = require('./routes/shopifyWebhooks');
+const smsRouter = require('./routes/smsRouter');
 
 const app = express();
-
-const twilioNumber = '+19286156092';
-
-app.post('/send-message', async (req, res) => {
-  try {
-    const response = await client.messages.create({
-      body: req.body.message,
-      from: twilioNumber,
-      to: req.body.to,
-    });
-    console.log(`\n\n\n++++++++++++++++++++++++++\n
-    \nMessage Sent To ${req.body.to}\n\n+++++++++++++++++++++++++++++\n\n\n`);
-    res.status(200).json({
-      response,
-      message: `Message Sent To ${req.body.to}`,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      Error: err,
-    });
-  }
-});
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -78,6 +50,7 @@ app.use('/wh', whRouter);
 app.use('/awh', awhRouter);
 app.use('/settings', settingsRouter);
 app.use('/shopify', shopifyRouter);
+app.use('/send', smsRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
