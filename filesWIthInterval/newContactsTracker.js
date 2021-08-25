@@ -13,8 +13,7 @@ function newContactsTracker() {
     .then((arr) => {
       if (!arr || !arr.length) return;
       arr.forEach((sett) => {
-        if (!(sett.shopify || sett.shopify.storeMyShopify || sett.shopify.apiVersion
-          || sett.shopify.storeAPIkey || sett.shopify.storePassword)) {
+        if (!sett.shopify) {
           console.log('\n\n\n+*+*+*+*+*+*+*+*\nError in new Contacts Tracker\nMissing data in userSettings in Shopify!!!\n\n+*+*+*+*+*+*+*+*\n\n\n');
           return;
         }
