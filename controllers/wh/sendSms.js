@@ -7,20 +7,19 @@ const authToken = `${a}${b}${c}`;
 const accountSid = 'AC4352390b9be632aabb39a3b9282dc338';
 const client = require('twilio')(accountSid, authToken);
 
-function sendSms(phoneNumber, message) {
-  return new Promise((resolve, reject) => {
-    try {
-      console.log(`\n\n+-+-+-+-+-+-+-+\naccepted values: 1. phoneNumber - ${phoneNumber}, 2. message - ${message}\n+-+-+-+-+-+-+-\n\n`);
-      const response = client.messages.create({
-        body: message,
-        from: twilioNumber,
-        to: phoneNumber,
-      });
-      resolve(response);
-    } catch (e) {
-      reject(e);
-    }
-  });
+async function sendSms(phoneNumber, message) {
+  try {
+    console.log(`\n\n+-+-+-+-+-+-+-+\naccepted values: 1. phoneNumber - ${phoneNumber}, 2. message - ${message}\n+-+-+-+-+-+-+-\n\n`);
+    const response = await client.messages.create({
+      body: message,
+      from: twilioNumber,
+      to: phoneNumber,
+    });
+    return response;
+  } catch (e) {
+    console.log(e, 'ERROR in SENDSMS');
+    return e;
+  }
 }
 
 module.exports = sendSms;
