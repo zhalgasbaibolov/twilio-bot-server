@@ -17,7 +17,7 @@ router.post('/sms', async (req, res) => {
   }
   console.log(`\n\n-*-*-*-*-*-*\nsmsRouter.js\nsending sms to: ${phoneNumber} with message: ${message}\n-*-*-*-*-*-*-\n\n`);
 
-  await sendSms(phoneNumber, message);
+  sendSms(phoneNumber, message);
 });
 
 module.exports = router;
