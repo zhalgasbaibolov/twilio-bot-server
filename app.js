@@ -50,7 +50,7 @@ app.use('/wh', whRouter);
 app.use('/awh', awhRouter);
 app.use('/settings', settingsRouter);
 app.use('/shopify', shopifyRouter);
-app.use('/twilioapi/send', smsRouter);
+app.use('/send', smsRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
