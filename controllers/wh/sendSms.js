@@ -23,4 +23,4 @@ function sendSms(phoneNumber, message) {
   });
 }
 
-module.exports = sendSms;
+module.exports = { sendSms };
