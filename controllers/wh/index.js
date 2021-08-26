@@ -18,6 +18,7 @@ async function handleMessage(req, res) {
   }
   const { msgCtrl, shopifyApi, userSettings } = getProviderResult;
   const { accountSid } = userSettings.twilio;
+  const { memberstackId } = userSettings;
 
   const fromNumber = req.body.From;
   const msg = req.body.Body;
@@ -48,6 +49,7 @@ async function handleMessage(req, res) {
           UserContact
             .create({
               shopUrl: userSettings.shopify.externalUrl,
+              memberstackId,
               firstName,
               phone: userContact,
               contactType: 'fromWhatsappDB',
