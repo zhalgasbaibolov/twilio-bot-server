@@ -2,8 +2,9 @@
 const UserContacts = require('./db/models/UserContact');
 
 function getAllContacts() {
+  const arr = [];
   const variants = UserContacts.find({}).exec();
-  const arr = variants.map((x) => x.phone);
+  arr.push(variants.map((x) => x.phone));
 
   return arr;
 }
