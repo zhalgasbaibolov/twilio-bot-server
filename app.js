@@ -30,6 +30,7 @@ const awhRouter = require('./routes/awh');
 const settingsRouter = require('./routes/settings');
 const shopifyRouter = require('./routes/shopifyWebhooks');
 const smsRouter = require('./routes/smsRouter');
+const contactsRouter = require('./routes/contactsRouter');
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use('/awh', awhRouter);
 app.use('/settings', settingsRouter);
 app.use('/shopify', shopifyRouter);
 app.use('/twilioapi/send', smsRouter);
+app.use('/twilioapi/get', contactsRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
