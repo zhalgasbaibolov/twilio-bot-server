@@ -54,7 +54,6 @@ app.use('/shopify', shopifyRouter);
 app.use('/twilioapi/send', smsRouter);
 app.get('/twilioapi/get/contacts', async (req, res) => {
   res.status(200).send(await getAllContacts());
-  console.log(getAllContacts());
 });
 
 app.use((req, res, next) => {
