@@ -5,15 +5,16 @@ const router = express.Router();
 
 const UserContacts = require('../db/models/UserContact');
 
-router.get('/contacts', () => {
+router.get('/contacts', (req, res) => {
   const contacts = UserContacts.find({}).exec().then((arr) => {
     arr.forEach((element) => {
       const groupContacts = element.phone;
-      console.log(groupContacts);
+      console.log('success contacts');
+      return groupContacts;
     });
   });
 
-  return contacts;
+  res.json({ status: 'success', results: contacts });
 });
 
 module.exports = router;

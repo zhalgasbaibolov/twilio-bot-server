@@ -52,7 +52,7 @@ app.use('/awh', awhRouter);
 app.use('/settings', settingsRouter);
 app.use('/shopify', shopifyRouter);
 app.use('/twilioapi/send', smsRouter);
-app.use('/twilioapi/get', contactsRouter);
+app.get('/twilioapi/get', contactsRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
