@@ -17,7 +17,7 @@ router.post('/sms', async (req, res) => {
   }
   console.log(`\n\n-*-*-*-*-*-*\nsmsRouter.js\nsending sms to: ${phoneNumber} with message: ${message}\n-*-*-*-*-*-*-\n\n`);
 
-  sendSms(phoneNumber, message).then(() => console.log('success!')).catch((error) => {
+  sendSms(phoneNumber, message).then(() => console.log('successfully sent SMS!')).catch((error) => {
     console.log('error at sending SMS', error);
     return false;
   });

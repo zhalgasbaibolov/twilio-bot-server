@@ -10,7 +10,6 @@ const client = require('twilio')(accountSid, authToken);
 function sendSms(phoneNumber, message) {
   return new Promise((resolve, reject) => {
     try {
-      console.log(`\n\n+-+-+-+-+-+-+-+\naccepted values: 1. phoneNumber - ${phoneNumber}, 2. message - ${message}\n+-+-+-+-+-+-+-\n\n`);
       client.messages.create({
         body: message,
         from: twilioNumber,
