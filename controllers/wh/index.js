@@ -165,9 +165,9 @@ async function handleMessage(req, res) {
   const getSupport = () => {
     msgCtrl.sendMsg({
       fromNumber,
-      msg: `Hi there! Welcome to Customer Support Service!\nTo start
-  conversation please type your
-   message\n(the Team usually replies in a few minutes)\n${backToMenu}
+      msg: `Hi there! Welcome to Customer Support Service!
+      \nTo start conversation please type your message
+      \n(the Team usually replies in a few minutes)\n${backToMenu}
   \n\n\n${typeRecomendation}`,
     });
     UserState.updateOne(
