@@ -48,7 +48,7 @@ async function handleMessage(req, res) {
         if (!result) {
           UserContact
             .create({
-              memberstackId,
+              shopUrl,
               firstName,
               phone: userContact,
               contactType: 'fromWhatsappDB',
