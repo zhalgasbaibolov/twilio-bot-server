@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/all', async (req, res) => {
   res.send('OK');
   const url = req;
-  return url;
+  return console.log(url);
   //   const { message } = req.body;
 
   //   if (!phoneNumber || !message) {
