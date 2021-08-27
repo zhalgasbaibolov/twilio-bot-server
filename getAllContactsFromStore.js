@@ -4,7 +4,6 @@ const getAllCheckouts = require('./getAllCheckouts');
 
 async function getAllContactsFromStore() {
   console.log('get contacts from store started !!!');
-  let allCheckouts = [];
   await UserSetting.find({}).exec()
     .then((arr) => {
       if (!arr || !arr.length) return;
@@ -25,13 +24,12 @@ async function getAllContactsFromStore() {
           storePassword,
         )
           .then((response) => {
-            const allCarts = [response.data && response.data.checkouts];
+            const allCarts = response.data && response.data.checkouts;
             if (!allCarts || !allCarts.length) {
             // console.log('abandoned carts not found');
-              return;
+              return {};
             }
-            allCheckouts = allCheckouts.push(allCarts);
-            console.log(allCheckouts);
+            return allCarts;
           }).catch((err) => {
             console.log(err);
           });
