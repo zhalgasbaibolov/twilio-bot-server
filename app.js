@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 
 const { abandonedCartsTracker } = require('./filesWIthInterval/abandonedCartsTracker');
 const { newContactsTracker } = require('./filesWIthInterval/newContactsTracker');
+const getAllContacts = require('./getAllContacts');
 
 // Set up default mongoose connection
 const mongoDB = 'mongodb+srv://nurlan:qweQWE123@cluster0.ikiuf.mongodb.net/test?retryWrites=true&w=majority';
@@ -31,7 +32,6 @@ const settingsRouter = require('./routes/settings');
 const shopifyRouter = require('./routes/shopifyWebhooks');
 const smsRouter = require('./routes/smsRouter');
 
-
 const app = express();
 
 app.set('views', path.join(__dirname, 'views'));
@@ -52,7 +52,9 @@ app.use('/awh', awhRouter);
 app.use('/settings', settingsRouter);
 app.use('/shopify', shopifyRouter);
 app.use('/twilioapi/send', smsRouter);
-
+app.get('/twilioapi/get/contacts', async (req, res) => {
+  res.status(200).send(await getAllContacts());
+});
 
 app.use((req, res, next) => {
   next(createError(404));
