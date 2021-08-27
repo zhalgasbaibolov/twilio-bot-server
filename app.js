@@ -56,7 +56,7 @@ app.use('/twilioapi/send', smsRouter);
 app.get('/twilioapi/get/contacts', async (req, res) => {
   res.status(200).send(await getAllContactsFromDB());
 });
-app.get('/get/contactsFromStore', async (req, res) => {
+app.get('/twilioapi/get/contactsFromStore', async (req, res) => {
   res.status(200).send(await getAllContactsFromStore());
 });
 

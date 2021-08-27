@@ -3,6 +3,8 @@ const UserSetting = require('./db/models/UserSetting');
 const getAllCheckouts = require('./getAllCheckouts');
 
 async function getAllContactsFromStore() {
+  console.log('get contacts from store started !!!');
+  let allCheckouts = [];
   await UserSetting.find({}).exec()
     .then((arr) => {
       if (!arr || !arr.length) return;
@@ -26,8 +28,9 @@ async function getAllContactsFromStore() {
             const allCarts = response.data && response.data.checkouts;
             if (!allCarts || !allCarts.length) {
             // console.log('abandoned carts not found');
-
             }
+            allCheckouts = allCheckouts.push(allCarts);
+            console.log(allCheckouts);
           }).catch((err) => {
             console.log(err);
           });
