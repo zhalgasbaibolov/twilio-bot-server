@@ -57,7 +57,7 @@ app.get('/twilioapi/get/contacts', async (req, res) => {
   res.status(200).send(await getAllContactsFromDB());
 });
 app.get('/get/contactsFromStore', async (req, res) => {
-  res.status(200).send(await getAllContactsFromStore(req));
+  res.status(200).send(await getAllContactsFromStore());
 });
 
 app.use((req, res, next) => {
