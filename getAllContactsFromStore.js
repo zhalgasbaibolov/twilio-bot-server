@@ -25,9 +25,10 @@ async function getAllContactsFromStore() {
           storePassword,
         )
           .then((response) => {
-            const allCarts = response.data && response.data.checkouts;
+            const allCarts = [response.data && response.data.checkouts];
             if (!allCarts || !allCarts.length) {
             // console.log('abandoned carts not found');
+              return;
             }
             allCheckouts = allCheckouts.push(allCarts);
             console.log(allCheckouts);
