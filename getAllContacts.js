@@ -2,11 +2,11 @@
 const UserContacts = require('./db/models/UserContact');
 
 async function getAllContacts() {
-  const arr = [];
+  // const arr = [];
   const contacts = await UserContacts.find({}).exec();
-  arr.push(contacts.map((x) => x.phone));
+  // arr.push(contacts.map((x) => x.phone));
 
-  return arr;
+  return contacts;
 }
 
 module.exports = getAllContacts;
